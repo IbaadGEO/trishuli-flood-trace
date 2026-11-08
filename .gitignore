@@ -1,0 +1,6 @@
+# downloaded inputs (rebuild with build.py / imagery.py)
+raw/
+# holds the ArcGIS API key; the deploy workflow writes it from a repository secret
+web/config.js
+.playwright-mcp/
+__pycache__/
