@@ -24,6 +24,7 @@ const FONT = esri?.layers.find((l) => l.layout?.["text-font"])?.layout["text-fon
 const map = new maplibregl.Map({
   container: "map",
   center: [85.37, 28.2], zoom: 10.6, pitch: 62, bearing: -20, maxPitch: 80,
+  attributionControl: { compact: true }, // full credits line overlapped the story caption on narrower screens
   style: {
     version: 8,
     glyphs: esri?.glyphs ?? "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
