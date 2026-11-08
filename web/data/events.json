@@ -15,72 +15,72 @@
     "clash": {"label": "CLaSH / USGS story map", "url": "https://storymaps.arcgis.com/stories/f2b2425eac544929a7d18f4c90b41d66"}
   },
   "events": [
-    {"t": "08:37", "kind": "origin", "title": "Rock-ice avalanche, Lirung massif", "detail": "Seismic signal 02:52:10 UTC, M5.2 (USGS); ~100 million m³ of rock and ice", "src": "usgs"},
-    {"t": "08:40", "kind": "gauge", "title": "Rasuwagadhi gauge: last reading", "detail": "3.8 m, then station lost", "src": "chwrr"},
-    {"t": "08:44", "kind": "impact", "title": "Gyirong Port destroyed", "detail": "CCTV captures destruction; ~20 km in ~7 min", "src": "timeline"},
-    {"t": "08:50", "kind": "gauge", "title": "Syabrubesi gauge lost", "detail": "Last 1.62 m (warning 6 m, danger 7 m)", "src": "chwrr"},
+    {"t": "08:37", "kind": "origin", "at": [85.521, 28.289], "title": "Rock-ice avalanche, Lirung massif", "detail": "Seismic signal 02:52:10 UTC, M5.2 landslide (USGS)", "src": "usgs"},
+    {"t": "08:40", "kind": "gauge", "at": [85.378, 28.276], "title": "Rasuwagadhi gauge: last reading", "detail": "Then telemetry lost. Reports disagree whether its last value was 1.62 m or 3.8 m", "src": "chwrr"},
+    {"t": "08:44", "kind": "impact", "at": [85.378, 28.276], "title": "Gyirong Port hit (CCTV)", "detail": "Reported CCTV time; clock basis not independently verified", "src": "timeline"},
+    {"t": "08:50", "kind": "gauge", "at": [85.344, 28.161], "title": "Syabrubesi gauge telemetry lost", "detail": "Arrival likely by ~09:00 if the flood caused the loss", "src": "chwrr"},
     {"t": "09:00", "kind": "alert", "title": "Flood Forecasting Division informed", "detail": "Via Rasuwa District Administration and Betrawati station staff", "src": "timeline"},
-    {"t": "09:15", "kind": "alert", "title": "SMS alerts to 679,295 people", "detail": "Rasuwa, Nuwakot, Dhading, Chitwan riverbanks", "src": "timeline"},
-    {"t": "09:20", "kind": "gauge", "title": "Betrawati gauge lost", "detail": "Last 3.55 m (warning 4.1 m, danger 5 m)", "src": "chwrr"},
-    {"t": "10:28", "kind": "alert", "title": "Forecast: Galchhi and Mugling within hours", "detail": "Prithvi Highway and Mugling–Narayanghat road alerted", "src": "timeline"},
-    {"t": "11:26", "kind": "gauge", "title": "Phurke (Malekhu) above warning level", "detail": "Rising from ~7.5 m", "src": "chwrr"},
-    {"t": "11:43", "kind": "impact", "title": "Phurke above danger; station and bridge lost", "detail": "Last 10.48 m", "src": "chwrr"},
-    {"t": "13:00", "kind": "gauge", "title": "Flood confirmed past Mugling", "detail": "Riverside residents to Devghat alerted", "src": "timeline"},
-    {"t": "13:20", "kind": "gauge", "title": "Devghat at 4.76 m", "detail": "Main surge still upstream", "src": "chwrr"},
-    {"t": "14:14", "kind": "gauge", "title": "Kalikhola peaks at 12.3 m", "detail": "Above 12.1 m danger level (from 7.4 m)", "src": "chwrr"},
-    {"t": "15:20", "kind": "impact", "title": "Flood reaches Devghat / Narayani", "detail": "Level still rising", "src": "timeline"},
-    {"t": "16:00", "kind": "gauge", "title": "Devghat peaks at 6.57 m", "detail": "~5,850 m³/s; 19.96 million m³ above normal flow", "src": "chwrr"},
+    {"t": "09:15", "kind": "alert", "title": "SMS alerts dispatched", "detail": "Reported 679,295 messages to riverbank areas; receipt not verified", "src": "timeline"},
+    {"t": "09:20", "kind": "gauge", "at": [85.187, 27.969], "title": "Betrawati gauge telemetry lost", "detail": "Last 3.55 m (warning 4.1 m, danger 5 m)", "src": "chwrr"},
+    {"t": "10:28", "kind": "alert", "title": "Forecast issued for Galchhi and Mugling", "detail": "A forecast, not an observation; Prithvi Highway alerted", "src": "timeline"},
+    {"t": "11:26", "kind": "gauge", "at": [84.834, 27.820], "title": "Phurke (Malekhu) crosses warning level", "detail": "Rising from ~7.5 m", "src": "chwrr"},
+    {"t": "11:43", "kind": "impact", "at": [84.834, 27.820], "title": "Phurke crosses danger level; station and bridge lost", "detail": "Last 10.48 m", "src": "chwrr"},
+    {"t": "13:00", "kind": "gauge", "at": [84.560, 27.853], "title": "Reported past Mugling by 13:00", "detail": "An upper bound, not a measured arrival time", "src": "timeline"},
+    {"t": "13:20", "kind": "gauge", "at": [84.432, 27.743], "title": "Devghat 4.76 m", "detail": "CHWRR calls this initial arrival; its chronology elsewhere gives 15:20. Sources conflict", "src": "chwrr"},
+    {"t": "14:14", "kind": "gauge", "title": "Kalikhola crosses danger level (12.1 m)", "detail": "Peak ~12.3 m shortly after", "src": "chwrr"},
+    {"t": "15:20", "kind": "impact", "at": [84.432, 27.743], "title": "Reported arrival at Devghat / Narayani", "detail": "CHWRR chronology; conflicts with its own 13:20 entry", "src": "chwrr"},
+    {"t": "16:00", "kind": "gauge", "at": [84.432, 27.743], "title": "Devghat peaks at 6.57 m (stage)", "detail": "Rating-curve estimates: ~5,850 m³/s; ~20 million m³ above baseline flow", "src": "chwrr"},
     {"t": "18:13", "kind": "alert", "title": "International Charter activated", "detail": "Requested by DHM; satellite mapping begins", "src": "timeline"}
   ],
   "story": [
-    {"m": 0, "title": "The collapse", "text": "About 100 million m³ of rock and glacier ice breaks off the Lirung massif at ~5,200 m and drops ~1.2 km into the valley below. Seismometers around the world record it like an earthquake."},
-    {"m": 2, "title": "A debris flow forms", "text": "The falling mass turns into a debris flow: a fast slurry of mud, rock, ice and water that races down the narrow Lende Khola gorge at up to ~180 km/h."},
-    {"m": 7, "title": "The border crossing is hit", "text": "Seven minutes after the collapse it reaches the China–Nepal border and destroys Gyirong Port, a busy crossing for traders and pilgrims."},
-    {"m": 12, "title": "Almost no warning downstream", "text": "The flow enters Nepal through Timure and Syabrubesi. River gauges are destroyed one by one before they can raise an alarm."},
-    {"m": 38, "title": "Phones start to buzz", "text": "At 09:15 emergency SMS alerts reach 679,295 phones along the river. The front is slowing as the valley widens, but it is still a destructive surge."},
-    {"m": 43, "title": "Into the Trishuli", "text": "At Betrawati the surge enters the Trishuli. Hydropower projects, bridges and the road along the river are damaged or swept away."},
-    {"m": 110, "title": "A long, slower surge", "text": "Lower down the river is wider, so the flood spreads out and slows to roughly 25–30 km/h. Authorities have time to warn towns further downstream."},
-    {"m": 169, "title": "Malekhu", "text": "At 11:26 the river at Malekhu passes its warning level; by 11:43 the gauge and the Phurke bridge are swept away."},
-    {"m": 263, "title": "Past Mugling", "text": "By 13:00 the flood has passed Mugling. Riverside residents all the way to Devghat are told to move away from the banks."},
-    {"m": 403, "title": "Reaching the plains", "text": "At 15:20 it reaches Devghat and the Narayani. The river peaks at 6.57 m at 16:00, then falls. The flow carried debris, and the bodies of some victims, up to 250 km downstream."},
-    {"m": 470, "title": "What the map shows now", "text": "The shaded area is the flood extent mapped from satellites in the following days. Scrub the timeline or click a key event to revisit any moment."}
+    {"m": 0, "title": "The collapse", "text": "Roughly 100 million m³ of rock and glacier ice (estimates vary by study) breaks off the Lirung massif at ~5,200 m and drops ~1.2 km into the valley. Seismometers record the collapse itself."},
+    {"m": 2, "title": "A debris flow forms", "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water, racing down the narrow Lende Khola gorge."},
+    {"m": 7, "title": "The border crossing is hit", "text": "CCTV shows it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims."},
+    {"m": 12, "title": "Almost no warning downstream", "text": "The flow enters Nepal through Timure and Syabrubesi. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured."},
+    {"m": 38, "title": "Warnings go out", "text": "At 09:15 emergency SMS alerts are dispatched along the river. The flow slows as the valley widens but remains destructive."},
+    {"m": 43, "title": "Down the Trishuli", "text": "Below Dhunche the river is the Trishuli. Around Betrawati hydropower projects, bridges and the riverside road are damaged or swept away."},
+    {"m": 110, "title": "A long, slower surge", "text": "Lower down the valley is wider and the flood wave travels more slowly, giving authorities time to warn towns further downstream."},
+    {"m": 169, "title": "Malekhu", "text": "At 11:26 the river at Malekhu crosses its warning level; by 11:43 it is above danger and the gauge and Phurke bridge are lost."},
+    {"m": 263, "title": "Past Mugling", "text": "By 13:00 the flood is reported past Mugling. Riverside residents as far as Devghat are told to move away from the banks."},
+    {"m": 403, "title": "Reaching the plains", "text": "Reports place arrival at Devghat and the Narayani around 15:20, though official records conflict. The river stage peaks at 6.57 m at 16:00, then falls."},
+    {"m": 470, "title": "What the map shows now", "text": "The shaded area is the satellite-mapped extent from the following days, revealed by estimated arrival time. Scrub the timeline or click a key event to revisit any moment."}
   ],
   "after": [
     {"d": "27 Aug", "title": "Barrier lake warning (China MWR)", "detail": "Border lake ~2 million m³, more inflow expected", "src": "article"},
-    {"d": "28 Aug", "title": "Two new lakes mapped (Cartosat-3)", "detail": "~160,000 m² and ~180,000 m²; Lake 1 overflowing naturally", "src": "chwrr"},
-    {"d": "29 Aug", "title": "Lake 2 overflows", "detail": "Causes downstream rises; rescues briefly paused", "src": "chwrr"},
-    {"d": "30 Aug", "title": "Barrier lakes largely drained", "detail": "", "src": "article"},
-    {"d": "17 Sep", "title": "Prithvi Highway reopens two-way", "detail": "New 270 m track at Krishnabhir", "src": "rdna"}
+    {"d": "28 Aug", "title": "Two new lakes mapped", "detail": "~12 ha and ~19 ha (UNOSAT polygons); CHWRR gives ~16 ha and ~18 ha", "src": "chwrr"},
+    {"d": "29 Aug", "title": "Lake 2 overflows", "detail": "Reported downstream rises; rescues briefly paused", "src": "chwrr"},
+    {"d": "30 Aug", "title": "Barrier lakes reported largely drained", "detail": "", "src": "article"},
+    {"d": "17 Sep", "title": "Prithvi Highway reported reopened two-way", "detail": "At Krishnabhir", "src": "rdna"}
   ],
   "gauges": [
-    {"name": "Rasuwagadhi", "lon": 85.378, "lat": 28.276, "reading": "3.8 m at 08:40, then lost", "status": "destroyed"},
-    {"name": "Syabrubesi", "lon": 85.344, "lat": 28.161, "reading": "1.62 m, lost 08:50", "warn": 6, "danger": 7, "status": "destroyed"},
-    {"name": "Betrawati", "lon": 85.187, "lat": 27.969, "reading": "3.55 m, lost 09:20", "warn": 4.1, "danger": 5, "status": "destroyed"},
-    {"name": "Galchhi", "lon": 85.0003, "lat": 27.7961, "reading": "8.5 m; ~9 m rise in 30 min", "status": "survived", "src": "clash"},
-    {"name": "Phurke (Malekhu)", "lon": 84.834, "lat": 27.820, "reading": "7.5 → 10.48 m; danger 11:43, then lost", "status": "destroyed"},
-    {"name": "Kalikhola", "reading": "7.4 → 12.3 m at 14:14", "danger": 12.1, "status": "survived"},
-    {"name": "Devghat", "lon": 84.432, "lat": 27.743, "reading": "peak 6.57 m at 16:00 · ~5,850 m³/s", "status": "survived"}
+    {"name": "Rasuwagadhi", "lon": 85.378, "lat": 28.276, "reading": "1.62 m or 3.8 m at 08:40 (reports disagree), then lost", "status": "destroyed"},
+    {"name": "Syabrubesi", "lon": 85.344, "lat": 28.161, "reading": "telemetry lost after 08:50; last value disputed between reports", "status": "destroyed"},
+    {"name": "Betrawati", "lon": 85.187, "lat": 27.969, "reading": "3.55 m, telemetry lost after 09:20", "warn": 4.1, "danger": 5, "status": "destroyed"},
+    {"name": "Galchhi", "lon": 85.0003, "lat": 27.7961, "reading": "~9 m rise in 30 min reported (stage datum not given)", "status": "survived", "src": "clash"},
+    {"name": "Phurke (Malekhu)", "lon": 84.834, "lat": 27.820, "reading": "7.5 → 10.48 m; warning 11:26, danger 11:43, then lost", "status": "destroyed"},
+    {"name": "Kalikhola", "reading": "7.4 m → danger level (12.1 m) at 14:14; peak ~12.3 m", "danger": 12.1, "status": "survived"},
+    {"name": "Devghat", "lon": 84.432, "lat": 27.743, "reading": "peak stage 6.57 m at 16:00 (~5,850 m³/s, rating-curve estimate)", "status": "survived"}
   ],
   "lakes": [
-    {"name": "Barrier lake 1", "lon": 85.4831, "lat": 28.3331, "area": "~160,000 m² (28 Aug)", "note": "Lende–Lirung Khola confluence; overflowing from 28 Aug"},
-    {"name": "Barrier lake 2", "lon": 85.5106, "lat": 28.2933, "area": "~180,000 m² (28 Aug)", "note": "Below collapse area; overflowed 29 Aug"}
+    {"name": "Barrier lake 1", "lon": 85.4831, "lat": 28.3331, "area": "~12 ha (UNOSAT polygon, 28 Aug); CHWRR ~16 ha", "note": "Lende–Lirung Khola confluence; reported overflowing from 28 Aug. Formed after the event"},
+    {"name": "Barrier lake 2", "lon": 85.5106, "lat": 28.2933, "area": "~19 ha (UNOSAT polygon, 28 Aug); CHWRR ~18 ha", "note": "Below the collapse area; reported overflow 29 Aug. Formed after the event"}
   ],
   "source": {
     "rows": [
-      ["Failure zone", "~0.76–0.99 km² at ~5,130–5,190 m"],
-      ["Volume", "~100 million m³ (99 ± 10 / ~103), ~12.6 million m³ ice"],
-      ["Drop", "~1,200–1,300 m free fall"],
-      ["Seismic", "M5.2 landslide (USGS); Mw 5.7 (GFZ)"],
-      ["Lende Khola", "14.2 km in ~350 s; mean 36 m/s at the border gorge"]
+      ["Failure zone", "~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,190 m"],
+      ["Volume", "~103 million m³ (JMS); 99 ± 10 million m³ (JISRS); some reports cite ~132"],
+      ["Ice", "~12.6 million m³ (JMS reconstruction)"],
+      ["Seismic", "M5.2 landslide signal (USGS); other agencies' magnitudes differ"],
+      ["Lende Khola", "14.2 km in ~350 s: a route-average rate (JMS), not a measured flow velocity"]
     ],
-    "precursor": "Sentinel-1 radar showed up to 40 cm of ground deformation at the source between 7 Jul and 24 Aug.",
-    "rain": "No rain trigger: satellite rainfall over the catchment was 4.0 mm in the 24 h before failure (20th percentile) and 8.3 mm over 3 days (4th percentile).",
-    "conflicts": "Published volume, magnitude and speed figures differ between studies; ranges are shown."
+    "precursor": "ICIMOD reports up to 40 cm of line-of-sight ground deformation at the source in Sentinel-1 radar between 7 Jul and 24 Aug; this is retrospective and does not imply the failure time was predictable.",
+    "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain.",
+    "conflicts": "Studies estimate geometry, volume, magnitude and speed differently; each figure is attributed to its source."
   },
   "deathsByDistrict": {
     "asOf": "20 Sep 2026 (NDRRMA SitRep 19)",
     "src": "ndrrma",
     "rows": [["Chitwan", 367], ["Nuwakot", 236], ["Nawalparasi East", 232], ["Nawalparasi West", 222], ["Rasuwa", 203], ["Gorkha", 79], ["Dhading", 72], ["Tanahun", 38]]
   },
-  "totals": {"deaths": "1,459", "missing": "5,285", "asOf": "7 Nov 2026, Nepal (Guardian)", "houses": "7,570", "bridges": "109", "roadKm": "69", "effects": "$2.7bn", "needs": "$4.8bn"}
+  "totals": {"deaths": "1,459", "missing": "5,285", "asOf": "reported 7 Nov 2026, Nepal (Guardian)", "houses": "7,570", "bridges": "105–109", "roadKm": "69", "effects": "$2.7bn", "needs": "$4.8bn"}
 }

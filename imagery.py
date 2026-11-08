@@ -1,6 +1,7 @@
 """Cloud-masked Sentinel-2 before/after composites, cut into XYZ WebP tiles along the flood corridor.
 
-Before = latest clear pixel before the event; after = earliest clear pixel after it (SCL cloud mask).
+Before/after = per-pixel median of clear observations (SCL mask + blue-brightness filter) from the scenes nearest the event,
+built from the rendered TCI visual assets: for orientation, not a reflectance change-analysis product.
 Reads Sentinel-2 L2A COGs straight from AWS (Element84 Earth Search), no login.
 Run after build.py:  python -P imagery.py
 """

@@ -30,8 +30,8 @@ ANCHORS = [
     ("Gyirong Port / Rasuwagadhi", 28.276, 85.378, 7, "08:44 CCTV captures destruction"),
     ("Syabrubesi gauge", 28.161, 85.344, 13, "08:50 station stops transmitting (assumed hit)"),
     ("Betrawati gauge", 27.969, 85.187, 43, "09:20 station stops transmitting"),
-    ("Malekhu / Phurke", 27.820, 84.834, 169, "11:26 above danger level; swept away 11:43"),
-    ("Mugling", 27.853, 84.560, 263, "13:00 flood confirmed past Mugling (upper bound)"),
+    ("Malekhu / Phurke", 27.820, 84.834, 169, "11:26 warning level crossed; danger level and station lost 11:43"),
+    ("Mugling", 27.853, 84.560, 263, "Reported past Mugling by 13:00 (upper bound, not a measured arrival)"),
     ("Devghat", 27.743, 84.432, 403, "15:20 flood reaches Narayani confluence; peak 16:00"),
 ]
 
@@ -114,7 +114,7 @@ for x in range(x0, x1 + 1):
 cols = np.array([(tx(lo) - x0) * 256 for lo in dlon]).astype(int)
 rows = np.array([(ty(la) - y0) * 256 for la in dlat]).astype(int)
 bed = ndimage.minimum_filter(dem, size=3)[rows, cols]
-bed = np.minimum.accumulate(bed)  # river bed never rises downstream
+bed = np.minimum.accumulate(bed)  # display conditioning of a DEM channel profile, not a surveyed bed (real beds have local adverse slopes)
 
 # ---------- 3. observed extent (UNOSAT + Copernicus EMS) timed by interpolated arrival ----------
 def slim(g):  # ~3 m simplification + 1e-5° grid keeps polygon files small for the browser
@@ -134,7 +134,7 @@ res = 2 * math.pi * R / 2 ** ZX / 256  # metres per px at the equator (Web Merca
 gx0, gx1, gy0, gy1 = int(tx(W) / 2 ** Z * 2 ** ZX), int(tx(E) / 2 ** Z * 2 ** ZX) + 1, int(ty(N) / 2 ** Z * 2 ** ZX), int(ty(S) / 2 ** Z * 2 ** ZX) + 1
 mx0, my0 = gx0 * 256 * res - math.pi * R, math.pi * R - gy0 * 256 * res
 shape = ((gy1 - gy0) * 256, (gx1 - gx0) * 256)
-geoms = pd.concat([extent.geometry, obs.geometry]).to_crs(3857)
+geoms = extent.geometry.to_crs(3857)  # UNOSAT extent only: every EMS observedEvent polygon is a mapped landslide, not inundation
 wet = features.rasterize(((g, 1) for g in geoms if g is not None and not g.is_empty), out_shape=shape,
                          transform=from_origin(mx0, my0, res, res), dtype="uint8", all_touched=True).astype(bool)
 r_, c_ = np.nonzero(wet)

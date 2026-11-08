@@ -148,7 +148,7 @@ const LAYERS = [
   { id: "waypoint-labels", name: "Hourly labels", on: true,
     add: { type: "symbol", source: "waypoints", layout: { "text-field": ["get", "label"], "text-size": 12, "text-offset": [0.9, 0], "text-anchor": "left", "text-font": FONT },
       paint: { "text-color": "#fff4d6", "text-halo-color": "rgba(0,0,0,0.7)", "text-halo-width": 1.3, "text-halo-blur": 0.6 } } },
-  { id: "arrival", name: "Flood extent over time", est: true, note: "Observed extent (UNOSAT + EMS); arrival times interpolated between gauge/CCTV times", sw: "#8a5a2b", on: true,
+  { id: "arrival", name: "Mapped extent, revealed over time", est: true, note: "UNOSAT satellite-mapped extent, shown cumulatively by estimated arrival time. Not water depth; colour change is illustrative", sw: "#8a5a2b", on: true,
     add: { type: "raster", paint: { "raster-opacity": 0.9, "raster-resampling": "linear", "raster-fade-duration": 0 } } }, // one layer per chunk source
   { id: "anchors", name: "Observation points", note: "Gauges / CCTV with reported times", sw: "#2f8f5b", on: true,
     add: { type: "circle", source: "anchors", paint: { "circle-radius": 5, "circle-color": "#2f8f5b", "circle-stroke-width": 1.5, "circle-stroke-color": "#fff" } } },
@@ -156,7 +156,7 @@ const LAYERS = [
     add: { type: "symbol", source: "anchors", layout: { "text-field": ["get", "name"], "text-size": 11, "text-offset": [0, 1.2], "text-anchor": "top", "text-font": FONT },
       paint: { "text-color": "#fff", "text-halo-color": "#000", "text-halo-width": 1.2 } } },
   { group: "Observed · UNOSAT (product 4256)" },
-  { id: "unosat_extent", name: "Final flood extent outline", note: "Sentinel-2 + Planet, 26–28 Aug", sw: "#9fd8f5", on: true,
+  { id: "unosat_extent", name: "Mapped extent outline", note: "Preliminary satellite interpretation (Sentinel-2 + Planet, 26–28 Aug), not field-validated", sw: "#9fd8f5", on: true,
     add: { type: "line", source: "unosat_extent", paint: { "line-color": "#9fd8f5", "line-width": 1, "line-opacity": 0.8 } } },
   { id: "detachment", name: "Detachment zone", note: "Landsat-9, 26 Aug", sw: "#e2483d", on: true,
     add: { type: "fill", source: "detachment", paint: { "fill-color": "#e2483d", "fill-opacity": 0.55, "fill-outline-color": "#fff" } } },
@@ -165,7 +165,7 @@ const LAYERS = [
   { id: "lake-labels", name: "Barrier lake labels", on: true,
     add: { type: "symbol", source: "lake-pts", layout: { "text-field": ["get", "name"], "text-size": 11, "text-offset": [0, 1], "text-anchor": "top", "text-font": FONT },
       paint: { "text-color": "#cfe0ff", "text-halo-color": "#000", "text-halo-width": 1.2 } } },
-  { id: "unosat_buildings", name: "Affected buildings", note: "5,048 points, corridor-wide", sw: "#ff7ab8", on: false,
+  { id: "unosat_buildings", name: "Potentially affected buildings", note: "5,048 points in or near mapped impacts; not confirmed damage", sw: "#ff7ab8", on: false,
     add: { type: "circle", source: "unosat_buildings", minzoom: 11, paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 1.5, 16, 5], "circle-color": "#ff7ab8", "circle-stroke-width": 0.5, "circle-stroke-color": "#000" } } },
   { group: "Observed · DHM / CHWRR gauges" },
   { id: "gauges", name: "River gauges", note: "Red = destroyed by the flood", sw: "#2f8f5b", on: true,
@@ -173,7 +173,7 @@ const LAYERS = [
   { group: "Observed · Copernicus EMS EMSR927" },
   { id: "aois", name: "Mapped areas", note: "Syapru Besi, Timure, Bidur, Phosretar", sw: "#ffffff", on: false,
     add: { type: "line", source: "aois", paint: { "line-color": "#fff", "line-width": 1.2, "line-dasharray": [2, 2] } } },
-  { id: "observed", name: "Observed flood / debris extent", note: "Photo-interpreted; also part of the timed layer", sw: "#6d3fb3", on: false,
+  { id: "observed", name: "Mapped landslides", note: "Copernicus EMS 'Landslide' features, photo-interpreted; not timed", sw: "#6d3fb3", on: false,
     add: { type: "fill", source: "observed", paint: { "fill-color": "#6d3fb3", "fill-opacity": 0.35, "fill-outline-color": "#b9a2e3" } } },
   { id: "roads", name: "Damaged roads", sw: "#e8873a", on: true,
     add: { type: "line", source: "roads", paint: { "line-color": DMG, "line-width": 2.5 } } },
@@ -201,7 +201,7 @@ const OPROP = { raster: "raster-opacity", fill: "fill-opacity", line: "line-opac
 const opOf = (L) => L.add && L.id !== "s2post" && OPROP[L.add.type]; // s2post opacity belongs to the before/after blend
 $("#layers").innerHTML = LAYERS.map((L) => L.group ? `<div class="layer"><h5>${L.group}</h5></div>` :
   `<label class="layer"><input type="checkbox" data-id="${L.id}" ${L.on ? "checked" : ""}><span>${L.sw ? `<i class="sw" style="background:${L.sw}"></i>` : ""}${L.name}${L.est ? '<span class="est">EST.</span>' : ""}${L.note ? `<small>${L.note}</small>` : ""}${opOf(L) ? `<span class="op"><input type="range" min="0" max="100" value="${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}" data-op="${L.id}" aria-label="${L.name} opacity"><output>${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}%</output></span>` : ""}</span></label>`).join("")
-  + `<p class="note">The flood extent itself is observed (UNOSAT and Copernicus EMS satellite mapping). Only <b>when</b> each place flooded is estimated: arrival times are interpolated along the river between reported gauge and CCTV times.</p>`;
+  + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are estimates between observations; reported times mix different kinds of evidence (gauge telemetry loss, threshold crossings, CCTV, reports). They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances are measured along the river from where the flow entered the channel, ~0.9 km from the mapped source.</p>`;
 document.querySelector(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
   document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-selected", b === e.target); });
   document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k)); };
@@ -213,9 +213,11 @@ if (s2) {
   const box = document.createElement("div");
   box.className = "fade";
   box.innerHTML = `<b>Corridor imagery</b><div class="fade-row"><span>Before<small>${span(s2.pre.dates)}</small></span>
-    <input type="range" min="0" max="100" value="0" aria-label="Blend before and after Sentinel-2 imagery"><span>After<small>${span(s2.post.dates)}</small></span></div>`;
+    <input type="range" min="0" max="100" value="0" aria-label="Blend before and after Sentinel-2 imagery"><span>After<small>${span(s2.post.dates)}</small></span></div>
+    <small class="note">Month-long cloud-free composites, for orientation only. Gaps in "after" show the 2024 basemap, which is pre-event.</small>`;
   document.querySelector("#map").appendChild(box);
-  box.querySelector("input").oninput = (e) => map.setPaintProperty("s2post", "raster-opacity", e.target.value / 100);
+  box.querySelector("input").oninput = (e) => { const v = e.target.value / 100;
+    map.setPaintProperty("s2post", "raster-opacity", v); map.setPaintProperty("s2pre", "raster-opacity", 1 - v); }; // so post-event gaps never show the "before" composite
 }
 map.on("click", "buildings", (e) => new maplibregl.Popup().setLngLat(e.lngLat).setHTML(`<b>${e.features[0].properties.d}</b><br><span class="muted">Copernicus EMS ${e.features[0].properties.aoi}</span>`).addTo(map));
 map.on("click", "gauges", (e) => { const p = e.features[0].properties; new maplibregl.Popup().setLngLat(e.lngLat).setHTML(`<b>${p.name} gauge</b><br>${p.reading}${p.danger ? `<br><span class="muted">warning ${p.warn ?? "–"} m · danger ${p.danger} m</span>` : ""}<br><span class="muted">${p.status}</span>`).addTo(map); });
@@ -286,7 +288,7 @@ function frontCard(r) {
   const v = done ? 0 : ((at(t + 1)[2] - r[2]) / 60) * 3.6; // km/h over the next minute
   const prev = gaugesOnPath.filter((g) => g.r[2] <= r[2] + 300).at(-1), next = gaugesOnPath.find((g) => g.r[2] > r[2] + 300); // 300 m: gauge snapping tolerance
   $("#front-card").innerHTML = `<h4>At the flow front <span>${fmt(t)} NPT <span class="est">EST.</span></span></h4><div class="stats">
-    <div><b>${km.toFixed(1)} km</b><span>downstream</span></div><div><b>${done ? "–" : Math.round(v)}</b><span>km/h front speed</span></div><div><b>${n(r[4])} m</b><span>river bed elevation</span></div></div>
+    <div><b>${km.toFixed(1)} km</b><span>downstream</span></div><div><b>${done ? "–" : Math.round(v)}</b><span>km/h implied average rate</span></div><div><b>${n(r[4])} m</b><span>DEM channel elevation</span></div></div>
     <dl style="margin-top:8px"><dt>Last gauge</dt><dd>${prev ? `${prev.name}: ${prev.reading}` : "none passed yet"}</dd>
     <dt>Next gauge</dt><dd>${next ? `${next.name} in ~${Math.max(1, Math.round(next.r[3] - t))} min (${fmt(next.r[3])})` : "past Devghat"}</dd></dl>`;
 }
@@ -331,11 +333,11 @@ function story(m) {
 const legend = document.createElement("details"); legend.className = "legend"; legend.open = true;
 legend.innerHTML = `<summary>Legend</summary>
   <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Flow front (where the flood is now)</div>
-  <div data-for="arrival"><i class="lg-grad"></i>Flooded: just now → earlier</div>
+  <div data-for="arrival"><i class="lg-grad"></i>Reached (est.): just now → earlier</div>
   <div data-for="reached"><i class="lg-line"></i>River already reached</div>
   <div data-for="river"><i class="lg-line dash"></i>River not reached yet</div>
   <div data-for="waypoints"><i class="lg-dot" style="background:#ffd166"></i>Front position each hour</div>
-  <div data-for="unosat_extent"><i class="lg-box" style="border-color:#9fd8f5"></i>Final flood extent (satellite)</div>
+  <div data-for="unosat_extent"><i class="lg-box" style="border-color:#9fd8f5"></i>Mapped extent (satellite, preliminary)</div>
   <div data-for="buildings"><i class="lg-dot" style="background:#c8432b"></i>Destroyed · <i class="lg-dot" style="background:#e8873a;margin-left:4px"></i>damaged · <i class="lg-dot" style="background:#f1c24b;margin-left:4px"></i>possibly</div>
   <div data-for="roads"><i class="lg-line" style="border-color:#e8873a"></i>Damaged road</div>
   <div data-for="gauges"><i class="lg-dot" style="background:#c8432b"></i>Gauge destroyed · <i class="lg-dot" style="background:#2f8f5b;margin-left:4px"></i>survived</div>
@@ -353,11 +355,12 @@ $("#views").onclick = (e) => e.target.dataset.view && applyView(e.target.dataset
 $("#layers").addEventListener("change", syncLegend);
 applyView("story");
 
-function pinEvent(e) {
-  const r = at(e.m);
+function pinEvent(e) { // pinned where it happened; non-spatial events (alerts, forecasts) get no map pin
+  evEl.hidden = !e.at;
+  if (!e.at) return;
   evEl.dataset.kind = e.kind ?? "alert";
   evEl.innerHTML = `<time>${e.t ?? e.d}</time><span>${e.title}</span>`;
-  evMarker.setLngLat([r[0], r[1]]); evEl.hidden = false;
+  evMarker.setLngLat(e.at);
 }
 
 // ---------- timeline ----------
@@ -452,11 +455,11 @@ $("#overview").innerHTML = `
   <dt>Path</dt><dd>Lende Khola → Bhote Koshi → Trishuli → Narayani, ${kmMax.toFixed(0)} km to Devghat</dd>
   <dt>Districts</dt><dd>Rasuwa, Nuwakot, Dhading, Gorkha, Chitwan (+ Gyirong County, Tibet)</dd>
   <dt>Duration</dt><dd>~10 h from collapse to Devghat recession</dd></dl>
-  <p class="note">Independent reconstruction for education and understanding. Not an official product and not for emergency use. Timing between observation points is estimated.</p></div>
+  <p class="note">Independent reconstruction for education and understanding. Not an official product and not for emergency use. The moving front and the extent reveal are estimates between reported observations, not measured depth, velocity or a hydraulic simulation.</p></div>
 <div class="card"><h4>Human impact <span>${ev.totals.asOf}</span></h4><div class="stats">
-  <div><b>${ev.totals.deaths}</b><span>deaths reported</span></div><div><b>${ev.totals.missing}</b><span>still missing</span></div><div><b>${ev.totals.houses}</b><span>houses destroyed</span></div>
+  <div><b>${ev.totals.deaths}</b><span>deaths reported</span></div><div><b>${ev.totals.missing}</b><span>still missing</span></div><div><b>${ev.totals.houses}</b><span>private houses damaged (RDNA)</span></div>
   <div><b>${ev.totals.bridges}</b><span>bridges damaged</span></div><div><b>${ev.totals.roadKm} km</b><span>road damaged</span></div><div><b id="area">0</b><span>ha flooded so far <span class="est">EST. TIMING</span></span></div>
-  <div><b>${ev.totals.effects}</b><span>damage and losses</span></div><div><b>${ev.totals.needs}</b><span>recovery needs</span></div><div><b>${n(meta.extentHa)}</b><span>ha final extent (UNOSAT)</span></div></div>
+  <div><b>${ev.totals.effects}</b><span>damage and losses (RDNA, Sep)</span></div><div><b>${ev.totals.needs}</b><span>recovery needs (RDNA, Sep)</span></div><div><b>${n(meta.extentHa)}</b><span>ha mapped extent (UNOSAT, preliminary)</span></div></div>
   <p class="note">Aggregate figures only. Sources: ${src_("article")}; ${src_("rdna")}; The Guardian, 7 Nov 2026.</p></div>
 <div class="card"><h4>Source collapse <span>ranges across studies</span></h4><dl>
   ${ev.source.rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
@@ -466,11 +469,11 @@ $("#overview").innerHTML = `
   ${ev.gauges.map((g) => `<dt>${g.name}</dt><dd>${g.reading}${g.status === "destroyed" ? ' <span class="est" style="color:var(--impact)">LOST</span>' : ""}</dd>`).join("")}</dl>
   <p class="note">Four of the stations were destroyed, so only their last readings survive.</p></div>
 <div class="card"><h4>Building damage <span>Copernicus EMS, 4 areas</span></h4><div class="bars">
-  ${["Destroyed", "Damaged", "Possibly damaged", "No visible damage"].map((k) => `<div><span>${k}</span><i style="width:${(100 * (ems[k] || 0)) / Math.max(...Object.values(ems))}%;background:${{ Destroyed: "#c8432b", Damaged: "#e8873a", "Possibly damaged": "#f1c24b" }[k] || "#9aa7b0"}"></i><em>${n(ems[k] || 0)}</em></div>`).join("")}
-  </div><p class="note">${src_("ems")}. UNOSAT separately mapped ${n(meta.unosatBuildings)} affected buildings along the whole corridor (${src_("unosat")}).</p></div>
-<div class="card"><h4>Deaths by district <span>${D.asOf}</span></h4><div class="bars">
+  ${["Destroyed", "Damaged", "Possibly damaged"].map((k) => `<div><span>${k}</span><i style="width:${(100 * (ems[k] || 0)) / Math.max(...Object.values(ems))}%;background:${{ Destroyed: "#c8432b", Damaged: "#e8873a", "Possibly damaged": "#f1c24b" }[k] || "#9aa7b0"}"></i><em>${n(ems[k] || 0)}</em></div>`).join("")}
+  </div><p class="note">Graded building points within the four EMS mapped areas only, not a corridor-wide count. ${src_("ems")}. UNOSAT separately flags ${n(meta.unosatBuildings)} buildings in or near mapped impacts (exposure, not confirmed damage; ${src_("unosat")}).</p></div>
+<div class="card"><h4>Deaths by reporting district <span>${D.asOf}</span></h4><div class="bars">
   ${D.rows.map(([d, v]) => `<div><span>${d}</span><i style="width:${(100 * v) / bmax}%"></i><em>${v}</em></div>`).join("")}
-  </div><p class="note">Mostly where bodies were recovered, not where people were lost: the flow carried victims up to 250 km downstream. ${src_("ndrrma")}.</p></div>
+  </div><p class="note">Districts where deaths were reported, largely reflecting recovery location rather than where people were lost. Rows total ${n(D.rows.reduce((s, r) => s + r[1], 0))} of 1,451; the remainder died during treatment in Kathmandu. Figures are provisional. ${src_("ndrrma")}.</p></div>
 <div class="card"><h4>Method & sources</h4><p class="note">
   Flood extent: ${src_("unosat")} and ${src_("ems")}. Flow timing: ${src_("chwrr")}; ${src_("timeline")}. River path: © OpenStreetMap contributors (ODbL). Terrain: Terrarium/SRTM via AWS Open Data.
   Arrival times between observation points are linear interpolations along the river, so the timing (not the extent) is the estimate.</p></div>`;
@@ -495,7 +498,7 @@ map.on("mousemove", (e) => { tipQ = e; requestAnimationFrame(() => { if (tipQ !=
   const r = river[i], z = map.getTerrain() ? map.queryTerrainElevation(e.lngLat) : null;
   // queryTerrainElevation is relative to the screen-centre elevation and includes exaggeration
   const elev = z == null ? null : (z + map.transform.elevation) / map.getTerrain().exaggeration, am = extentMinute(e.lngLat);
-  tip.innerHTML = (elev == null ? "" : `<b>${n(elev)} m</b> · ${n(Math.max(0, elev - r[4]))} m above river<br>`)
+  tip.innerHTML = (elev == null ? "" : `<b>${n(elev)} m</b> · ${n(Math.max(0, elev - r[4]))} m above DEM channel<br>`)
     + `${(r[2] / 1000).toFixed(1)} km downstream · ${(d / 1000).toFixed(1)} km from channel<br>`
     + (am == null ? `<span class="muted">Outside the mapped flood extent</span>` : `<span class="hit">● Flooded</span> · est. reached <b>${fmt(am)}</b>${am > t ? " (not yet)" : ""}`)
     + `<br><span class="muted">${e.lngLat.lat.toFixed(4)}°N ${e.lngLat.lng.toFixed(4)}°E</span>`;
