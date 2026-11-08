@@ -114,7 +114,9 @@ map.addSource("river", { type: "geojson", data: { type: "Feature", geometry: { t
 const frontEl = document.createElement("div"); frontEl.className = "front-marker"; frontEl.setAttribute("aria-label", "Flow front");
 const frontMarker = new maplibregl.Marker({ element: frontEl }).setLngLat([river[0][0], river[0][1]]).addTo(map);
 map.addSource("reached", { type: "geojson", data: line([]) });
-map.addSource("evpin", { type: "geojson", data: { type: "FeatureCollection", features: [] } });
+// Selected-event callout: a DOM card anchored above the spot (cleaner than a haloed map label)
+const evEl = document.createElement("div"); evEl.className = "ev-callout"; evEl.hidden = true;
+const evMarker = new maplibregl.Marker({ element: evEl, anchor: "bottom", offset: [0, -12] }).setLngLat([river[0][0], river[0][1]]).addTo(map);
 const HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
 map.addSource("waypoints", { type: "geojson", data: { type: "FeatureCollection", features: HOURS.map((h) => ({ ...pt(at(toMin(h))), properties: { label: h } })) } });
 map.addSource("anchors", { type: "geojson", data: { type: "FeatureCollection", features: meta.anchors.map((a) => ({ type: "Feature", properties: a, geometry: { type: "Point", coordinates: [a.lon, a.lat] } })) } });
@@ -145,12 +147,9 @@ const LAYERS = [
     add: { type: "circle", source: "waypoints", paint: { "circle-radius": 4.5, "circle-color": "#ffd166", "circle-stroke-width": 2, "circle-stroke-color": "#3a2a00" } } },
   { id: "waypoint-labels", name: "Hourly labels", on: true,
     add: { type: "symbol", source: "waypoints", layout: { "text-field": ["get", "label"], "text-size": 12, "text-offset": [0.9, 0], "text-anchor": "left", "text-font": FONT },
-      paint: { "text-color": "#1b1300", "text-halo-color": "#ffd166", "text-halo-width": 3 } } },
+      paint: { "text-color": "#fff4d6", "text-halo-color": "rgba(0,0,0,0.7)", "text-halo-width": 1.3, "text-halo-blur": 0.6 } } },
   { id: "arrival", name: "Flood extent over time", est: true, note: "Observed extent (UNOSAT + EMS); arrival times interpolated between gauge/CCTV times", sw: "#8a5a2b", on: true,
     add: { type: "raster", paint: { "raster-opacity": 0.9, "raster-resampling": "linear", "raster-fade-duration": 0 } } }, // one layer per chunk source
-  { id: "evpin", name: "Selected event", sw: "#c8432b", on: true,
-    add: { type: "symbol", source: "evpin", layout: { "text-field": ["get", "label"], "text-size": 12, "text-anchor": "bottom", "text-offset": [0, -1.1], "text-font": FONT, "text-max-width": 14, "text-allow-overlap": true },
-      paint: { "text-color": "#fff", "text-halo-color": "#c8432b", "text-halo-width": 4 } } },
   { id: "anchors", name: "Observation points", note: "Gauges / CCTV with reported times", sw: "#2f8f5b", on: true,
     add: { type: "circle", source: "anchors", paint: { "circle-radius": 5, "circle-color": "#2f8f5b", "circle-stroke-width": 1.5, "circle-stroke-color": "#fff" } } },
   { id: "anchor-labels", name: "Observation labels", on: true,
@@ -184,7 +183,7 @@ const LAYERS = [
 // Views: each shows only the overlays its question needs. Base layers (imagery, hillshade, terrain, labels) stay as set.
 const OVERLAYS = LAYERS.filter((L) => L.add && !L.id.startsWith("s2")).map((L) => L.id);
 const VIEWS = {
-  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "evpin", "gauges", "detachment", "lakes"],
+  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "lakes"],
   damage: ["reached", "unosat_extent", "buildings", "roads", "gauges", "detachment", "lakes", "lake-labels"],
   imagery: ["unosat_extent"],
   all: OVERLAYS,
@@ -356,7 +355,9 @@ applyView("story");
 
 function pinEvent(e) {
   const r = at(e.m);
-  map.getSource("evpin").setData({ type: "FeatureCollection", features: [{ ...pt(r), properties: { label: `${e.t ?? e.d}  ${e.title}` } }] });
+  evEl.dataset.kind = e.kind ?? "alert";
+  evEl.innerHTML = `<time>${e.t ?? e.d}</time><span>${e.title}</span>`;
+  evMarker.setLngLat([r[0], r[1]]); evEl.hidden = false;
 }
 
 // ---------- timeline ----------
@@ -393,7 +394,7 @@ function toggle(on) {
   setTimeout(() => playing && requestAnimationFrame(loop), follow ? 950 : 0);
 }
 $("#play").onclick = () => toggle(!playing);
-$("#restart").onclick = () => { toggle(false); map.getSource("evpin").setData({ type: "FeatureCollection", features: [] }); setTime(0, true); };
+$("#restart").onclick = () => { toggle(false); evEl.hidden = true; setTime(0, true); };
 const setFollow = (on) => { follow = on; cam = null; $("#follow").classList.toggle("on", on); $("#follow").setAttribute("aria-pressed", on); };
 $("#follow").onclick = () => setFollow(!follow);
 map.on("dragstart", (e) => e.originalEvent && follow && playing && setFollow(false)); // user took the camera

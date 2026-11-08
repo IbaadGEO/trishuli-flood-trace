@@ -105,6 +105,15 @@ svg text { fill: var(--muted); font-size: 10px; }
 .front-marker::after { content: ""; position: absolute; inset: -9px; border-radius: 50%; border: 2px solid rgb(54 197 240 / .8); animation: pulse 1.6s ease-out infinite; }
 @keyframes pulse { from { transform: scale(.5); opacity: 1; } to { transform: scale(1.6); opacity: 0; } }
 @media (prefers-reduced-motion: reduce) { .front-marker::after { animation: none; } }
+.ev-callout { position: relative; pointer-events: none; display: flex; flex-direction: column; gap: 1px; max-width: 220px; padding: 6px 10px 6px 11px;
+  background: rgb(15 22 28 / .88); color: #eef3f6; border-radius: 8px; border-left: 3px solid var(--alert); box-shadow: 0 4px 14px rgb(0 0 0 / .35);
+  font-size: 12.5px; line-height: 1.3; backdrop-filter: blur(4px); }
+.ev-callout[hidden] { display: none; }
+.ev-callout time { font-size: 11px; color: #9fb0bb; font-variant-numeric: tabular-nums; }
+.ev-callout::after { content: ""; position: absolute; left: 50%; bottom: -6px; transform: translateX(-50%); border: 6px solid transparent; border-bottom: 0; border-top-color: rgb(15 22 28 / .88); }
+.ev-callout[data-kind="origin"] { border-left-color: var(--mud); }
+.ev-callout[data-kind="impact"] { border-left-color: var(--impact); }
+.ev-callout[data-kind="gauge"] { border-left-color: var(--gauge); }
 #follow.on { background: var(--water); color: #fff; border-color: var(--water); }
 .card.front { border-color: var(--front); box-shadow: inset 3px 0 0 var(--front); }
 .op { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
