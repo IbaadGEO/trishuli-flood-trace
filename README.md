@@ -2,6 +2,8 @@
 
 3D reconstruction of the 26 August 2026 Nepal–Tibet debris flow: from the rock-ice avalanche on the Lirung massif (08:37 NPT) down the Lende Khola, Bhote Koshi and Trishuli to Devghat (~10 h, ~200 km of river).
 
+> **Scope:** a personal passion project, not a professional or commissioned study. It uses only already available, widely used, citable public data (satellite mapping products, agency reports, published papers, open datasets). Where sources conflict, both are shown and cited; no unpublished data or agency correspondence is involved.
+>
 > Independent, non-commercial reconstruction for education and understanding. Not an official product and not for emergency use. The flood extent is observed from satellite mapping; the timing between observation points is estimated.
 
 ## Deploy (Vercel)
