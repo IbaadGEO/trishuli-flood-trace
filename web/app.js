@@ -25,6 +25,8 @@ const map = new maplibregl.Map({
   container: "map",
   center: [85.37, 28.2], zoom: 10.6, pitch: 62, bearing: -20, maxPitch: 80,
   attributionControl: { compact: true }, // full credits line overlapped the story caption on narrower screens
+  // imagery and terrain are ~10 m (zoom 14); beyond 15 they only blur, and outside this box there is nothing to see
+  maxZoom: 15, minZoom: 8, maxBounds: [[83.6, 27.1], [86.4, 28.95]],
   style: {
     version: 8,
     glyphs: esri?.glyphs ?? "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
@@ -54,6 +56,7 @@ const BEFORE = esriIds[0]; // our layers go under Esri's labels
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-left");
 map.addControl(new maplibregl.ScaleControl(), "bottom-left");
 await new Promise((r) => map.on("load", r));
+$(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show"); // compact credits start expanded until the first drag
 map.setTerrain({ source: "dem", exaggeration: 1.2 });
 
 // Flood-arrival raster, split into 500 px chunks (only those with flooded pixels). Each repaint re-uploads just
