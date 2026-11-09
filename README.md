@@ -157,6 +157,8 @@ Python 3.13 with the packages in `requirements.txt`. Downloads are cached in `ra
 - `raw/unosat/`: the UNOSAT product 4256 geodatabase (`FL20260826NPL.gdb.zip`, unzipped)
 - `raw/zenodo/`: the Zenodo 22679444 archive (`zenodo_upload.zip`, unzipped into `raw/zenodo/extracted/`)
 
+`build.py` stops with instructions if any of these is missing and checks each input against `inputs_manifest.json`. The Malekhu gauge readings it uses as evidence are kept in `archive/` because the BIPAD API only serves the current record.
+
 ```bash
 python -P build.py
 ```

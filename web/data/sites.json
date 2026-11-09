@@ -5,6 +5,7 @@
   "lon": 85.52,
   "lat": 28.291,
   "km": 3.2,
+  "px_m": 2.7,
   "m": 1,
   "pre": {
    "img": "data/sites/source_pre.webp",
@@ -27,6 +28,7 @@
   "lon": 85.374,
   "lat": 28.268,
   "km": 2.4,
+  "px_m": 2.0,
   "m": 8,
   "pre": {
    "img": "data/sites/timure_pre.webp",
@@ -49,6 +51,7 @@
   "lon": 85.3394,
   "lat": 28.1683,
   "km": 2.0,
+  "px_m": 1.7,
   "m": 18,
   "pre": {
    "img": "data/sites/syabrubesi_pre.webp",
@@ -71,6 +74,7 @@
   "lon": 85.18,
   "lat": 27.97,
   "km": 2.0,
+  "px_m": 1.7,
   "m": 48,
   "pre": {
    "img": "data/sites/betrawati_pre.webp",
@@ -93,6 +97,7 @@
   "lon": 85.1466,
   "lat": 27.9182,
   "km": 2.0,
+  "px_m": 1.7,
   "m": 62,
   "pre": {
    "img": "data/sites/bidur_pre.webp",

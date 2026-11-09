@@ -15,9 +15,9 @@ Trishuli Flood Trace is a personal, non-commercial reconstruction of the 26 Augu
 
 ## Route
 
-1. OSM waterways in the corridor (Overpass) form an undirected graph. Dijkstra's shortest path runs from the node nearest the UNOSAT detachment-zone centroid to the node nearest the Devghat gauge.
-2. The route origin is ~0.9 km from the mapped source reference, at ~3,750 m DEM elevation, while the failure began at ~5,100–5,200 m. **The source-to-channel runout is not part of the route and is not timed.** The map draws it as a dashed red line: the shortest gap (~209 m) from the UNOSAT detachment-zone edge to the route origin, a schematic link, not a mapped flow path. Distances ("km along route") start at the route origin.
-3. The path is densified to 40 m spacing. Shortest-path routing does not verify hydrological direction or the event's actual flow path at confluences.
+1. OSM waterways in the corridor (Overpass) form an undirected graph. Dijkstra's shortest path runs from the node nearest a source reference point to the node nearest the Devghat gauge. The reference point is the UNOSAT detachment-zone centroid rounded to 0.001° (28.289° N, 85.521° E); the nearest river node is at 28.29014° N, 85.51192° E, 898 m away (`meta.json` → `origin`).
+2. The route origin is therefore ~0.9 km from the source reference, at ~3,750 m DEM elevation, while the failure began at ~5,100–5,200 m. **The source-to-channel runout is not part of the route and is not timed.** The map draws it as a dashed red line: the shortest gap (~209 m) from the UNOSAT detachment-zone edge to the route origin, a schematic link, not a mapped flow path. Distances ("km along route") start at the route origin.
+3. The path is densified to 40 m spacing. Each evidence point is then placed at its nearest route point; the offset is recorded as `snap_m` in `anchors.csv` (4–223 m for the gauges, 296 m for the Mugling check). Shortest-path routing does not verify hydrological direction or the event's actual flow path at confluences.
 
 ## Timing evidence
 
@@ -50,10 +50,10 @@ Peaks, threshold crossings, alerts and forecasts appear in the chronology but ne
 
 1. UNOSAT 4256 extent polygons are rasterised on a Web Mercator zoom-12 grid (~34 m, `all_touched=True`).
 2. Each pixel takes the estimated minute of its **nearest route point** (Euclidean). Pixels more than 3 km from the route are dropped.
-3. Pixels whose nearest route point is the route origin are ground upstream of the timed route (the source/runout zone, ~158 ha). They are shown as **untimed** grey and never animated.
+3. Pixels inside the UNOSAT detachment zone, or whose nearest route point is the route origin, are source or runout ground upstream of the timed route (~223 ha). They are shown as **untimed** grey, never animated, and the hover tooltip labels them untimed.
 4. The reveal is **cumulative**: once revealed, a pixel stays. This is the mapped affected footprint appearing at its estimated time, not instantaneous inundation or depth. The fade from pale to brown over 25 min is illustrative only.
 
-Known limits: nearest-point assignment can mis-time pixels across meander necks, on tributary backwater or on slope deposits, and the 3 km cutoff is an inclusion rule, not a connectivity test. Rasterisation and clipping make the revealed total (~6,556 ha timed + 158 ha untimed) about 3.4% larger than UNOSAT's vector area (6,491 ha). Tributary backflow (for example ~2 km up the side valley at the border) is documented in the sources but not reconstructed.
+Known limits: nearest-point assignment can mis-time pixels across meander necks, on tributary backwater or on slope deposits, and the 3 km cutoff is an inclusion rule, not a connectivity test. Rasterisation and clipping make the revealed total (~6,491 ha timed + 223 ha untimed) about 3.4% larger than UNOSAT's vector area (6,491 ha). Tributary backflow (for example ~2 km up the side valley at the border) is documented in the sources but not reconstructed.
 
 ## Channel elevation profile
 
@@ -63,6 +63,7 @@ Copernicus GLO-30 DEM via Mapterhorn tiles (sampled on a zoom-12 grid, ~34 m pix
 
 - The "before" and "after" layers are per-pixel **median** composites of the rendered Sentinel-2 L2A true-colour (TCI) assets. Pixels are kept if the scene classification is not cloud, shadow or cirrus and the blue band is below 150; the bright pixels are a fallback only. They use up to 16 scenes nearest the event within the windows shown in the app.
 - They are for orientation only, not a reflectance change-analysis product.
+- The before/after site pairs (`sites.py`) are cut from scenes of different native resolution (0.35–10 m, as labelled) and resampled to a common 1,200 px grid, so each crop is 1.7–2.7 m per pixel. Finer detail in the high-resolution scenes is not shown.
 - Gaps in "after" show the 2025 EOxCloudless basemap, which is pre-event.
 - Scene IDs and valid-observation counts are not yet exported (planned).
 
@@ -75,4 +76,6 @@ python -P imagery.py    # imagery (~40 min)
 python -P sites.py      # before/after site images
 ```
 
-Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `inputs_manifest.json` records the SHA-256 of each input used.
+Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if an input's SHA-256 differs from `inputs_manifest.json` (use `--update-manifest` after a deliberate change).
+
+The Malekhu (Phurke) readings came from the BIPAD river API, which serves the current record and can change. The saved response is hashed in `inputs_manifest.json` with its request URL and retrieval date, and the 26 August readings are kept in `archive/bipad_malekhu_261_20260826.csv`.

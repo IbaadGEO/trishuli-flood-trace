@@ -27,7 +27,7 @@ VANTOR = "© Vantor, Open Data Program (CC BY-NC 4.0)"
 PLANET = "© Planet Labs PBC, Crisis Response Program (CC BY-NC 4.0)"
 EOX = "EOxCloudless 2025 by EOX IT Services GmbH, CC BY-NC-SA 4.0 (contains modified Copernicus Sentinel data 2025)"
 
-# Scene = (url, date, sensor and resolution, credit, scene id)
+# Scene = (url, date, sensor and native resolution (GSD), credit, scene id); every crop is resampled to size / PX metres per pixel
 def vantor(i, date, sensor): return (V + i + ".tif", date, sensor, VANTOR, i)
 def planet(path, date, sensor): return (P + path + "_visual.tif", date, sensor, PLANET, path.rsplit("/", 1)[1])
 PS_MAY = "pre-event/planetscope-2026-05-27/items/"
@@ -110,7 +110,7 @@ for sid, name, lon, lat, size, pre, post in SITES:
         Image.fromarray(stretch(read(scene, tf)).transpose(1, 2, 0)).save(os.path.join(OUT, f"{sid}_{phase}.webp"), quality=82)
         pair[phase] = {"img": f"data/sites/{sid}_{phase}.webp", "date": scene[1], "sensor": scene[2], "credit": scene[3], "scene": scene[4]}
     k = int(np.argmin((river[:, 0] - lon) ** 2 + (river[:, 1] - lat) ** 2))  # nearest route point gives the minute to open the panel
-    rows.append({"id": sid, "name": name, "lon": lon, "lat": lat, "km": round(size / 1000, 1), "m": round(float(river[k, 3])), **pair})
+    rows.append({"id": sid, "name": name, "lon": lon, "lat": lat, "km": round(size / 1000, 1), "px_m": round(size / PX, 1), "m": round(float(river[k, 3])), **pair})
     print(sid, "ok", rows[-1]["m"], "min")
 for sid, name, m, pre, post in PUBLISHED:
     pair = {}

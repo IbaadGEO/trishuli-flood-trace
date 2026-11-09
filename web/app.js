@@ -30,7 +30,10 @@ if (!glProbe.getContext("webgl2")) { // MapLibre 6 requires WebGL2
   const repo = "https://github.com/IbaadGEO/trishuli-flood-trace/blob/main";
   $("#map").innerHTML = `<div class="nogl"><b>This 3D map needs WebGL2, which isn't available in this browser.</b>
     <p>The reconstruction's method, evidence and sources are readable without it: <a href="${repo}/METHODS.md">METHODS.md</a> ·
-    <a href="${repo}/anchors.csv">timing evidence (anchors.csv)</a> · <a href="${repo}/sources.csv">sources.csv</a> · <a href="${repo}/README.md">README</a>.</p></div>`;
+    <a href="${repo}/anchors.csv">timing evidence (anchors.csv)</a> · <a href="${repo}/sources.csv">sources.csv</a> · <a href="${repo}/README.md">README</a>.</p>
+    <h3>What happened</h3>${ev.story.map((s) => `<p><b>${s.title}.</b> ${s.text}</p>`).join("")}
+    <h3>Key events (26 Aug 2026, Nepal time)</h3><ul>${ev.events.map((e) => `<li><time>${e.t}</time> <b>${e.title}</b>${e.detail ? `. ${e.detail}` : ""}.
+      <a href="${ev.sources[e.src].url}" target="_blank" rel="noopener">${ev.sources[e.src].label}</a></li>`).join("")}</ul></div>`;
   throw new Error("WebGL unavailable: static fallback shown");
 }
 const map = new maplibregl.Map({
@@ -284,6 +287,8 @@ function paintArrival(m) {
   if (played.length) requestAnimationFrame(() => requestAnimationFrame(() => played.forEach((s) => s.pause())));
 }
 const events = ev.events.map((e) => ({ ...e, m: toMin(e.t) }));
+const srcShort = (k) => ev.sources[k].label.split(/[,(:]/)[0].trim(); // "CHWRR Assessment Report II", "USGS event us7000tbwb", ...
+const srcLink = (k) => `<a href="${ev.sources[k].url}" target="_blank" rel="noopener">${srcShort(k)}</a>`;
 
 let follow = !RM, cam = null; // cam: eased camera state {c:[lon,lat], b:bearing, ts}
 function atChain(c) { // river point `c` metres from the source
@@ -329,7 +334,7 @@ const HEAVY_MS = 90;
 let lastHeavy = 0;
 function setTime(m, fly) {
   t = Math.max(0, Math.min(T_END, m));
-  $("#t").value = t;
+  $("#t").value = t; $("#t").setAttribute("aria-valuetext", `${fmt(t)} NPT, ${Math.round(t)} minutes after the collapse`);
   const r = at(t);
   frontMarker.setLngLat([r[0], r[1]]);
   if (playing && follow) followCam(r);
@@ -359,7 +364,9 @@ function story(m) {
   const s = ev.story.filter((x) => x.m <= m).at(-1), e = events.filter((x) => x.m <= m && x.m > m - 12).at(-1); // event "just happened" for 12 min
   const site = sites.filter((x) => x.m <= m + 1).at(-1); // the latest site the flow has reached
   const key = `${s?.m}|${e?.m}|${site?.id}`; if (key === storyKey) return; storyKey = key;
+  const keys = [...new Set([...(e ? [e.src] : []), ...(s.srcs || [])])];
   storyBox.innerHTML = (e ? `<div class="just"><i class="k-${e.kind}"></i>${e.t} · ${e.title}</div>` : "") + `<b>${s.title}</b><p>${s.text}</p>`
+    + `<p class="srcs">Sources: ${keys.map(srcLink).join(" · ")}</p>`
     + (site ? `<button class="cmp-btn" data-site="${site.id}">Before / after: ${site.name} ▸</button>` : "");
 }
 storyBox.addEventListener("click", (e) => { const b = e.target.closest(".cmp-btn"); if (b) openSite(b.dataset.site); });
@@ -368,9 +375,12 @@ storyBox.addEventListener("click", (e) => { const b = e.target.closest(".cmp-btn
 const cmp = $("#cmp");
 let siteIdx = 0;
 const setSplit = (v) => { $("#cmp-r").value = v; cmp.style.setProperty("--split", `${v}%`); };
+// licence names in credits become links to the licence text
+const lic = (txt) => txt.replace(/CC BY(-NC)?(-SA)? (4\.0|3\.0 IGO)/g, (m, nc, sa, ver) =>
+  `<a href="https://creativecommons.org/licenses/by${nc ? "-nc" : ""}${sa ? "-sa" : ""}/${ver === "4.0" ? "4.0" : "3.0/igo"}/" target="_blank" rel="noopener">${m}</a>`);
 const vidHTML = (v) => `<h4>${v.title} <span class="vkind">${v.kind}</span></h4>${v.notice ? `<p class="note">${v.notice}</p>` : ""}
     <video controls playsinline preload="none" poster="${v.poster}" src="${v.src}" aria-label="${v.title}"></video>
-    <p>${v.text}</p><p class="note">${v.credit} Sources: ${v.srcs.map(src_).join("; ")}.</p>`;
+    <p>${v.text}</p><p class="note">${lic(v.credit)}${v.mb ? ` Video ${v.mb} MB.` : ""} Sources: ${v.srcs.map(src_).join("; ")}.</p>`;
 function openSite(id) {
   siteIdx = sites.findIndex((s) => s.id === id);
   const s = sites[siteIdx], d = (x) => new Date(x.date).toString() === "Invalid Date" ? x.date : new Date(x.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
@@ -381,7 +391,7 @@ function openSite(id) {
   $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `After · ${d(s.post)}`;
   $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
     <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>
-    <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. ${s.published ? "Shown as published, resized only; labels are the publisher's." : `View ~${s.km} km across, north up; contrast stretched for display.`}</p>`
+    <p class="note">Before: ${s.pre.sensor}, ${lic(s.pre.credit)}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${lic(s.post.credit)}, scene ${s.post.scene}. ${s.published ? "Shown as published, resized only; labels are the publisher's." : `View ~${s.km} km across, north up, both images resampled to ${s.px_m} m pixels (sensor figures are native resolution); contrast stretched for display.`}</p>`
     + (s.videos || []).map(vidHTML).join("");
   $("#cmp-view").style.aspectRatio = s.aspect ?? 1;
   $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
@@ -400,7 +410,7 @@ $("#cmp-x").onclick = () => cmp.close();
 for (const d of [cmp, $("#sims")]) d.addEventListener("close", () => d.querySelectorAll("video").forEach((v) => v.pause()));
 $("#sims-x").onclick = () => $("#sims").close();
 function openSims() { toggle(false); $("#sims-text").innerHTML = `<p>${ev.simulations.intro}</p>` + ev.simulations.videos.map(vidHTML).join(""); $("#sims").showModal(); }
-const legend = document.createElement("details"); legend.className = "legend"; legend.open = true;
+const legend = document.createElement("details"); legend.className = "legend"; legend.open = !matchMedia("(max-width: 900px)").matches;
 legend.innerHTML = `<summary>Legend</summary>
   <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Estimated progression along the mapped route</div>
   <div data-for="arrival"><i class="lg-box fill" style="background:#b0a89c"></i>Mapped source-zone ground (untimed)</div>
@@ -491,8 +501,9 @@ map.on("dragstart", (e) => e.originalEvent && follow && playing && setFollow(fal
 $("#dim").onclick = (e) => { const v = e.target.dataset.v; if (!v) return; $("#dim").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); map.easeTo({ pitch: v === "3" ? 62 : 0, bearing: v === "3" ? -20 : 0 }); setVis("terrain", v === "3"); };
 
 // ---------- key events ----------
-$("#ev").innerHTML = events.map((e) => `<li data-m="${e.m}" tabindex="0" role="button"><i class="k-${e.kind}" aria-hidden="true"></i><span>${e.title}${e.detail ? `<small>${e.detail}</small>` : ""}</span><time>${e.t}</time></li>`).join("")
-  + ev.after.map((e) => `<li data-m="${T_END}" tabindex="0" role="button"><i class="k-alert" aria-hidden="true"></i><span>${e.title}${e.detail ? `<small>${e.detail}</small>` : ""}</span><time>${e.d}</time></li>`).join("");
+// source names as plain text: each row is a button, so links live in the story caption and the evidence panel
+const evRow = (e, m, kind, when) => `<li data-m="${m}" tabindex="0" role="button"><i class="k-${kind}" aria-hidden="true"></i><span>${e.title}<small>${e.detail ? `${e.detail}. ` : ""}<em>Source: ${srcShort(e.src)}</em></small></span><time>${when}</time></li>`;
+$("#ev").innerHTML = events.map((e) => evRow(e, e.m, e.kind, e.t)).join("") + ev.after.map((e) => evRow(e, T_END, "alert", e.d)).join("");
 $("#ev").onkeydown = (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("li")) { e.preventDefault(); e.target.click(); } };
 $("#ev").onclick = (e) => { const li = e.target.closest("li"); if (!li) return;
   toggle(false); const k = [...$("#ev").children].indexOf(li);
@@ -578,7 +589,7 @@ $("#overview").innerHTML = `
   <p class="note">${ev.source.conflicts} ${src_("usgs")}; ${src_("jms")}; ${src_("jisrs")}; ${src_("icimod")}; ${src_("imerg")}; ${src_("wwa")}; ${src_("xu")}; ${src_("guo")}.</p></div>
 <div class="card"><h4>River gauges <span>26 Aug, DHM ten-minute record</span></h4><dl>
   ${ev.gauges.map((g) => `<dt>${g.name}</dt><dd>${g.reading}${g.status === "destroyed" ? ' <span class="est" style="color:var(--impact)">LOST</span>' : ""}</dd>`).join("")}</dl>
-  <p class="note">Stages are relative to each station's own datum, not water depth, and are not comparable between stations. Gauges that stopped transmitting only bracket arrival, assuming the flood caused the loss. Source: <a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">DHM record archived on Zenodo (Acharya &amp; Paudel 2026, CC BY 4.0)</a>; Phurke values from ${src_("chwrr")}.</p></div>
+  <p class="note">Stages are relative to each station's own datum, not water depth, and are not comparable between stations. Gauges that stopped transmitting only bracket arrival, assuming the flood caused the loss. Source: <a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">DHM record archived on Zenodo (Acharya &amp; Paudel 2026, CC BY 4.0)</a>; Phurke (Malekhu) values from ${src_("bipad")} and ${src_("chwrr")}.</p></div>
 <div class="card"><h4>Building damage <span>Copernicus EMS, 4 areas</span></h4><div class="bars">
   ${["Destroyed", "Damaged", "Possibly damaged"].map((k) => `<div><span>${k}</span><i style="width:${(100 * (ems[k] || 0)) / Math.max(...Object.values(ems))}%;background:${{ Destroyed: "#c8432b", Damaged: "#e8873a", "Possibly damaged": "#f1c24b" }[k] || "#9aa7b0"}"></i><em>${n(ems[k] || 0)}</em></div>`).join("")}
   </div><p class="note">Graded building points within the four EMS mapped areas only, not a corridor-wide count. ${src_("ems")}. UNOSAT separately flags ${n(meta.unosatBuildings)} buildings in or near mapped impacts (exposure, not confirmed damage; ${src_("unosat")}).</p></div>
@@ -597,11 +608,11 @@ $("#sims-btn").onclick = openSims;
 
 // ---------- terrain hover tooltip ----------
 const tip = document.createElement("div"); tip.className = "tip"; tip.hidden = true; $("#map").appendChild(tip);
-function extentMinute(ll) { // arrival minute of the mapped-extent pixel under the cursor, or null
+function extentMinute(ll) { // arrival minute of the mapped-extent pixel under the cursor, -1 if untimed, or null
   const fx = (ll.lng - cTL[0]) / (cBR[0] - cTL[0]), fy = (mercY(cTL[1]) - mercY(ll.lat)) / (mercY(cTL[1]) - mercY(cBR[1]));
   if (fx < 0 || fx >= 1 || fy < 0 || fy >= 1) return null;
   const i = (Math.floor(fy * cv.height) * cv.width + Math.floor(fx * cv.width)) * 4;
-  return src[i + 3] ? (src[i] << 8) | src[i + 1] : null;
+  return !src[i + 3] ? null : src[i + 2] === 1 ? -1 : (src[i] << 8) | src[i + 1];
 }
 let tipQ = null;
 map.on("mousemove", (e) => { tipQ = e; requestAnimationFrame(() => { if (tipQ !== e) return;
@@ -612,7 +623,8 @@ map.on("mousemove", (e) => { tipQ = e; requestAnimationFrame(() => { if (tipQ !=
   const elev = z == null ? null : z / map.getTerrain().exaggeration, am = extentMinute(e.lngLat);
   tip.innerHTML = (elev == null ? "" : `<b>${n(elev)} m</b> · ${n(Math.max(0, elev - r[4]))} m above DEM channel<br>`)
     + `${(r[2] / 1000).toFixed(1)} km downstream · ${(d / 1000).toFixed(1)} km from channel<br>`
-    + (am == null ? `<span class="muted">Outside the mapped flood extent</span>` : `<span class="hit">● Flooded</span> · est. reached <b>${fmt(am)}</b>${am > t ? " (not yet)" : ""}`)
+    + (am == null ? `<span class="muted">Outside the mapped affected footprint</span>` : am < 0 ? `<span class="hit">● Mapped affected footprint</span> · source zone, not timed`
+      : `<span class="hit">● Mapped affected footprint</span> · est. reached <b>${fmt(am)}</b>${am > t ? " (not yet)" : ""}`)
     + `<br><span class="muted">${e.lngLat.lat.toFixed(4)}°N ${e.lngLat.lng.toFixed(4)}°E</span>`;
   tip.style.left = `${e.point.x + 14}px`; tip.style.top = `${e.point.y + 14}px`; tip.hidden = false; }); });
 map.getCanvas().addEventListener("mouseleave", () => (tip.hidden = true));

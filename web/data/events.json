@@ -286,57 +286,102 @@
   {
    "m": 0,
    "title": "The collapse",
-   "text": "Roughly 100 million m³ of rock and glacier ice breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (figures differ between studies). Seismometers record the collapse itself."
+   "text": "Roughly 100 million m³ of rock and glacier ice breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (figures differ between studies). Seismometers record the collapse itself.",
+   "srcs": [
+    "jms",
+    "jisrs",
+    "wwa",
+    "usgs"
+   ]
   },
   {
    "m": 2,
    "title": "A debris flow forms",
-   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris from the valley floor, may have entrained buried ice, and by about 4,000 m, has mixed with river water and sediment as it races down the narrow Lende Khola gorge."
+   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris from the valley floor, may have entrained buried ice, and by about 4,000 m, has mixed with river water and sediment as it races down the narrow Lende Khola gorge.",
+   "srcs": [
+    "guo",
+    "wwa"
+   ]
   },
   {
    "m": 7,
    "title": "The border crossing is hit",
-   "text": "The port's surveillance camera shows it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China."
+   "text": "The port's surveillance camera shows it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China.",
+   "srcs": [
+    "guo",
+    "wwa"
+   ]
   },
   {
    "m": 12,
    "title": "Almost no warning downstream",
-   "text": "The flow enters Nepal through Timure and Syabrubesi. Xu (2026) attributes this first wave to the debris flow itself, possibly with a quick breach of debris it dumped across the river; the barrier lakes mapped on 28 August only began overflowing that afternoon. Below Syabrubesi it drops its largest boulders and becomes a more water-laden flood. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured."
+   "text": "The flow enters Nepal through Timure and Syabrubesi. Xu (2026) attributes this first wave to the debris flow itself, possibly with a quick breach of debris it dumped across the river; the barrier lakes mapped on 28 August only began overflowing that afternoon. Below Syabrubesi it drops its largest boulders and becomes a more water-laden flood. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured.",
+   "srcs": [
+    "xu",
+    "wwa",
+    "zenodo"
+   ]
   },
   {
    "m": 38,
    "title": "Warnings go out",
-   "text": "From 09:05 emergency SMS warnings go out to six districts along the river: about 678,000 messages by 09:14 (CHWRR). The flow slows as the valley widens but remains destructive."
+   "text": "From 09:05 emergency SMS warnings go out to six districts along the river: about 678,000 messages by 09:14 (CHWRR). The flow slows as the valley widens but remains destructive.",
+   "srcs": [
+    "chwrr",
+    "rdna"
+   ]
   },
   {
    "m": 43,
    "title": "Down the Trishuli",
-   "text": "Around Betrawati, hydropower projects, bridges and the riverside road are damaged or swept away."
+   "text": "Around Betrawati, hydropower projects, bridges and the riverside road are damaged or swept away.",
+   "srcs": [
+    "wwa",
+    "rdna"
+   ]
   },
   {
    "m": 110,
    "title": "A long, slower surge",
-   "text": "Lower down the valley is wider and the flood wave travels more slowly, giving authorities time to warn towns further downstream."
+   "text": "Lower down the valley is wider and the flood wave travels more slowly, giving authorities time to warn towns further downstream.",
+   "srcs": [
+    "zenodo",
+    "chwrr"
+   ]
   },
   {
    "m": 158,
    "title": "Malekhu",
-   "text": "The Malekhu gauge starts rising between 11:10 and 11:20. It passes its warning level by 11:30 and danger level by 11:40, its final transmission, and the Phurke bridge is lost."
+   "text": "The Malekhu gauge starts rising between 11:10 and 11:20. It passes its warning level by 11:30 and danger level by 11:40, its final transmission, and the Phurke bridge is lost.",
+   "srcs": [
+    "bipad",
+    "chwrr"
+   ]
   },
   {
    "m": 263,
    "title": "Past Mugling",
-   "text": "At 13:00 CHWRR reports the wave crossing Mugling. Riverside residents as far as Devghat are told to move away from the banks."
+   "text": "At 13:00 CHWRR reports the wave crossing Mugling. Riverside residents as far as Devghat are told to move away from the banks.",
+   "srcs": [
+    "chwrr"
+   ]
   },
   {
    "m": 353,
    "title": "Reaching the plains",
-   "text": "The rising wave reaches the Devghat gauge between 14:30 and 14:40 in the instrument record (reports give other times). The stage peaks at 6.57 m at 16:00, below the warning level, then falls."
+   "text": "The rising wave reaches the Devghat gauge between 14:30 and 14:40 in the instrument record (reports give other times). The stage peaks at 6.57 m at 16:00, below the warning level, then falls.",
+   "srcs": [
+    "zenodo",
+    "chwrr"
+   ]
   },
   {
    "m": 470,
    "title": "What the map shows now",
-   "text": "The shaded area is the satellite-mapped extent from the following days, revealed by estimated arrival time. Scrub the timeline or click a key event to revisit any moment."
+   "text": "The shaded area is the satellite-mapped extent from the following days, revealed by estimated arrival time. Scrub the timeline or click a key event to revisit any moment.",
+   "srcs": [
+    "unosat"
+   ]
   }
  ],
  "after": [
@@ -539,7 +584,7 @@
     "jms",
     "icimod"
    ],
-   "note": "The before image is a cloud-free 2025 mosaic built from many Sentinel-2 dates at 10 m, so snow cover and detail differ from the 0.6 m after image: compare landforms, not snow.",
+   "note": "The before image is a cloud-free 2025 mosaic built from many Sentinel-2 dates at 10 m, so snow cover differs from the after image (0.6 m Pelican scene; both shown at 2.7 m per pixel): compare landforms, not snow.",
    "videos": [
     {
      "kind": "Model scenario, not footage",
@@ -551,7 +596,8 @@
      "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
      "srcs": [
       "huang"
-     ]
+     ],
+     "mb": 2.7
     },
     {
      "kind": "Model scenario, not footage",
@@ -563,7 +609,8 @@
      "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
      "srcs": [
       "park"
-     ]
+     ],
+     "mb": 0.8
     }
    ]
   },
@@ -589,7 +636,8 @@
      "srcs": [
       "commons_cctv",
       "guo"
-     ]
+     ],
+     "mb": 10.1
     }
    ]
   },
@@ -645,7 +693,8 @@
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_top_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
      "park"
-    ]
+    ],
+    "mb": 4.1
    },
    {
     "kind": "Model scenario, not footage",
@@ -657,7 +706,8 @@
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_profile_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
      "park"
-    ]
+    ],
+    "mb": 2.9
    },
    {
     "kind": "Model scenario, not footage",
@@ -669,7 +719,8 @@
     "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
     "srcs": [
      "huang"
-    ]
+    ],
+    "mb": 2.7
    },
    {
     "kind": "Model scenario, not footage",
@@ -681,7 +732,8 @@
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
      "park"
-    ]
+    ],
+    "mb": 0.8
    }
   ]
  }
