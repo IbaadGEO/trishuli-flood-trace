@@ -260,7 +260,7 @@
     27.71
    ],
    "title": "Devghat gauge starts rising",
-   "detail": "Onset 14:30–14:40 in the instrument record. CHWRR logs 4.76 m at 13:20 and the wave reaching Devghat at 15:20",
+   "detail": "Onset 14:30–14:40 in the instrument record. CHWRR is not consistent: its Table 2 logs 4.76 m at 13:20, with the main wave expected around 15:30, and the wave reaching Devghat at 15:20, while its Table 3 calls 13:20 the initial flood arrival. The map uses the gauge record",
    "src": "zenodo"
   },
   {

@@ -30,11 +30,24 @@ def need(pattern, hint):  # one hand-placed input, or stop with instructions
     return hit[0]
 
 
-sha = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()
+def sha(p):  # a file's SHA-256, or a folder's: hash of "relative path  file SHA-256" lines, like sha256sum output
+    if not os.path.isdir(p): return hashlib.sha256(open(p, "rb").read()).hexdigest()
+    fs = sorted(f for f in glob.glob(os.path.join(p, "**", "*"), recursive=True) if os.path.isfile(f))
+    return hashlib.sha256("".join(f"{sha(f)}  {os.path.relpath(f, p).replace(os.sep, '/')}\n" for f in fs).encode()).hexdigest()
+
+
+def inputs():  # the downloads, plus the extracted files the build actually reads
+    g = lambda *a: sorted(glob.glob(os.path.join(RAW, *a), recursive=True))
+    return (g("ems", "*.zip") + [d for d in g("ems", "EMSR927_*") if os.path.isdir(d)] + g("unosat", "*.zip") + g("unosat", "*.gdb")
+            + g("zenodo", "*.zip") + g("zenodo", "extracted", "**", "gauge_timeseries.json") + g("bipad", "*.json") + g("osm_rivers.json"))
+
+
+relp = lambda p: os.path.relpath(p, HERE).replace(os.sep, "/")
 MANIFEST = os.path.join(HERE, "inputs_manifest.json")
 if os.path.exists(MANIFEST) and "--update-manifest" not in sys.argv:  # same inputs as the committed build, or stop
-    changed = [f for f, h in json.load(open(MANIFEST))["files"].items() if os.path.exists(os.path.join(HERE, f)) and sha(os.path.join(HERE, f)) != h]
-    if changed: sys.exit(f"Inputs differ from inputs_manifest.json: {changed}\n  Rerun with --update-manifest if the change is deliberate.")
+    want, have = json.load(open(MANIFEST))["files"], {relp(p): sha(p) for p in inputs()}
+    bad = {f: "missing" if f not in have else "not in manifest" if f not in want else "changed" for f in want.keys() | have.keys() if want.get(f) != have.get(f)}
+    if bad: sys.exit(f"Inputs differ from inputs_manifest.json: {bad}\n  Rerun with --update-manifest if the change is deliberate.")
 
 UNOSAT = need("unosat/**/*.gdb", "Download product 4256 (FL20260826NPL.gdb.zip) from https://unosat.org/products/4256 and unzip it into raw/unosat/")
 need("zenodo/extracted/**/gauge_timeseries.json", "Download zenodo_upload.zip from https://doi.org/10.5281/zenodo.22679444 into raw/zenodo/ and unzip it into raw/zenodo/extracted/")
@@ -298,10 +311,7 @@ with open(os.path.join(HERE, "anchors.csv"), "w", newline="", encoding="utf-8") 
         w.writerow([n, la, lo, round(c / 1000, 2), sm, hm(a), hm(b), "fitted (bracket midpoint)", ty, note, s])
     for n, la, lo, c, m_, rel, est, st, note, s, sm in check_rows:
         w.writerow([n, la, lo, round(c / 1000, 2), sm, "", hm(m_), f"check only: {st}", rel, note, s])
-manifest = {os.path.relpath(p, HERE).replace(os.sep, "/"): sha(p)
-            for p in sorted(glob.glob(os.path.join(RAW, "ems", "*.zip")) + glob.glob(os.path.join(RAW, "unosat", "*.zip"))
-                            + glob.glob(os.path.join(RAW, "zenodo", "*.zip")) + glob.glob(os.path.join(RAW, "bipad", "*.json"))
-                            + [os.path.join(RAW, "osm_rivers.json")])}
+manifest = {relp(p): sha(p) for p in inputs()}
 requests_used = {"raw/bipad/malekhu_station261_20260826.json": {  # saved by hand; BIPAD serves the current record, which can change
     "url": "https://bipadportal.gov.np/api/v1/river/?format=json&limit=300&station=261&water_level_on__gt=2026-08-26T09:00&water_level_on__lt=2026-08-27",
     "retrieved": "2026-11-09", "readings_copy": "archive/bipad_malekhu_261_20260826.csv"}}

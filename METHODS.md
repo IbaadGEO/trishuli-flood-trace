@@ -76,6 +76,6 @@ python -P imagery.py    # imagery (~40 min)
 python -P sites.py      # before/after site images
 ```
 
-Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if an input's SHA-256 differs from `inputs_manifest.json` (use `--update-manifest` after a deliberate change).
+Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if any input listed in `inputs_manifest.json` is missing, added or changed (use `--update-manifest` after a deliberate change). The manifest covers both the downloaded zips and the extracted files the build reads; a folder's hash is the SHA-256 of its `sha256  relative/path` lines.
 
 The Malekhu (Phurke) readings came from the BIPAD river API, which serves the current record and can change. The saved response is hashed in `inputs_manifest.json` with its request URL and retrieval date, and the 26 August readings are kept in `archive/bipad_malekhu_261_20260826.csv`.

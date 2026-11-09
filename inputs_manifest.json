@@ -1,14 +1,20 @@
 {
  "note": "SHA-256 of the downloaded inputs this build used (raw/ is not committed; see sources.csv for URLs)",
  "files": {
-  "raw/bipad/malekhu_station261_20260826.json": "e3e4560a7ee6ca2f4f4aadaf4f676dce070f20bfa5b37e30cea684ecec0e06e0",
   "raw/ems/EMSR927_AOI01_GRA_PRODUCT_v1.zip": "8a06ad670acf3b022406ee1ef8193c37dacc7cc1bb3efc95cae8ba55bbf539bc",
   "raw/ems/EMSR927_AOI02_GRA_PRODUCT_v2.zip": "9f599f1aadf84494658f9b3f088685e55b28e2c96e393878d26065341aa7e761",
   "raw/ems/EMSR927_AOI03_GRA_MONIT01_v1.zip": "326c101960811a8b5f8cd93cda2de476798495cea0d08b3d7be15c20ab8e6f42",
   "raw/ems/EMSR927_AOI05_GRA_MONIT01_v2.zip": "4715c9266c0d43131e4a7d9ebaa7b9ee79207e624e069f69bedf253066971781",
-  "raw/osm_rivers.json": "bae8b62e06aecd293f5c90710bb03bd156eea64187272affeb9e4e04002e2a9b",
+  "raw/ems/EMSR927_AOI01_GRA_PRODUCT_v1": "647f5af083470f65b27a259613fe01fb549514957ce147149fb235b9c7985539",
+  "raw/ems/EMSR927_AOI02_GRA_PRODUCT_v2": "eb83e09edb74675c75100803316400baf2f6b8ce8ce5d478685c70aafa77da6b",
+  "raw/ems/EMSR927_AOI03_GRA_MONIT01_v1": "470cbce74b5cf4d9359d26ca8bcb095608bf9de6a08a4d11bba09469b0eaeeb4",
+  "raw/ems/EMSR927_AOI05_GRA_MONIT01_v2": "0e03ecc994867b9ae0411b681470d4377f8f497b03469a30044cec37aecc1010",
   "raw/unosat/FL20260826NPL.gdb.zip": "1c09bd5cff4e5dee870cd8413af0eb036e0dcd75d254cf1a337aa49096aaec2e",
-  "raw/zenodo/zenodo_upload.zip": "9f2c60673c1d6ea8fa1e43f2339d376b147ba4de48bbda8279bf509cc30767f9"
+  "raw/unosat/FL20260826NPL.gdb": "d42541bcf5b21d11840bd6440cc40880e4dcd06e120b3ab07a57f2a7be11b2fe",
+  "raw/zenodo/zenodo_upload.zip": "9f2c60673c1d6ea8fa1e43f2339d376b147ba4de48bbda8279bf509cc30767f9",
+  "raw/zenodo/extracted/bhotekoshi-trishuli-2026/data/gauge_timeseries.json": "02e3e5b66490df0f3b65f1e5342850fcd7d2e0a086cd71553e72d92f54788fb0",
+  "raw/bipad/malekhu_station261_20260826.json": "e3e4560a7ee6ca2f4f4aadaf4f676dce070f20bfa5b37e30cea684ecec0e06e0",
+  "raw/osm_rivers.json": "bae8b62e06aecd293f5c90710bb03bd156eea64187272affeb9e4e04002e2a9b"
  },
  "requests": {
   "raw/bipad/malekhu_station261_20260826.json": {

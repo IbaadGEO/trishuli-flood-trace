@@ -34,7 +34,8 @@ if (!glProbe.getContext("webgl2")) { // MapLibre 6 requires WebGL2
     <h3>What happened</h3>${ev.story.map((s) => `<p><b>${s.title}.</b> ${s.text}</p>`).join("")}
     <h3>Key events (26 Aug 2026, Nepal time)</h3><ul>${ev.events.map((e) => `<li><time>${e.t}</time> <b>${e.title}</b>${e.detail ? `. ${e.detail}` : ""}.
       <a href="${ev.sources[e.src].url}" target="_blank" rel="noopener">${ev.sources[e.src].label}</a></li>`).join("")}</ul></div>`;
-  throw new Error("WebGL unavailable: static fallback shown");
+  document.body.classList.add("no-webgl"); // hides the map controls, charts and panels that need the map
+  await new Promise(() => {}); // stop here quietly: nothing below can run without WebGL2
 }
 const map = new maplibregl.Map({
   container: "map",
@@ -387,11 +388,12 @@ function openSite(id) {
   toggle(false);
   $("#cmp-title").textContent = s.name;
   $("#cmp-pre").src = s.pre.img; $("#cmp-pre").alt = `${s.name} before the flood, ${d(s.pre)}`;
-  $("#cmp-post").src = s.post.img; $("#cmp-post").alt = `${s.name} ${s.published ? "during" : "after"} the flood, ${d(s.post)}`;
-  $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `After · ${d(s.post)}`;
+  const when = s.published ? "During" : "After"; // the ESA pair was taken while the flood was still running
+  $("#cmp-post").src = s.post.img; $("#cmp-post").alt = s.published ? `${s.name}, ${d(s.post)}` : `${s.name} after the flood, ${d(s.post)}`; // the ESA name already says "during"
+  $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `${when} · ${d(s.post)}`;
   $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
     <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>
-    <p class="note">Before: ${s.pre.sensor}, ${lic(s.pre.credit)}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${lic(s.post.credit)}, scene ${s.post.scene}. ${s.published ? "Shown as published, resized only; labels are the publisher's." : `View ~${s.km} km across, north up, both images resampled to ${s.px_m} m pixels (sensor figures are native resolution); contrast stretched for display.`}</p>`
+    <p class="note">Before: ${s.pre.sensor}, ${lic(s.pre.credit)}, scene ${s.pre.scene}. ${when}: ${s.post.sensor}, ${lic(s.post.credit)}, scene ${s.post.scene}. ${s.published ? "Shown as published, resized only; labels are the publisher's." : `View ~${s.km} km across, north up, both images resampled to ${s.px_m} m pixels (sensor figures are native resolution); contrast stretched for display.`}</p>`
     + (s.videos || []).map(vidHTML).join("");
   $("#cmp-view").style.aspectRatio = s.aspect ?? 1;
   $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
