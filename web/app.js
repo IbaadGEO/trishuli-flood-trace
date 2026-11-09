@@ -386,9 +386,9 @@ const KCOL = { origin: css("--mud"), impact: css("--impact"), gauge: css("--gaug
 $("#ticks").innerHTML = events.map((e, k) => `<i class="tk-${e.kind}" title="${e.t} ${e.title}" data-k="${k}" data-m="${e.m}" style="left:${(e.m / T_END) * 100}%;background:${KCOL[e.kind]}"></i>`).join("");
 $("#ticks").onclick = (e) => { const k = e.target.dataset.k; if (k === undefined) return; toggle(false); pinEvent(events[k]); setTime(events[k].m, true); };
 $("#t").oninput = (e) => setTime(+e.target.value);
-// Distance-paced playback: at 1× the front moves ~1.5 km of river per second, so the 180 km/h gorge
+// Distance-paced playback: at 1× the front moves ~0.75 km of river per second, so the 180 km/h gorge
 // plays slowly and the slow lower river speeds up; after Devghat the clock runs at 10 min/s.
-const KM_PER_S = 1.5;
+const KM_PER_S = 0.75;
 function minPerSec(m, speed) {
   const v = (at(m + 1)[2] - at(m)[2]) / 1000; // km per minute at the front
   return (v > 0.01 ? Math.min(10, KM_PER_S / v) : 10) * speed;
@@ -399,7 +399,7 @@ function loop(ts) {
   if (last && ts >= holdUntil) {
     const sp = +$("#speed").value, next = t + ((ts - last) / 1000) * minPerSec(t, sp);
     const hit = events.find((e) => e.m > t && e.m <= next);
-    if (hit) { lastHeavy = 0; setTime(hit.m); pinEvent(hit); holdUntil = ts + 2400 / Math.sqrt(sp); } // pause on each key event, fully redrawn
+    if (hit) { lastHeavy = 0; setTime(hit.m); pinEvent(hit); holdUntil = ts + 3500 / Math.sqrt(sp); } // pause on each key event, fully redrawn
     else setTime(next);
   }
   last = ts;
@@ -416,6 +416,16 @@ function toggle(on) {
 }
 $("#play").onclick = () => toggle(!playing);
 $("#restart").onclick = () => { toggle(false); evEl.hidden = true; setTime(0, true); };
+// Step through key events one at a time (also ← / → when not typing in a field)
+const stepEvent = (dir) => {
+  const e = dir > 0 ? events.find((x) => x.m > t + 0.01) : events.findLast((x) => x.m < t - 0.01);
+  toggle(false); if (e) { pinEvent(e); setTime(e.m, true); }
+};
+$("#prev").onclick = () => stepEvent(-1); $("#next").onclick = () => stepEvent(1);
+document.addEventListener("keydown", (e) => {
+  if (e.target.closest("input, select, textarea, [role=button], li") || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); stepEvent(e.key === "ArrowRight" ? 1 : -1); }
+});
 const setFollow = (on) => { follow = on; cam = null; $("#follow").classList.toggle("on", on); $("#follow").setAttribute("aria-pressed", on); };
 $("#follow").onclick = () => setFollow(!follow);
 setFollow(follow); // reflect the reduced-motion default in the button
