@@ -21,14 +21,16 @@ Trishuli Flood Trace is a personal, non-commercial reconstruction of the 26 Augu
 
 ## Timing evidence
 
-Each piece of evidence is a time **window** (`anchors.csv`), typed by what it actually constrains:
+All times are minutes after the 08:37 NPT seismic signal. That signal is a **time reference**, not the measured start of the failure: Guo et al. (2026) caution that neither the catalogue time nor the waveform can be equated with physical initiation.
 
-| Evidence type | Meaning |
-|---|---|
-| Seismic origin time | USGS us7000tbwb, 02:52:10 UTC = 08:37 NPT. Applied at the route origin with a 0–2 min window, an assumption since the runout is untimed |
-| Impact (surveillance camera) | Gyirong Port surveillance video, 10:59 Beijing time = 08:44 NPT (Guo et al. 2026, peer reviewed; CHWRR gives the same time); camera clock not independently verified (±1 min window) |
-| Telemetry loss | Destroyed gauge (Syabrubesi, Betrawati): last transmission → next report absent. Brackets arrival **only if** the flood caused the loss |
-| Rising-wave onset | Gauge (Galchhi, Malekhu, Kali Khola, Devghat): last sample at local background → first clearly risen sample. Malekhu (Phurke) is from the BIPAD river record (station 261, series 31967): background 3.35 m at 11:10, risen 3.96 m at 11:20, then lost after 11:40 |
+Each piece of evidence is a time **window** (`anchors.csv`), typed by what it actually constrains. The `basis` column says how strong it is (observed, reported, inferred or assumed) and `bound_reason` says why the bounds sit where they do:
+
+| Evidence type | Basis | Meaning |
+|---|---|---|
+| Seismic origin time | assumed | USGS us7000tbwb, 02:52:10 UTC = 08:37 NPT. Applied at the route origin with a 0–2 min window, an assumption since the runout is untimed |
+| Impact (surveillance camera) | reported | Gyirong Port surveillance video, 10:59 Beijing time = 08:44 NPT (Guo et al. 2026, peer reviewed; CHWRR gives the same time); camera clock not independently verified (±1 min window, a chosen margin) |
+| Telemetry loss | inferred | Destroyed gauge (Syabrubesi, Betrawati): last transmission → next report absent. Brackets arrival **only if** the flood caused the loss |
+| Rising-wave onset | observed | Gauge (Galchhi, Malekhu, Kali Khola, Devghat): last sample at local background → first clearly risen sample. Malekhu (Phurke) is from the BIPAD river record (station 261, series 31967): background 3.35 m at 11:10, risen 3.96 m at 11:20, then lost after 11:40 |
 
 These are reports used **only as checks**, never fitted:
 
@@ -53,7 +55,7 @@ Peaks, threshold crossings, alerts and forecasts appear in the chronology but ne
 3. Pixels inside the UNOSAT detachment zone, or whose nearest route point is the route origin, are source or runout ground upstream of the timed route (~223 ha). They are shown as **untimed** grey, never animated, and the hover tooltip labels them untimed.
 4. The reveal is **cumulative**: once revealed, a pixel stays. This is the mapped affected footprint appearing at its estimated time, not instantaneous inundation or depth. The fade from pale to brown over 25 min is illustrative only.
 
-Known limits: nearest-point assignment can mis-time pixels across meander necks, on tributary backwater or on slope deposits, and the 3 km cutoff is an inclusion rule, not a connectivity test. Rasterisation and clipping make the revealed total (~6,491 ha timed + 223 ha untimed) about 3.4% larger than UNOSAT's vector area (6,491 ha). Tributary backflow (for example ~2 km up the side valley at the border) is documented in the sources but not reconstructed.
+Known limits: nearest-point assignment can mis-time pixels across meander necks, on tributary backwater or on slope deposits, and the 3 km cutoff is an inclusion rule, not a connectivity test. Rasterisation and clipping make the revealed total (~6,491 ha timed + 223 ha untimed) about 3.4% larger than UNOSAT's vector area (6,491 ha). The vector area is the observational figure; the raster totals are display-derived. Tributary backflow (for example ~2 km up the side valley at the border) is documented in the sources but not reconstructed.
 
 ## Channel elevation profile
 
@@ -65,7 +67,7 @@ Copernicus GLO-30 DEM via Mapterhorn tiles (sampled on a zoom-12 grid, ~34 m pix
 - They are for orientation only, not a reflectance change-analysis product.
 - The before/after site pairs (`sites.py`) are cut from scenes of different native resolution (0.35–10 m, as labelled) and resampled to a common 1,200 px grid, so each crop is 1.7–2.7 m per pixel. Finer detail in the high-resolution scenes is not shown.
 - Gaps in "after" show the 2025 EOxCloudless basemap, which is pre-event.
-- Scene IDs and valid-observation counts are not yet exported (planned).
+- `imagery.py` now writes the Sentinel-2 scene IDs used and its processing parameters to `s2.json`. The published composite was made before this change, so its scene IDs are not yet recorded; they will be on the next imagery run. Per-pixel observation counts are not exported.
 
 ## Reproducing
 
@@ -76,6 +78,6 @@ python -P imagery.py    # imagery (~40 min)
 python -P sites.py      # before/after site images
 ```
 
-Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if any input listed in `inputs_manifest.json` is missing, added or changed (use `--update-manifest` after a deliberate change). The manifest covers both the downloaded zips and the extracted files the build reads; a folder's hash is the SHA-256 of its `sha256  relative/path` lines.
+Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if any input listed in `inputs_manifest.json` is missing, added or changed (use `--update-manifest` after a deliberate change). The manifest covers the downloaded zips, the extracted files the build reads and the cached DEM tiles (`raw/dem/`); a folder's hash is the SHA-256 of its `sha256  relative/path` lines.
 
 The Malekhu (Phurke) readings came from the BIPAD river API, which serves the current record and can change. The saved response is hashed in `inputs_manifest.json` with its request URL and retrieval date, and the 26 August readings are kept in `archive/bipad_malekhu_261_20260826.csv`.

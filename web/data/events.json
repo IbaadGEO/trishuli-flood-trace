@@ -118,7 +118,7 @@
     28.289
    ],
    "title": "Rock-ice avalanche, Lirung massif",
-   "detail": "Seismic signal 02:52:10 UTC; USGS classes it as a landslide, M5.2 (ms_vx)",
+   "detail": "Seismic signal 02:52:10 UTC; USGS classes it as a landslide, M5.2 (ms_vx). The map times everything from this signal; the exact moment the failure began is not known from it",
    "src": "usgs"
   },
   {
@@ -286,7 +286,7 @@
   {
    "m": 0,
    "title": "The collapse",
-   "text": "Roughly 100 million m³ of rock and glacier ice breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (figures differ between studies). Seismometers record the collapse itself.",
+   "text": "Roughly 100 million m³ of rock and glacier ice breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (figures differ between studies). Seismometers record a landslide-classified signal at 08:37, which the map uses as its time reference; the exact moment the failure began cannot be read from it.",
    "srcs": [
     "jms",
     "jisrs",
@@ -306,7 +306,7 @@
   {
    "m": 7,
    "title": "The border crossing is hit",
-   "text": "The port's surveillance camera shows it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China.",
+   "text": "The port's surveillance camera shows it reaching the China–Nepal border about seven minutes after the 08:37 signal, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China.",
    "srcs": [
     "guo",
     "wwa"
@@ -671,7 +671,7 @@
    "note": "The EMS count covers a mapping area larger than this 2 km view."
   },
   "esa": {
-   "seen": "Two days before (left) the valleys are green and the glaciers cyan. About two hours after the collapse (right), ESA marks flood water and debris along the valley, partly under cloud.",
+   "seen": "Two days before (left) the valleys are green and the glaciers cyan. About two hours after the 08:37 signal (right), ESA marks flood water and debris along the valley, partly under cloud.",
    "why": "Landsat 9 passed over at 04:47 UTC (10:33 NPT), while the flood was still under way: by this map's estimate the front was then about 100 km downstream, near Galchhi. The upper corridor shown here had already been scoured.",
    "srcs": [
     "esa",

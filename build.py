@@ -39,7 +39,7 @@ def sha(p):  # a file's SHA-256, or a folder's: hash of "relative path  file SHA
 def inputs():  # the downloads, plus the extracted files the build actually reads
     g = lambda *a: sorted(glob.glob(os.path.join(RAW, *a), recursive=True))
     return (g("ems", "*.zip") + [d for d in g("ems", "EMSR927_*") if os.path.isdir(d)] + g("unosat", "*.zip") + g("unosat", "*.gdb")
-            + g("zenodo", "*.zip") + g("zenodo", "extracted", "**", "gauge_timeseries.json") + g("bipad", "*.json") + g("osm_rivers.json"))
+            + g("zenodo", "*.zip") + g("zenodo", "extracted", "**", "gauge_timeseries.json") + g("bipad", "*.json") + g("osm_rivers.json") + g("dem"))
 
 
 relp = lambda p: os.path.relpath(p, HERE).replace(os.sep, "/")
@@ -58,11 +58,18 @@ def unosat(layer):
     assert g.crs is not None and g.crs.to_2d().to_epsg() == 4326, f"{layer}: expected WGS 84 (EPSG:4326) horizontal CRS, got {g.crs}"
     return g.set_crs(4326, allow_override=True)  # drop the EGM96 vertical part (compound EPSG:9707)
 
-# Timing evidence, minutes after the 08:37 NPT collapse signal, as brackets (earliest, latest). Interpolation uses the
+# Timing evidence, minutes after the 08:37 NPT seismic signal (a time reference, not the measured detachment time), as brackets (earliest, latest). Interpolation uses the
 # bracket midpoints; the earliest/latest bounds give a deterministic scenario envelope, not a statistical interval.
 # Gauge brackets and coordinates: DHM ten-minute record as archived in Acharya & Paudel (2026), Zenodo
 # 10.5281/zenodo.22679444 v3.0.0 (onset = last background sample -> first risen sample; destroyed stations:
 # last transmission -> next absent report, assuming the flood caused the loss).
+# How strong each kind of bound is, and why it is where it is
+BASIS = {
+    "seismic origin time": ("assumed", "The 08:37 seismic signal is a time reference, not a measured detachment or arrival time; a 0-2 min window is assumed at the route origin"),
+    "impact (surveillance camera)": ("reported", "Camera time from published reports; the +-1 min margin is chosen for an unverified camera clock"),
+    "telemetry loss": ("inferred", "Brackets arrival only if the flood caused the loss of transmission"),
+    "rising-wave onset": ("observed", "Bounded by two consecutive ten-minute gauge samples"),
+}
 # (name, lat, lon, earliest, latest, evidence type, note, source)
 ANCHORS = [
     ("Route origin", 28.289, 85.521, 0, 2, "seismic origin time", "Collapse signal 02:52:10 UTC (USGS us7000tbwb); route starts at the OSM network ~0.9 km from the mapped source, so the source-to-channel runout is not timed", "USGS ComCat"),
@@ -272,7 +279,7 @@ meta = {
     # [lon, lat, chainage m, estimated minute (midpoint fit), DEM channel elevation, earliest minute, latest minute]
     "river": [[round(float(lo), 5), round(float(la), 5), round(float(c)), round(float(t), 1), round(float(e)), round(float(a), 1), round(float(b), 1)]
               for lo, la, c, t, e, a, b in zip(dlon[::step], dlat[::step], dense_c[::step], arrival[::step], bed[::step], arr_lo[::step], arr_hi[::step])],
-    "anchors": [{"name": n, "lon": la_lo[1], "lat": la_lo[0], "chain": c, "snapM": sm, "lo": a, "hi": b, "min": (a + b) / 2, "type": ty, "note": note, "src": s}
+    "anchors": [{"name": n, "lon": la_lo[1], "lat": la_lo[0], "chain": c, "snapM": sm, "lo": a, "hi": b, "min": (a + b) / 2, "type": ty, "basis": BASIS[ty][0], "note": note, "src": s}
                 for (n, la, lo, a, b, ty, note, s), c, sm in zip(ANCHORS, anc_c, anc_snap) for la_lo in [(float(dlat[snap(la, lo)[1]]), float(dlon[snap(la, lo)[1]]))]],
     "checks": [{"name": n, "chain": c, "min": m, "relation": rel, "estimated": est, "status": st, "note": note, "src": s}
                for n, la, lo, c, m, rel, est, st, note, s, _ in check_rows],
@@ -305,12 +312,12 @@ json.dump({"source": "DHM river-watch ten-minute stage, archived in Acharya & Pa
            "units": "stage, metres, station datum (not comparable between stations)", "stations": hydro},
           open(os.path.join(OUT, "gauges.json"), "w"), separators=(",", ":"))
 with open(os.path.join(HERE, "anchors.csv"), "w", newline="", encoding="utf-8") as f:
-    w = csv.writer(f, lineterminator="\n"); w.writerow(["name", "lat", "lon", "chainage_km", "snap_m", "earliest_npt", "latest_npt", "use", "evidence_type", "note", "source"])
+    w = csv.writer(f, lineterminator="\n"); w.writerow(["name", "lat", "lon", "chainage_km", "snap_m", "earliest_npt", "latest_npt", "use", "evidence_type", "basis", "bound_reason", "note", "source"])
     hm = lambda x: f"{(8 * 60 + 37 + int(round(x))) // 60:02d}:{(8 * 60 + 37 + int(round(x))) % 60:02d}"
     for (n, la, lo, a, b, ty, note, s), c, sm in zip(ANCHORS, anc_c, anc_snap):
-        w.writerow([n, la, lo, round(c / 1000, 2), sm, hm(a), hm(b), "fitted (bracket midpoint)", ty, note, s])
+        w.writerow([n, la, lo, round(c / 1000, 2), sm, hm(a), hm(b), "fitted (bracket midpoint)", ty, *BASIS[ty], note, s])
     for n, la, lo, c, m_, rel, est, st, note, s, sm in check_rows:
-        w.writerow([n, la, lo, round(c / 1000, 2), sm, "", hm(m_), f"check only: {st}", rel, note, s])
+        w.writerow([n, la, lo, round(c / 1000, 2), sm, "", hm(m_), f"check only: {st}", rel, "check", "Used only to test the interpolation, never fitted", note, s])
 manifest = {relp(p): sha(p) for p in inputs()}
 requests_used = {"raw/bipad/malekhu_station261_20260826.json": {  # saved by hand; BIPAD serves the current record, which can change
     "url": "https://bipadportal.gov.np/api/v1/river/?format=json&limit=300&station=261&water_level_on__gt=2026-08-26T09:00&water_level_on__lt=2026-08-27",

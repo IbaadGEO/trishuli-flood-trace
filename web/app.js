@@ -228,9 +228,9 @@ $("#layers").innerHTML = LAYERS.map((L) => L.group ? `<div class="layer"><h5>${L
   `<label class="layer"><input type="checkbox" data-id="${L.id}" ${L.on ? "checked" : ""}><span>${L.sw ? `<i class="sw" style="background:${L.sw}"></i>` : ""}${L.name}${L.est ? '<span class="est">EST.</span>' : ""}${L.note ? `<small>${L.note}</small>` : ""}${opOf(L) ? `<span class="op"><input type="range" min="0" max="100" value="${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}" data-op="${L.id}" aria-label="${L.name} opacity"><output>${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}%</output></span>` : ""}</span></label>`).join("")
   + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are interpolated between the midpoints of evidence windows (gauge onsets and telemetry losses from the DHM record, the USGS origin time, the Gyirong Port camera time); reports such as threshold crossings are used only as checks. They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances start at the OSM route origin, ~0.9 km from the mapped source; the source-to-channel runout (dashed red) is not timed.</p>`;
 document.querySelector(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
-  document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-selected", b === e.target); });
+  document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-pressed", b === e.target); });
   document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k)); };
-$("#layers").addEventListener("change", (e) => e.target.dataset.id && setVis(e.target.dataset.id, e.target.checked));
+$("#layers").addEventListener("change", (e) => { const id = e.target.dataset.id; if (!id) return; setVis(id, e.target.checked); if (id === "terrain") showDim(e.target.checked); });
 $("#layers").addEventListener("input", (e) => { const id = e.target.dataset.op; if (!id) return;
   idsOf(id).forEach((x) => map.setPaintProperty(x, opOf(LAYERS.find((L) => L.id === id)), e.target.value / 100)); e.target.nextElementSibling.value = `${e.target.value}%`; });
 
@@ -325,8 +325,8 @@ function frontCard(r) {
   $("#front-card").innerHTML = `<h4>Estimated progression <span>${fmt(t)} NPT <span class="est">EST.</span></span></h4><div class="stats">
     <div><b>${km.toFixed(1)} km</b><span>along route</span></div><div><b>${done ? "–" : Math.round(v)}</b><span>km/h implied average rate</span></div><div><b>${n(r[4])} m</b><span>DEM channel elevation</span></div></div>
     <p class="note" style="margin:6px 0 0">Envelope at this point: ${fmt(r[5])}–${fmt(r[6])}</p>
-    <dl style="margin-top:6px"><dt>Last evidence</dt><dd>${prev ? `${prev.name}: ${prev.type}, ${win(prev)}` : "none yet"}</dd>
-    <dt>Next evidence</dt><dd>${next ? `${next.name} (${next.type}, ${win(next)})` : "none: end of route"}</dd></dl>`;
+    <dl style="margin-top:6px"><dt>Last evidence</dt><dd>${prev ? `${prev.name}: ${prev.type} (${prev.basis}), ${win(prev)}` : "none yet"}</dd>
+    <dt>Next evidence</dt><dd>${next ? `${next.name} (${next.type}, ${next.basis}, ${win(next)})` : "none: end of route"}</dd></dl>`;
 }
 
 // During playback the camera, front marker and clock update every frame; the costly redraws
@@ -335,7 +335,7 @@ const HEAVY_MS = 90;
 let lastHeavy = 0;
 function setTime(m, fly) {
   t = Math.max(0, Math.min(T_END, m));
-  $("#t").value = t; $("#t").setAttribute("aria-valuetext", `${fmt(t)} NPT, ${Math.round(t)} minutes after the collapse`);
+  $("#t").value = t; $("#t").setAttribute("aria-valuetext", `${fmt(t)} NPT, ${Math.round(t)} minutes after the 08:37 seismic signal`);
   const r = at(t);
   frontMarker.setLngLat([r[0], r[1]]);
   if (playing && follow) followCam(r);
@@ -350,10 +350,10 @@ function setTime(m, fly) {
   paintArrival(t);
   const reached = t >= river[river.length - 1][3];
   const rate = minPerSec(t, +$("#speed").value), rateTxt = rate < 1 ? `${Math.round(rate * 60)} s` : `${rate.toFixed(rate < 3 ? 1 : 0)} min`;
-  $("#clock-sub").textContent = (t === 0 ? "collapse" : reached ? `front past Devghat · +${Math.floor(t / 60)}h ${Math.round(t % 60)}m` : `front at ${(r[2] / 1000).toFixed(0)} km (est.) · +${Math.floor(t / 60)}h ${Math.round(t % 60)}m`)
+  $("#clock-sub").textContent = (t === 0 ? "seismic signal" : reached ? `front past Devghat · +${Math.floor(t / 60)}h ${Math.round(t % 60)}m` : `front at ${(r[2] / 1000).toFixed(0)} km (est.) · +${Math.floor(t / 60)}h ${Math.round(t % 60)}m`)
     + (playing ? ` · playback 1 s = ${rateTxt}` : "");
   story(t);
-  document.querySelectorAll("#ev li").forEach((li) => { const em = +li.dataset.m; li.classList.toggle("future", em > t); li.classList.toggle("now", em <= t && em > t - 15); });
+  document.querySelectorAll("#ev li[data-m]").forEach((li) => { const em = +li.dataset.m; li.classList.toggle("future", em > t); li.classList.toggle("now", em <= t && em > t - 15); });
   drawCharts(r);
   $("#area").textContent = n(meta.areaByMin[Math.min(Math.floor(t), meta.areaByMin.length - 1)]);
   if (fly) map.flyTo({ center: [r[0], r[1]], zoom: 11.8, pitch: camPitch(r, 45), bearing: bearingAt(t), duration: RM ? 0 : 1500 }); // camera looks downstream; lower pitch keeps the valley floor in view
@@ -398,6 +398,7 @@ function openSite(id) {
   $("#cmp-view").style.aspectRatio = s.aspect ?? 1;
   $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
   setSplit(50);
+  cmp.scrollTop = 0; // a new site starts at its images, not where the last one was scrolled to
   if (!cmp.open) cmp.showModal();
 }
 $("#cmp-r").oninput = (e) => setSplit(e.target.value);
@@ -427,12 +428,12 @@ legend.innerHTML = `<summary>Legend</summary>
   <div data-for="sites"><i class="lg-dot" style="background:#fff;box-shadow:0 0 0 2px #14212b"></i>Before / after site (click to compare)</div>
   <div data-for="connector"><i class="lg-line dash" style="border-color:#e2483d"></i>Source to channel (shortest gap, not timed)</div>
   <div data-for="detachment lakes"><i class="lg-box fill" style="background:#e2483d"></i>Collapse source · <i class="lg-box fill" style="background:#2f6fd6;margin-left:4px"></i>barrier lake</div>`;
-$("#map").appendChild(legend);
+const corner = document.createElement("div"); corner.className = "corner"; corner.append(...[$(".fade"), legend].filter(Boolean)); $("#map").appendChild(corner); // stacked, never overlapping
 const visible = (id) => id === "always" || ((x) => map.getLayer(x) && map.getLayoutProperty(x, "visibility") !== "none")(idsOf(id)[0]);
 const syncLegend = () => legend.querySelectorAll("[data-for]").forEach((d) => (d.hidden = !d.dataset.for.split(" ").some(visible)));
 function applyView(v) {
   for (const id of OVERLAYS) { const on = VIEWS[v].includes(id); setVis(id, on); const cb = $(`#layers input[data-id="${id}"]`); if (cb) cb.checked = on; }
-  document.querySelectorAll("#views button").forEach((b) => b.classList.toggle("on", b.dataset.view === v));
+  document.querySelectorAll("#views button").forEach((b) => { b.classList.toggle("on", b.dataset.view === v); b.setAttribute("aria-pressed", b.dataset.view === v); });
   const fade = $(".fade"); if (fade) fade.hidden = !(v === "imagery" || v === "all");
   syncLegend();
 }
@@ -453,7 +454,7 @@ const KCOL = { origin: css("--mud"), impact: css("--impact"), gauge: css("--gaug
 $("#ticks").innerHTML = events.map((e, k) => `<i class="tk-${e.kind}" title="${e.t} ${e.title}" data-k="${k}" data-m="${e.m}" style="left:${(e.m / T_END) * 100}%;background:${KCOL[e.kind]}"></i>`).join("");
 $("#ticks").onclick = (e) => { const k = e.target.dataset.k; if (k === undefined) return; toggle(false); pinEvent(events[k]); setTime(events[k].m, true); };
 // Scrubbing pauses: the follow camera eases toward the front, so a jump of tens of km mid-play made it swoop and shake
-$("#t").oninput = (e) => { if (playing) toggle(false); setTime(+e.target.value); };
+$("#t").oninput = (e) => { const v = +e.target.value; if (playing) toggle(false); setTime(v); }; // read first: pausing writes the old time back
 $("#t").onchange = () => { if (!follow || RM) return; const r = at(t); map.flyTo({ center: [r[0], r[1]], zoom: map.getZoom(), bearing: bearingAt(t), pitch: camPitch(r), speed: 0.9, maxDuration: 2500 }); }; // one flight to the front on release; flyTo pulls out on long jumps
 // Distance-paced playback: at 1× the front moves ~0.75 km of river per second, so the 180 km/h gorge
 // plays slowly and the slow lower river speeds up; after Devghat the clock runs at 10 min/s.
@@ -500,14 +501,16 @@ const setFollow = (on) => { follow = on; cam = null; $("#follow").classList.togg
 $("#follow").onclick = () => setFollow(!follow);
 setFollow(follow); // reflect the reduced-motion default in the button
 map.on("dragstart", (e) => e.originalEvent && follow && playing && setFollow(false)); // user took the camera
-$("#dim").onclick = (e) => { const v = e.target.dataset.v; if (!v) return; $("#dim").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); map.easeTo({ pitch: v === "3" ? 62 : 0, bearing: v === "3" ? -20 : 0 }); setVis("terrain", v === "3"); };
+function showDim(is3) { $("#dim").querySelectorAll("button").forEach((b) => { const on = (b.dataset.v === "3") === is3; b.classList.toggle("on", on); b.setAttribute("aria-pressed", on); }); }
+$("#dim").onclick = (e) => { const v = e.target.dataset.v; if (!v) return; showDim(v === "3"); map.easeTo({ pitch: v === "3" ? 62 : 0, bearing: v === "3" ? -20 : 0 });
+  setVis("terrain", v === "3"); $('#layers input[data-id="terrain"]').checked = v === "3"; }; // header and Layers checkbox share one terrain state
 
 // ---------- key events ----------
 // source names as plain text: each row is a button, so links live in the story caption and the evidence panel
-const evRow = (e, m, kind, when) => `<li data-m="${m}" tabindex="0" role="button"><i class="k-${kind}" aria-hidden="true"></i><span>${e.title}<small>${e.detail ? `${e.detail}. ` : ""}<em>Source: ${srcShort(e.src)}</em></small></span><time>${when}</time></li>`;
-$("#ev").innerHTML = events.map((e) => evRow(e, e.m, e.kind, e.t)).join("") + ev.after.map((e) => evRow(e, T_END, "alert", e.d)).join("");
+const evRow = (e, m, kind, when) => `<li ${m === null ? 'class="later"' : `data-m="${m}" tabindex="0" role="button"`}><i class="k-${kind}" aria-hidden="true"></i><span>${e.title}<small>${e.detail ? `${e.detail}. ` : ""}<em>Source: ${srcShort(e.src)}</em></small></span><time>${when}</time></li>`;
+$("#ev").innerHTML = events.map((e) => evRow(e, e.m, e.kind, e.t)).join("") + ev.after.map((e) => evRow(e, null, "alert", e.d)).join(""); // later dates: listed, not seekable
 $("#ev").onkeydown = (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("li")) { e.preventDefault(); e.target.click(); } };
-$("#ev").onclick = (e) => { const li = e.target.closest("li"); if (!li) return;
+$("#ev").onclick = (e) => { const li = e.target.closest("li[data-m]"); if (!li) return;
   toggle(false); const k = [...$("#ev").children].indexOf(li);
   if (k < events.length) pinEvent(events[k]);
   setTime(Math.min(+li.dataset.m, T_END), true); };
@@ -574,15 +577,15 @@ $("#overview").innerHTML = `
 <button id="sims-btn" class="sims-btn">▶ Published simulations (${ev.simulations.videos.length})<small>Computer models of the cascade by other researchers</small></button>
 <div class="card"><h4>Incident overview <span>Reconstruction</span></h4><dl>
   <dt>Event</dt><dd>Rock-ice avalanche → debris flow → flood</dd>
-  <dt>Date</dt><dd>26 Aug 2026, 08:37 NPT</dd>
+  <dt>Date</dt><dd>26 Aug 2026; seismic signal 08:37 NPT</dd>
   <dt>Origin</dt><dd>Lirung massif, Langtang NP (~5,200 m)</dd>
   <dt>Path</dt><dd>Lende Khola → Bhote Koshi → Trishuli → Narayani, ${kmMax.toFixed(0)} km to Devghat</dd>
   <dt>Districts</dt><dd>Rasuwa, Nuwakot, Dhading, Gorkha, Chitwan (+ Gyirong County, Tibet)</dd>
-  <dt>Timing</dt><dd>Rising-wave onset at the Devghat gauge 14:30–14:40, about 6 h after the collapse; stage peaked 6.57 m at 16:00 (DHM record)</dd></dl>
+  <dt>Timing</dt><dd>Rising-wave onset at the Devghat gauge 14:30–14:40, about 6 h after the 08:37 signal; stage peaked 6.57 m at 16:00 (DHM record)</dd></dl>
   <p class="note">Independent reconstruction for education and understanding. Not an official product and not for emergency use. The moving front and the extent reveal are estimates between reported observations, not measured depth, velocity or a hydraulic simulation.</p></div>
 <div class="card"><h4>Human impact <span>${ev.totals.asOf}</span></h4><div class="stats">
   <div><b>${ev.totals.deaths}</b><span>deaths reported</span></div><div><b>${ev.totals.missing}</b><span>still missing</span></div><div><b>${ev.totals.houses}</b><span>private buildings affected (RDNA est.)</span></div>
-  <div><b>${ev.totals.bridges}</b><span>motorable bridges + 68 trail-bridge spans (RDNA)</span></div><div><b>${ev.totals.roadKm} km</b><span>road damaged (reported)</span></div><div><b id="area">0</b><span>ha of mapped area revealed <span class="est">EST. TIMING</span></span></div>
+  <div><b>${ev.totals.bridges}</b><span>motorable bridges + 68 trail-bridge spans (RDNA)</span></div><div><b>${ev.totals.roadKm} km</b><span>road damaged (reported)</span></div><div><b id="area">0</b><span>ha revealed so far (display raster) <span class="est">EST. TIMING</span></span></div>
   <div><b>${ev.totals.effects}</b><span>damage and losses (RDNA, Sep)</span></div><div><b>${ev.totals.needs}</b><span>recovery needs (RDNA, Sep)</span></div><div><b>${n(meta.extentHa)}</b><span>ha mapped extent (UNOSAT, preliminary)</span></div></div>
   <p class="note">Aggregate figures only. Sources: ${src_("article")}; ${src_("rdna")}; The Guardian, 7 Nov 2026.</p></div>
 <div class="card"><h4>Source collapse <span>ranges across studies</span></h4><dl>

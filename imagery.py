@@ -81,7 +81,7 @@ def composite(x, y, order):
             print("skip", s["id"], e); continue
         ok = want & ~np.isin(c, list(BAD_SCL)) & (px.max(0) > 0)
         if not ok.any(): continue
-        used.add(s["date"])
+        used.add((s["date"], s["id"]))
         lo = px.copy(); lo[:, ~ok] = np.nan; loose.append(lo)
         st = px.copy(); st[:, ~(ok & (px[2] < BRIGHT) & (c != 7))] = np.nan; strict.append(st)  # 7 = unclassified (often haze)
     if not loose:
@@ -101,7 +101,7 @@ def save(arr, alpha, path):
 
 def run(name, order):
     out = os.path.join(DATA, "s2", name)
-    stats = {"want": 0, "done": 0, "dates": set()}
+    stats = {"want": 0, "done": 0, "used": set()}
 
     def one(t):
         rgb, done, want, used = composite(*t, order)
@@ -110,7 +110,7 @@ def run(name, order):
 
     with ThreadPoolExecutor(8) as ex:
         for i, (w, d, u) in enumerate(ex.map(one, tiles)):
-            stats["want"] += w; stats["done"] += d; stats["dates"] |= u
+            stats["want"] += w; stats["done"] += d; stats["used"] |= u
             if i % 50 == 0: print(f"  {name} {i}/{len(tiles)}")
     # lower zooms: 2x2 downsample from the level above
     for z in range(ZMAX - 1, ZMIN - 1, -1):
@@ -124,12 +124,14 @@ def run(name, order):
             os.makedirs(os.path.join(out, str(z), str(px)), exist_ok=True)
             canvas.resize((256, 256), Image.LANCZOS).save(os.path.join(out, str(z), str(px), f"{py}.webp"), "WEBP", quality=72, method=5)
     cov = stats["done"] / stats["want"]
-    print(f"{name}: coverage {cov:.1%}, dates {sorted(stats['dates'])}")
+    dates = sorted({d for d, _ in stats["used"]})
+    print(f"{name}: coverage {cov:.1%}, dates {dates}")
     index = sorted(f"{z}/{x}/{f[:-5]}" for z in os.listdir(out) for x in os.listdir(os.path.join(out, z)) for f in os.listdir(os.path.join(out, z, x)))
-    return {"coverage": round(cov, 3), "dates": sorted(stats["dates"]), "tiles": index}  # index lets the app skip requests outside the corridor
+    return {"coverage": round(cov, 3), "dates": dates, "scenes": sorted(i for _, i in stats["used"]), "tiles": index}  # index lets the app skip requests outside the corridor
 
 
 result = {"pre": run("pre", pre), "post": run("post", post), "zmin": ZMIN, "zmax": ZMAX,
+          "params": {"stac": "earth-search v1 sentinel-2-l2a, visual (TCI) + scl assets", "scenesPerTile": K, "blueMax": BRIGHT, "maskedSCL": sorted(BAD_SCL)},
           "bounds": list(gpd.GeoSeries([corridor], crs=3857).to_crs(4326).total_bounds.round(4))}
 json.dump(result, open(os.path.join(DATA, "s2.json"), "w"))
 ok = result["pre"]["coverage"] > 0.5 and result["post"]["coverage"] > 0.5

@@ -14,7 +14,8 @@
   "raw/zenodo/zenodo_upload.zip": "9f2c60673c1d6ea8fa1e43f2339d376b147ba4de48bbda8279bf509cc30767f9",
   "raw/zenodo/extracted/bhotekoshi-trishuli-2026/data/gauge_timeseries.json": "02e3e5b66490df0f3b65f1e5342850fcd7d2e0a086cd71553e72d92f54788fb0",
   "raw/bipad/malekhu_station261_20260826.json": "e3e4560a7ee6ca2f4f4aadaf4f676dce070f20bfa5b37e30cea684ecec0e06e0",
-  "raw/osm_rivers.json": "bae8b62e06aecd293f5c90710bb03bd156eea64187272affeb9e4e04002e2a9b"
+  "raw/osm_rivers.json": "bae8b62e06aecd293f5c90710bb03bd156eea64187272affeb9e4e04002e2a9b",
+  "raw/dem": "059f859147bbc3ecb1c4fa67cc09770bcaf5ed90fc0c4d3e301c329dcb8671ce"
  },
  "requests": {
   "raw/bipad/malekhu_station261_20260826.json": {

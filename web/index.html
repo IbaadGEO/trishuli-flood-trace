@@ -24,21 +24,21 @@
   <div class="brand"><b>Trishuli Flood Trace</b><span>26 Aug 2026 · Rasuwa → Devghat</span></div>
   <div class="hdr-right">
     <div class="seg" id="views" role="group" aria-label="Map view">
-      <button data-view="story" class="on" title="The flood unfolding: front, path and timing">Story</button>
-      <button data-view="damage" title="Mapped damage: buildings, roads, final extent">Damage</button>
-      <button data-view="imagery" title="Before/after satellite imagery">Imagery</button>
-      <button data-view="all" title="Every layer">All</button>
+      <button data-view="story" class="on" aria-pressed="true" title="The flood unfolding: front, path and timing">Story</button>
+      <button data-view="damage" aria-pressed="false" title="Mapped damage: buildings, roads, final extent">Damage</button>
+      <button data-view="imagery" aria-pressed="false" title="Before/after satellite imagery">Imagery</button>
+      <button data-view="all" aria-pressed="false" title="Every layer">All</button>
     </div>
     <button id="follow" class="on" aria-pressed="true" title="Camera follows the flow front during playback">◎ Follow front</button>
-    <div class="seg" id="dim"><button data-v="2">2D</button><button data-v="3" class="on">3D</button></div>
-    <span class="pill">Reconstruction · not live</span>
+    <div class="seg" id="dim" role="group" aria-label="Map dimension"><button data-v="2" aria-pressed="false">2D</button><button data-v="3" class="on" aria-pressed="true">3D</button></div>
+    <span class="pill">Reconstruction · interpolated timing</span>
   </div>
 </header>
 
 <main id="map" aria-label="3D map of the Trishuli river corridor"></main>
 
 <aside id="side">
-  <nav class="tabs"><button data-tab="overview" class="on">Incident</button><button data-tab="layers">Layers</button></nav>
+  <nav class="tabs" aria-label="Side panel"><button data-tab="overview" class="on" aria-pressed="true">Incident</button><button data-tab="layers" aria-pressed="false">Layers</button></nav>
   <section id="overview" class="tab on"></section>
   <section id="layers" class="tab"></section>
 </aside>
@@ -50,8 +50,8 @@
     <button id="play" aria-label="Play">▶</button>
     <button id="next" aria-label="Next key event" title="Next key event">⏵</button>
     <select id="speed" aria-label="Playback speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option><option value="4">4×</option></select>
-    <div class="clock"><b id="clock">08:37 NPT</b><span id="clock-sub">collapse</span></div>
-    <div class="track"><input id="t" type="range" min="0" max="600" step="1" value="0" aria-label="Time after collapse"><div id="ticks"></div></div>
+    <div class="clock"><b id="clock">08:37 NPT</b><span id="clock-sub">seismic signal</span></div>
+    <div class="track"><input id="t" type="range" min="0" max="600" step="1" value="0" aria-label="Time after the 08:37 seismic signal"><div id="ticks"></div></div>
   </div>
   <div class="charts">
     <figure><figcaption>Estimated progression <em>evidence windows ▬ · report checks ▽ · scenario envelope ─</em></figcaption><svg id="c-front"></svg></figure>
