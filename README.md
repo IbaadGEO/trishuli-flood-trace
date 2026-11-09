@@ -14,7 +14,7 @@
 
 ## About
 
-A personal passion project: one of a series of self-directed projects where I combine geoscience with coding, data and machine learning. It is not a professional or commissioned study. Every figure comes from already published, citable public data (satellite mapping, agency reports, gauge records and research papers), and where sources disagree the map shows both. It is a reconstruction for understanding, not an official product and not for emergency use.
+A project from a self-directed series in three separate strands: geoscience with coding, geoscience with data, and geoscience with machine learning. It is not a professional or commissioned study. Every figure comes from already published, citable public data (satellite mapping, agency reports, gauge records and research papers), and where sources disagree the map shows both. It is a reconstruction for understanding, not an official product and not for emergency use.
 
 ## The event
 
