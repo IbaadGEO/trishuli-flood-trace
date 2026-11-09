@@ -1,12 +1,14 @@
 # Trishuli Flood Trace
 
-3D reconstruction of the 26 August 2026 Nepal–Tibet debris flow: from the rock-ice avalanche on the Lirung massif (08:37 NPT) down the Lende Khola, Bhote Koshi and Trishuli to Devghat (~10 h, ~200 km of river).
+3D reconstruction of the 26 August 2026 Nepal–Tibet debris flow: from the rock-ice avalanche on the Lirung massif (08:37 NPT) down the Lende Khola, Bhote Koshi and Trishuli to Devghat (~200 km of river; the rising wave reached the Devghat gauge about 6 h after the collapse).
 
 > **Scope:** a personal passion project, not a professional or commissioned study. It uses only already available, widely used, citable public data (satellite mapping products, agency reports, published papers, open datasets). Where sources conflict, both are shown and cited; no unpublished data or agency correspondence is involved.
 >
-> Independent, non-commercial reconstruction for education and understanding. Not an official product and not for emergency use. The flood extent is observed from satellite mapping; the timing between observation points is estimated.
+> Independent, non-commercial reconstruction for education and understanding. Not an official product and not for emergency use. The extent is a preliminary satellite interpretation (UNOSAT), and the timing between gauge and report evidence is estimated.
 
-Documentation: [METHODS.md](METHODS.md) (how everything is built and its limits) · [sources.csv](sources.csv) (every source, version, licence) · [anchors.csv](anchors.csv) (timing evidence and checks) · [inputs_manifest.json](inputs_manifest.json) (input checksums) · [requirements.txt](requirements.txt).
+Documentation: [METHODS.md](METHODS.md) (how everything is built and its limits) · [sources.csv](sources.csv) (every source, version, licence) · [DATA-LICENCES.md](DATA-LICENCES.md) (terms per data file) · [anchors.csv](anchors.csv) (timing evidence and checks) · [inputs_manifest.json](inputs_manifest.json) (input checksums) · [requirements.txt](requirements.txt).
+
+Share image (`web/og.jpg`): screenshot of this app over the EOxCloudless 2024 basemap by EOX IT Services GmbH ([cloudless.eox.at](https://cloudless.eox.at)), licensed [CC BY-NC-SA 4.0](https://creativecommons.org/licenses/by-nc-sa/4.0/); also contains modified Copernicus Sentinel data and UNOSAT-derived mapping.
 
 ## Deploy (Vercel)
 

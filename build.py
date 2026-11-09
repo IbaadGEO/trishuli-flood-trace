@@ -41,7 +41,7 @@ ANCHORS = [
 # Reports that are not arrival observations: checked against the fitted onset, never fitted. (name, lat, lon, minute, relation, note, source)
 CHECKS = [
     ("Rasuwagadhi gauge", 28.271297, 85.377649, 13, "onset by", "Last report 08:40 (1.62 m), next absent by 08:50", "DHM via Zenodo 22679444"),
-    ("Malekhu / Phurke", 27.820, 84.834, 169, "onset by", "Warning level reported crossed 11:26 (CHWRR); a threshold crossing follows onset", "CHWRR Assessment Report II"),
+    ("Malekhu / Phurke gauge", 27.802439, 84.844102, 169, "onset by", "Warning level reported crossed 11:26 (CHWRR); a threshold crossing follows onset", "CHWRR Assessment Report II"),
     ("Mugling", 27.853, 84.560, 263, "onset by", "Reported past Mugling by 13:00; an upper bound", "Wikipedia timeline / CHWRR"),
 ]
 
@@ -141,8 +141,18 @@ def slim(g):  # ~3 m simplification + 1e-5° grid keeps polygon files small for 
     return g.set_geometry(shapely.set_precision(g.geometry.simplify(0.00003).values, 1e-5))
 
 
+# The exact EMSR927 deliveries used (one per AOI): latest grading available for each area when downloaded.
+EMS_PRODUCTS = ["EMSR927_AOI01_GRA_PRODUCT_v1", "EMSR927_AOI02_GRA_PRODUCT_v2", "EMSR927_AOI03_GRA_MONIT01_v1", "EMSR927_AOI05_GRA_MONIT01_v2"]
+
+
 def ems(kind):
-    fs = sorted(glob.glob(os.path.join(RAW, "ems", "**", f"*_{kind}_v*.shp"), recursive=True))
+    fs = []
+    for prod in EMS_PRODUCTS:
+        hit = glob.glob(os.path.join(RAW, "ems", prod, "**", f"*_{kind}_v*.shp"), recursive=True)
+        assert len(hit) <= 1, f"{prod}: expected at most one {kind} layer, found {hit}"
+        fs += hit
+    stray = set(os.listdir(os.path.join(RAW, "ems"))) - set(EMS_PRODUCTS) - {p + ".zip" for p in EMS_PRODUCTS}
+    assert not stray, f"unlisted EMS inputs in raw/ems (add to EMS_PRODUCTS or remove): {stray}"
     g = pd.concat([gpd.read_file(f).assign(aoi=os.path.basename(f).split("_")[1]) for f in fs], ignore_index=True)
     return gpd.GeoDataFrame(g[g.geometry.notna()], crs=4326)
 

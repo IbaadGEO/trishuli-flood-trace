@@ -283,6 +283,8 @@ function bearingAt(m) { // heading from the front to a point 1.5 km further down
   const a = at(m), b = atChain(a[2] + 1500), k = Math.cos((a[1] * Math.PI) / 180);
   return (Math.atan2((b[0] - a[0]) * k, b[1] - a[1]) * 180) / Math.PI;
 }
+// Lower pitch over the first 20 km: in the deep source gorge a steep camera dipped behind the valley walls
+const camPitch = (r, steep = 58) => (!map.getTerrain() ? 0 : r[2] < 20000 ? 40 : steep);
 function followCam(r) {
   const now = performance.now();
   if (!cam) cam = { c: map.getCenter().toArray(), b: map.getBearing(), ts: now };
@@ -290,7 +292,7 @@ function followCam(r) {
   const kc = 1 - Math.exp(-dt / 0.45), kb = 1 - Math.exp(-dt / 1.2); // frame-rate independent easing (time constants in s)
   cam.c = [cam.c[0] + (r[0] - cam.c[0]) * kc, cam.c[1] + (r[1] - cam.c[1]) * kc];
   cam.b += ((((bearingAt(t) - cam.b) % 360) + 540) % 360 - 180) * kb;
-  map.jumpTo({ center: cam.c, bearing: cam.b, pitch: map.getTerrain() ? 58 : 0 });
+  map.jumpTo({ center: cam.c, bearing: cam.b, pitch: camPitch(r) });
 }
 function frontCard(r) {
   const km = r[2] / 1000, done = t >= river.at(-1)[3];
@@ -331,7 +333,7 @@ function setTime(m, fly) {
   document.querySelectorAll("#ev li").forEach((li) => { const em = +li.dataset.m; li.classList.toggle("future", em > t); li.classList.toggle("now", em <= t && em > t - 15); });
   drawCharts(r);
   $("#area").textContent = n(meta.areaByMin[Math.min(Math.floor(t), meta.areaByMin.length - 1)]);
-  if (fly) map.flyTo({ center: [r[0], r[1]], zoom: 11.8, pitch: map.getTerrain() ? 45 : 0, bearing: bearingAt(t), duration: RM ? 0 : 1500 }); // camera looks downstream; lower pitch keeps the valley floor in view
+  if (fly) map.flyTo({ center: [r[0], r[1]], zoom: 11.8, pitch: camPitch(r, 45), bearing: bearingAt(t), duration: RM ? 0 : 1500 }); // camera looks downstream; lower pitch keeps the valley floor in view
 }
 // ---------- plain-English story caption + legend ----------
 const storyBox = document.createElement("div"); storyBox.className = "story"; storyBox.setAttribute("aria-live", "polite"); $("#map").appendChild(storyBox);
@@ -405,7 +407,7 @@ function toggle(on) {
   $("#play").textContent = on ? "⏸" : "▶"; $("#play").setAttribute("aria-label", on ? "Pause" : "Play");
   if (!on) return setTime(t); // full redraw at the paused moment
   if (t >= T_END) setTime(0);
-  if (follow) { const r = at(t); map.easeTo({ center: [r[0], r[1]], zoom: Math.max(map.getZoom(), 12.2), pitch: map.getTerrain() ? 58 : 0, bearing: bearingAt(t), duration: 900 }); }
+  if (follow) { const r = at(t); map.easeTo({ center: [r[0], r[1]], zoom: Math.max(map.getZoom(), 12.2), pitch: camPitch(r), bearing: bearingAt(t), duration: 900 }); }
   setTimeout(() => playing && requestAnimationFrame(loop), follow ? 950 : 0);
 }
 $("#play").onclick = () => toggle(!playing);
@@ -472,7 +474,8 @@ function hydrograph(svg) {
     const end = pts.at(-1), lost = s.destroyed ? `<text x="${X(end[0]) + 2}" y="${Y(end[1]) - 3}" fill="${HCOL[s.name]}" font-size="11">✕</text>` : "";
     return `<path d="${d}" fill="none" stroke="${HCOL[s.name]}" stroke-width="1.4"><title>${s.name}</title></path>${lost}`;
   }).join("");
-  const key = gauges.stations.map((s, i) => `<text x="${L + 4 + (i % 3) * 78}" y="${12 + Math.floor(i / 3) * 11}" fill="${HCOL[s.name]}" font-size="9.5">${s.name}${s.destroyed ? " ✕" : ""}</text>`).join("");
+  const colW = (W - L - 10) / 3;
+  const key = gauges.stations.map((s, i) => `<text x="${L + 4 + (i % 3) * colW}" y="${12 + Math.floor(i / 3) * 12}" fill="${HCOL[s.name]}" font-size="9.5" stroke="${css("--panel")}" stroke-width="3" paint-order="stroke">${s.name}${s.destroyed ? " ✕" : ""}</text>`).join("");
   svg.innerHTML = grid + series + key + `<line x1="${X(t)}" x2="${X(t)}" y1="6" y2="${H - B}" stroke="${css("--ink")}" stroke-dasharray="3 2"/>`;
 }
 addEventListener("resize", () => drawCharts(at(t)));

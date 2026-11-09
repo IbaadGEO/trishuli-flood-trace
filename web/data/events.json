@@ -9,8 +9,8 @@
    "url": "https://en.wikipedia.org/wiki/2026_Nepal%E2%80%93Tibet_floods"
   },
   "chwrr": {
-   "label": "CHWRR Assessment Report II, Rasuwa–Bhote Koshi Flood (13 Sep 2026)",
-   "url": "https://hydrology.gov.np/cm/files/Assessment%20Report%20II_Bhotekoshi%20Flood_2026_1789276630363.pdf"
+   "label": "CHWRR Assessment Report II, Rasuwa–Bhote Koshi Flood (revised, 13 Sep 2026)",
+   "url": "https://giwmscdnone.gov.np/media/pdf_upload/1_Situation_Report_Bhotekoshi%20Flood_2026_CHWRR%20revised_1790050465053_hkodqvs.pdf"
   },
   "ems": {
    "label": "Copernicus EMS Rapid Mapping EMSR927 (© 2026 European Union, CC BY)",
@@ -67,6 +67,10 @@
   "usgs2": {
    "label": "USGS event us7000tc90 (M4.2 landslide signal)",
    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us7000tc90"
+  },
+  "bipad": {
+   "label": "BIPAD river-station register (DHM), Furke Khola (Malekhu), series 31967",
+   "url": "https://bipadportal.gov.np/api/v1/river-stations/?format=json"
   }
  },
  "events": [
@@ -161,19 +165,19 @@
    "t": "11:26",
    "kind": "gauge",
    "at": [
-    84.834,
-    27.82
+    84.844102,
+    27.802439
    ],
    "title": "Phurke (Malekhu): warning level reported crossed",
-   "detail": "Threshold crossing, reported by CHWRR; location approximate",
+   "detail": "Threshold crossing reported by CHWRR (warning 7.0 m, danger 8.0 m)",
    "src": "chwrr"
   },
   {
    "t": "11:43",
    "kind": "impact",
    "at": [
-    84.834,
-    27.82
+    84.844102,
+    27.802439
    ],
    "title": "Phurke: above danger level; station and bridge lost (reported)",
    "detail": "Last reading 10.48 m",
@@ -362,10 +366,12 @@
   },
   {
    "name": "Phurke (Malekhu)",
-   "lon": 84.834,
-   "lat": 27.82,
-   "reading": "warning crossed 11:26, above danger 11:43, last 10.48 m, then lost (CHWRR report; location approximate)",
-   "status": "destroyed"
+   "lon": 84.844102,
+   "lat": 27.802439,
+   "reading": "warning (7.0 m) reported crossed 11:26, above danger (8.0 m) by 11:43, last 10.48 m, then lost (CHWRR report)",
+   "status": "destroyed",
+   "warn": 7.0,
+   "danger": 8.0
   },
   {
    "name": "Kali Khola",
