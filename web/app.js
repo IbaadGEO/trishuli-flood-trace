@@ -431,7 +431,9 @@ function pinEvent(e) { // pinned where it happened; non-spatial events (alerts, 
 const KCOL = { origin: css("--mud"), impact: css("--impact"), gauge: css("--gauge"), alert: css("--alert") };
 $("#ticks").innerHTML = events.map((e, k) => `<i class="tk-${e.kind}" title="${e.t} ${e.title}" data-k="${k}" data-m="${e.m}" style="left:${(e.m / T_END) * 100}%;background:${KCOL[e.kind]}"></i>`).join("");
 $("#ticks").onclick = (e) => { const k = e.target.dataset.k; if (k === undefined) return; toggle(false); pinEvent(events[k]); setTime(events[k].m, true); };
-$("#t").oninput = (e) => setTime(+e.target.value);
+// Scrubbing pauses: the follow camera eases toward the front, so a jump of tens of km mid-play made it swoop and shake
+$("#t").oninput = (e) => { if (playing) toggle(false); setTime(+e.target.value); };
+$("#t").onchange = () => { if (!follow || RM) return; const r = at(t); map.flyTo({ center: [r[0], r[1]], zoom: map.getZoom(), bearing: bearingAt(t), pitch: camPitch(r), speed: 0.9, maxDuration: 2500 }); }; // one flight to the front on release; flyTo pulls out on long jumps
 // Distance-paced playback: at 1× the front moves ~0.75 km of river per second, so the 180 km/h gorge
 // plays slowly and the slow lower river speeds up; after Devghat the clock runs at 10 min/s.
 const KM_PER_S = 0.75;
