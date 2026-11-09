@@ -26,10 +26,9 @@ flowchart LR
   B --> C["<b>Gyirong Port</b><br/>China–Nepal border<br/>08:44 NPT, ~22 km"]
   C --> D["<b>Water-laden flood</b><br/>Bhote Koshi → Trishuli<br/>gauges stop transmitting"]
   D --> E["<b>Devghat</b><br/>rise begins 14:30–14:40<br/>~200 km downstream"]
-  B -.-> F["<b>Barrier lakes</b><br/>formed after the event;<br/>overflowing from 28 Aug"]
 ```
 
-The falling mass turned into a debris flow that scoured the narrow Lende Khola gorge and reached the border crossing at Gyirong Port about seven minutes later, after roughly 22 km and 3,400 m of descent (Guo et al., 2026). Below Syabrubesi it began dropping its largest rock and continued as a more water-laden flood down the Bhote Koshi and Trishuli (Clarke et al., 2026). River gauges stopped transmitting one after another, so the timing upstream is bracketed rather than measured (Acharya and Paudel, 2026). The rising wave reached the Devghat gauge between 14:30 and 14:40.
+The falling mass turned into a debris flow that scoured the narrow Lende Khola gorge and reached the border crossing at Gyirong Port about seven minutes later, after roughly 22 km and 3,400 m of descent (Guo et al., 2026). Below Syabrubesi it began dropping its largest rock and continued as a more water-laden flood down the Bhote Koshi and Trishuli (Clarke et al., 2026). River gauges stopped transmitting one after another, so the timing upstream is bracketed rather than measured (Acharya and Paudel, 2026). The rising wave reached the Devghat gauge between 14:30 and 14:40. This first wave did not come from barrier lakes: those formed after the event and only began overflowing on 28 August (Xu, 2026).
 
 ## What the map does
 
