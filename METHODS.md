@@ -16,7 +16,7 @@ Trishuli Flood Trace is a personal, non-commercial reconstruction of the 26 Augu
 ## Route
 
 1. OSM waterways in the corridor (Overpass) form an undirected graph. Dijkstra's shortest path runs from the node nearest the UNOSAT detachment-zone centroid to the node nearest the Devghat gauge.
-2. The route origin is ~0.9 km from the mapped source reference, at ~3,800 m DEM elevation, while the failure began at ~5,100–5,200 m. **The source-to-channel runout is not part of the route and is not timed.** The map draws it as a dashed red line: the shortest gap (~209 m) from the UNOSAT detachment-zone edge to the route origin, a schematic link, not a mapped flow path. Distances ("km along route") start at the route origin.
+2. The route origin is ~0.9 km from the mapped source reference, at ~3,750 m DEM elevation, while the failure began at ~5,100–5,200 m. **The source-to-channel runout is not part of the route and is not timed.** The map draws it as a dashed red line: the shortest gap (~209 m) from the UNOSAT detachment-zone edge to the route origin, a schematic link, not a mapped flow path. Distances ("km along route") start at the route origin.
 3. The path is densified to 40 m spacing. Shortest-path routing does not verify hydrological direction or the event's actual flow path at confluences.
 
 ## Timing evidence
@@ -57,7 +57,7 @@ Known limits: nearest-point assignment can mis-time pixels across meander necks,
 
 ## Channel elevation profile
 
-Terrarium DEM (zoom 12), a 3×3 minimum filter at each route point, then forced non-increasing downstream (`np.minimum.accumulate`) for display. Real channel beds have pools, steps and local adverse slopes, so this is **not** a bed survey. "m above DEM channel" in the tooltip uses this conditioned profile.
+Copernicus GLO-30 DEM via Mapterhorn tiles (sampled on a zoom-12 grid, ~34 m pixels), a 3×3 minimum filter at each route point, then forced non-increasing downstream (`np.minimum.accumulate`) for display. Real channel beds have pools, steps and local adverse slopes, so this is **not** a bed survey. "m above DEM channel" in the tooltip uses this conditioned profile.
 
 ## Imagery
 

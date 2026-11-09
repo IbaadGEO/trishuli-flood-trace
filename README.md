@@ -24,7 +24,7 @@ Open http://localhost:5173. Static files only, no build step.
 
 ### Optional ArcGIS basemap
 
-By default the map uses the keyless EOxCloudless 2024 mosaic. The code can instead use Esri World Imagery and imagery labels with a personal ArcGIS API key (basemap privilege only, referrer-restricted): copy `web/config.example.js` to `web/config.js` and paste the key. `config.js` is git-ignored. Browser map keys are visible to anyone who opens the page; the referrer restriction is what limits their use.
+By default the map uses the keyless EOxCloudless 2025 mosaic. The code can instead use Esri World Imagery and imagery labels with a personal ArcGIS API key (basemap privilege only, referrer-restricted): copy `web/config.example.js` to `web/config.js` and paste the key. `config.js` is git-ignored. Browser map keys are visible to anyone who opens the page; the referrer restriction is what limits their use.
 
 ## Rebuild data
 
@@ -58,8 +58,8 @@ The "before" and "after" composites are per-pixel medians of the clear observati
 | Channel elevation profile | **Derived**: DEM samples, minimum-filtered and forced non-increasing for display; not a surveyed bed | this repo |
 | Source parameters, precursor, rainfall, district deaths | Reported (ranges where studies disagree) | USGS, JMS, JISRS, ICIMOD, arXiv 2609.04563, NDRRMA SitRep 19 |
 | River path | OpenStreetMap contributors (ODbL) | Overpass |
-| Terrain | Terrarium DEM (SRTM and others) | AWS Open Data |
-| Satellite basemap (default) | Observed (2024 cloud-free mosaic) | EOxCloudless 2024 by EOX IT Services GmbH, CC BY-NC-SA 4.0, free for non-commercial use with attribution; contains modified Copernicus Sentinel data 2024 |
+| Terrain | Copernicus GLO-30 DEM (30 m) | Mapterhorn terrain tiles; GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the EU and ESA |
+| Satellite basemap (default) | Observed (2025 cloud-free mosaic, pre-event) | EOxCloudless 2025 by EOX IT Services GmbH, CC BY-NC-SA 4.0, free for non-commercial use with attribution; contains modified Copernicus Sentinel data 2025 |
 | Before/after imagery | Observed (median composites, date ranges shown in the app) | Contains modified Copernicus Sentinel data 2026, via Element84 Earth Search |
 
 The app shows aggregate figures only. It holds no names or personal details of victims.

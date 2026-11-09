@@ -1,4 +1,5 @@
 // Trishuli Flood Trace: static reconstruction of the 26 Aug 2026 debris flow.
+import * as maplibregl from "https://unpkg.com/maplibre-gl@6.17.0/dist/maplibre-gl.mjs"; // v6 is ESM-only
 const T0 = 8 * 60 + 37; // 08:37 NPT, minutes of day
 const $ = (s) => document.querySelector(s);
 const fmt = (m) => { const x = Math.round(T0 + m); return `${String(Math.floor(x / 60) % 24).padStart(2, "0")}:${String(x % 60).padStart(2, "0")}`; };
@@ -23,9 +24,9 @@ const FONT = esri?.layers.find((l) => l.layout?.["text-font"])?.layout["text-fon
 // ---------- map ----------
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches; // no follow camera or animated flights
 const glProbe = document.createElement("canvas");
-if (!(glProbe.getContext("webgl2") || glProbe.getContext("webgl"))) {
+if (!glProbe.getContext("webgl2")) { // MapLibre 6 requires WebGL2
   const repo = "https://github.com/IbaadGEO/trishuli-flood-trace/blob/main";
-  $("#map").innerHTML = `<div class="nogl"><b>This 3D map needs WebGL, which isn't available in this browser.</b>
+  $("#map").innerHTML = `<div class="nogl"><b>This 3D map needs WebGL2, which isn't available in this browser.</b>
     <p>The reconstruction's method, evidence and sources are readable without it: <a href="${repo}/METHODS.md">METHODS.md</a> ·
     <a href="${repo}/anchors.csv">timing evidence (anchors.csv)</a> · <a href="${repo}/sources.csv">sources.csv</a> · <a href="${repo}/README.md">README</a>.</p></div>`;
   throw new Error("WebGL unavailable: static fallback shown");
@@ -38,6 +39,8 @@ const map = new maplibregl.Map({
   maxZoom: 15, minZoom: 8, maxBounds: [[83.6, 27.1], [86.4, 28.95]],
   style: {
     version: 8,
+    // light valley haze toward the horizon in tilted 3D views
+    sky: { "sky-color": "#7fa6cc", "horizon-color": "#d3dee8", "fog-color": "#d3dee8", "sky-horizon-blend": 0.7, "horizon-fog-blend": 0.6, "fog-ground-blend": 0.8 },
     glyphs: esri?.glyphs ?? "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
     ...(esri?.sprite ? { sprite: esri.sprite } : {}),
     sources: {
@@ -45,12 +48,13 @@ const map = new maplibregl.Map({
         ? { type: "raster", tileSize: 256, maxzoom: 19, attribution: "Powered by Esri | Esri, Maxar, Earthstar Geographics, and the GIS User Community",
           tiles: [`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=${encodeURIComponent(KEY)}`] }
         : { type: "raster", tileSize: 256, maxzoom: 14, // free for non-commercial use, no key or account
-          attribution: '<a href="https://cloudless.eox.at" target="_blank" rel="noopener">EOxCloudless 2024</a> by EOX IT Services GmbH, CC BY-NC-SA 4.0 (contains modified Copernicus Sentinel data 2024)',
-          tiles: ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2024_3857/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg"] },
-      dem: { type: "raster-dem", encoding: "terrarium", tileSize: 256, maxzoom: 14, attribution: "Terrain: Mapzen Terrarium (AWS Open Data)",
-        tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"] },
-      demHill: { type: "raster-dem", encoding: "terrarium", tileSize: 256, maxzoom: 14,
-        tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"] },
+          attribution: '<a href="https://cloudless.eox.at" target="_blank" rel="noopener">EOxCloudless 2025</a> by EOX IT Services GmbH, CC BY-NC-SA 4.0 (contains modified Copernicus Sentinel data 2025)',
+          tiles: ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2025_3857/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg"] },
+      // Mapterhorn: Copernicus GLO-30 over Nepal (30 m), 512 px tiles, served to z12 here and overzoomed beyond
+      dem: { type: "raster-dem", encoding: "terrarium", tileSize: 512, maxzoom: 12,
+        attribution: '<a href="https://mapterhorn.com/attribution" target="_blank" rel="noopener">Terrain: Mapterhorn</a> (Copernicus GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the EU and ESA)',
+        tiles: ["https://tiles.mapterhorn.com/{z}/{x}/{y}.webp"] },
+      demHill: { type: "raster-dem", encoding: "terrarium", tileSize: 512, maxzoom: 12, tiles: ["https://tiles.mapterhorn.com/{z}/{x}/{y}.webp"] },
       ...(esri?.sources ?? {}),
     },
     layers: [
@@ -134,7 +138,7 @@ map.addSource("anchors", { type: "geojson", data: { type: "FeatureCollection", f
 const DMG = ["match", ["get", "d"], "Destroyed", "#c8432b", "Damaged", "#e8873a", "Possibly damaged", "#f1c24b", "#9aa7b0"];
 const LAYERS = [
   { group: "Base" },
-  { id: "sat", name: "Satellite basemap", note: KEY ? "Esri World Imagery (pre-event)" : "EOxCloudless 2024 Sentinel-2 mosaic", on: true },
+  { id: "sat", name: "Satellite basemap", note: KEY ? "Esri World Imagery (pre-event)" : "EOxCloudless 2025 Sentinel-2 mosaic", on: true },
   { id: "hill", name: "Hillshade", on: true },
   ...(s2 ? [
     { id: "s2pre", name: "Sentinel-2 before", note: `Cloud-masked composite, ${span(s2.pre.dates)} · ${Math.round(s2.pre.coverage * 100)}% of corridor`, sw: "#5a7d4a", on: true,
@@ -142,7 +146,7 @@ const LAYERS = [
     { id: "s2post", name: "Sentinel-2 after", note: `Cloud-masked composite, ${span(s2.post.dates)} · ${Math.round(s2.post.coverage * 100)}% of corridor`, sw: "#9a7b55", on: true,
       add: { type: "raster", source: "s2post", paint: { "raster-opacity": 0, "raster-fade-duration": 0 } } }] : []),
   ...(esri ? [{ id: "esri-labels", name: "Place labels", note: "Esri imagery labels (vector)", on: true }] : []),
-  { id: "terrain", name: "Terrain (3D)", note: "Terrarium DEM, 1.2× exaggeration", on: true },
+  { id: "terrain", name: "Terrain (3D)", note: "Mapterhorn (Copernicus GLO-30), 1.2× exaggeration", on: true },
   { group: "Reconstruction" },
   { id: "river", name: "Flow path", note: "OSM rivers, collapse → Devghat; solid = reached", sw: "#36c5f0", on: true,
     add: { type: "line", source: "river", layout: { "line-join": "round" },
@@ -282,20 +286,24 @@ function atChain(c) { // river point `c` metres from the source
   const a = river[i - 1], b = river[i], f = (c - a[2]) / (b[2] - a[2] || 1);
   return a.map((v, k) => v + (b[k] - v) * f);
 }
-function bearingAt(m) { // heading from the front to a point 1.5 km further down the river
-  const a = at(m), b = atChain(a[2] + 1500), k = Math.cos((a[1] * Math.PI) / 180);
-  return (Math.atan2((b[0] - a[0]) * k, b[1] - a[1]) * 180) / Math.PI;
+function bearingAt(m) { // mean downstream direction over the next 1-5 km: a single short look-ahead swung on tight bends
+  const a = at(m), k = Math.cos((a[1] * Math.PI) / 180);
+  let x = 0, y = 0;
+  for (let d = 1000; d <= 5000; d += 1000) { const b = atChain(a[2] + d), dx = (b[0] - a[0]) * k, dy = b[1] - a[1], h = Math.hypot(dx, dy) || 1; x += dx / h; y += dy / h; }
+  return (Math.atan2(x, y) * 180) / Math.PI;
 }
 // Lower pitch over the first 20 km: in the deep source gorge a steep camera dipped behind the valley walls
 const camPitch = (r, steep = 58) => (!map.getTerrain() ? 0 : r[2] < 20000 ? 40 : steep);
 function followCam(r) {
   const now = performance.now();
-  if (!cam) cam = { c: map.getCenter().toArray(), b: map.getBearing(), ts: now };
+  if (!cam) cam = { c: map.getCenter().toArray(), b: map.getBearing(), p: map.getPitch(), ts: now };
   const dt = Math.min(0.1, (now - cam.ts) / 1000); cam.ts = now;
-  const kc = 1 - Math.exp(-dt / 0.45), kb = 1 - Math.exp(-dt / 1.2); // frame-rate independent easing (time constants in s)
-  cam.c = [cam.c[0] + (r[0] - cam.c[0]) * kc, cam.c[1] + (r[1] - cam.c[1]) * kc];
-  cam.b += ((((bearingAt(t) - cam.b) % 360) + 540) % 360 - 180) * kb;
-  map.jumpTo({ center: cam.c, bearing: cam.b, pitch: camPitch(r) });
+  const e = (tau) => 1 - Math.exp(-dt / tau); // frame-rate independent easing (time constant in s)
+  cam.c = [cam.c[0] + (r[0] - cam.c[0]) * e(0.45), cam.c[1] + (r[1] - cam.c[1]) * e(0.45)];
+  const turn = ((((bearingAt(t) - cam.b) % 360) + 540) % 360 - 180) * e(2);
+  cam.b += Math.max(-12 * dt, Math.min(12 * dt, turn)); // never rotate faster than 12°/s
+  cam.p += (camPitch(r) - cam.p) * e(1.5); // ease the 40° -> 58° change after the source gorge
+  map.jumpTo({ center: cam.c, bearing: cam.b, pitch: cam.p });
 }
 function frontCard(r) {
   const km = r[2] / 1000, done = t >= river.at(-1)[3];
@@ -396,6 +404,7 @@ function minPerSec(m, speed) {
 let playing = false, last, holdUntil = 0;
 function loop(ts) {
   if (!playing) return;
+  if (follow && ts < holdUntil) followCam(at(t)); // keep easing through event pauses, or the camera lurches when play resumes
   if (last && ts >= holdUntil) {
     const sp = +$("#speed").value, next = t + ((ts - last) / 1000) * minPerSec(t, sp);
     const hit = events.find((e) => e.m > t && e.m <= next);
@@ -527,7 +536,7 @@ $("#overview").innerHTML = `
   ${D.rows.map(([d, v]) => `<div><span>${d}</span><i style="width:${(100 * v) / bmax}%"></i><em>${v}</em></div>`).join("")}
   </div><p class="note">Districts where deaths were reported, largely reflecting recovery location rather than where people were lost. Rows total ${n(D.rows.reduce((s, r) => s + r[1], 0))} of 1,451; the remainder died during treatment in Kathmandu. Figures are provisional. ${src_("ndrrma")}.</p></div>
 <div class="card"><h4>Method & sources</h4><p class="note">
-  Mapped extent: ${src_("unosat")} (preliminary satellite interpretation, not field-validated). Landslides and building grading: ${src_("ems")}. Timing: DHM gauge brackets (<a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">Zenodo 22679444</a>; Malekhu from the <a href="https://bipadportal.gov.np/" target="_blank" rel="noopener">BIPAD</a> river record), USGS origin time and the Gyirong Port camera time; ${src_("chwrr")} and ${src_("timeline")} for reports. River path: © OpenStreetMap contributors (ODbL). Terrain: Mapzen Terrarium (AWS Open Data).
+  Mapped extent: ${src_("unosat")} (preliminary satellite interpretation, not field-validated). Landslides and building grading: ${src_("ems")}. Timing: DHM gauge brackets (<a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">Zenodo 22679444</a>; Malekhu from the <a href="https://bipadportal.gov.np/" target="_blank" rel="noopener">BIPAD</a> river record), USGS origin time and the Gyirong Port camera time; ${src_("chwrr")} and ${src_("timeline")} for reports. River path: © OpenStreetMap contributors (ODbL). Terrain: Mapterhorn (Copernicus GLO-30).
   Both are uncertain: the extent is a satellite interpretation, and the timing is interpolated between bracket midpoints of mixed evidence, with an earliest/latest scenario envelope. Full method: <a href="https://github.com/IbaadGEO/trishuli-flood-trace/blob/main/METHODS.md" target="_blank" rel="noopener">METHODS.md</a>.</p></div>`;
 // keep the panel short: front, overview and impact stay open; the detail cards fold away
 [...$("#overview").children].slice(3).forEach((card) => {
@@ -548,8 +557,8 @@ map.on("mousemove", (e) => { tipQ = e; requestAnimationFrame(() => { if (tipQ !=
   const [i, d] = nearestIdx(e.lngLat.lng, e.lngLat.lat);
   if (d > 4000) { tip.hidden = true; return; }
   const r = river[i], z = map.getTerrain() ? map.queryTerrainElevation(e.lngLat) : null;
-  // queryTerrainElevation is relative to the screen-centre elevation and includes exaggeration
-  const elev = z == null ? null : (z + map.transform.elevation) / map.getTerrain().exaggeration, am = extentMinute(e.lngLat);
+  // queryTerrainElevation returns metres above sea level multiplied by the exaggeration
+  const elev = z == null ? null : z / map.getTerrain().exaggeration, am = extentMinute(e.lngLat);
   tip.innerHTML = (elev == null ? "" : `<b>${n(elev)} m</b> · ${n(Math.max(0, elev - r[4]))} m above DEM channel<br>`)
     + `${(r[2] / 1000).toFixed(1)} km downstream · ${(d / 1000).toFixed(1)} km from channel<br>`
     + (am == null ? `<span class="muted">Outside the mapped flood extent</span>` : `<span class="hit">● Flooded</span> · est. reached <b>${fmt(am)}</b>${am > t ? " (not yet)" : ""}`)

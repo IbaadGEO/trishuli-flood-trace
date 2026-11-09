@@ -1,6 +1,6 @@
 """Build static data for the Trishuli flood viewer.
 
-Inputs (cached under raw/): OSM rivers (Overpass), Terrarium DEM tiles (AWS open data),
+Inputs (cached under raw/): OSM rivers (Overpass), Mapterhorn terrain tiles (Copernicus GLO-30 over Nepal),
 Copernicus EMS EMSR927 grading vectors (raw/ems/), UNOSAT product 4256 geodatabase (raw/unosat/).
 Outputs under web/data/. Run: python -P build.py
 """
@@ -121,7 +121,7 @@ for name, la, lo, m, rel, note, srcname in CHECKS:
     check_rows.append((name, la, lo, c, m, rel, round(est, 1), status, note, srcname))
     print(f"check {name}: reported {rel} {m} min, estimated onset {est:.0f} (earliest {earliest:.0f}) -> {status}")
 
-# ---------- 2. DEM mosaic (Terrarium, Web Mercator) ----------
+# ---------- 2. DEM mosaic (Mapterhorn Copernicus GLO-30, Terrarium-encoded, Web Mercator) ----------
 def tx(lon): return (lon + 180) / 360 * 2 ** Z
 def ty(lat): return (1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * 2 ** Z
 
@@ -129,8 +129,9 @@ x0, x1, y0, y1 = int(tx(W)), int(tx(E)), int(ty(N)), int(ty(S))
 dem = np.zeros(((y1 - y0 + 1) * 256, (x1 - x0 + 1) * 256), np.float32)
 for x in range(x0, x1 + 1):
     for y in range(y0, y1 + 1):
-        b = get(f"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{Z}/{x}/{y}.png", os.path.join(RAW, "dem", f"{Z}_{x}_{y}.png"))
-        a = np.asarray(Image.open(io.BytesIO(b)).convert("RGB"), np.float32)
+        # one 512 px Mapterhorn tile at Z-1 covers 2x2 of our 256 px Z tiles: take this tile's quadrant
+        b = get(f"https://tiles.mapterhorn.com/{Z - 1}/{x // 2}/{y // 2}.webp", os.path.join(RAW, "dem", f"mt_{Z - 1}_{x // 2}_{y // 2}.webp"))
+        a = np.asarray(Image.open(io.BytesIO(b)).convert("RGB"), np.float32)[(y % 2) * 256:(y % 2 + 1) * 256, (x % 2) * 256:(x % 2 + 1) * 256]
         dem[(y - y0) * 256:(y - y0 + 1) * 256, (x - x0) * 256:(x - x0 + 1) * 256] = a[..., 0] * 256 + a[..., 1] + a[..., 2] / 256 - 32768
 cols = np.array([(tx(lo) - x0) * 256 for lo in dlon]).astype(int)
 rows = np.array([(ty(la) - y0) * 256 for la in dlat]).astype(int)
