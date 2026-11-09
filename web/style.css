@@ -41,6 +41,8 @@ dd { margin: 0; }
 .bars em { font-style: normal; text-align: right; }
 .est { font-size: 10px; background: var(--chip); color: var(--alert-ink); padding: 1px 5px; border-radius: 4px; margin-left: 4px; font-weight: 600; }
 .note { color: var(--muted); font-size: 12px; }
+.rep p { margin: 4px 0; } .rep-title { font-weight: 600; } .rep a { color: var(--link); }
+.rep-flag { border-left: 3px solid var(--alert); padding-left: 8px; font-size: 12px; } .rep-flag.fix { border-left-color: var(--gauge); }
 a { color: var(--link); }
 .layer { display: grid; grid-template-columns: 18px 1fr; gap: 6px; align-items: start; padding: 6px 0; border-bottom: 1px dashed var(--line); }
 .layer small { display: block; color: var(--muted); }

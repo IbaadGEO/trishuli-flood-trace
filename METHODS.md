@@ -69,6 +69,10 @@ Copernicus GLO-30 DEM via Mapterhorn tiles (sampled on a zoom-12 grid, ~34 m pix
 - Gaps in "after" show the 2025 EOxCloudless basemap, which is pre-event.
 - `imagery.py` now writes the Sentinel-2 scene IDs used and its processing parameters to `s2.json`. The published composite was made before this change, so its scene IDs are not yet recorded; they will be on the next imagery run. Per-pixel observation counts are not exported.
 
+## Reporting at the time
+
+The Reporting tab shows what news outlets were publishing as the flood unfolded (`web/data/reporting.json`). Each card appears at the time that **version** became public, not the time of the events it describes. Live news pages were revised all day as tolls rose, so every summary is taken from an Internet Archive capture. The time comes from the timestamp printed in that capture, or from its page metadata, and the capture time is an upper bound. Explanations later shown to be wrong (for example a glacial lake outburst) are labelled "unconfirmed at the time" rather than removed. Reports published after 18:43 are kept in a separate "Later coverage" list. Broadcast clips are not included because no on-air times could be verified, and gaps show "No verified report available by this time" rather than filling in.
+
 ## Reproducing
 
 ```bash

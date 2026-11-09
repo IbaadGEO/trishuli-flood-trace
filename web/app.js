@@ -7,7 +7,7 @@ const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return h *
 const n = (x) => Math.round(x).toLocaleString("en-GB");
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-const [meta, ev, gauges, sitesRaw] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json", "data/sites.json"].map((u) => fetch(u, { cache: "no-cache" }).then((r) => r.json()))); // revalidate: data must match this app.js
+const [meta, ev, gauges, sitesRaw, rep] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json", "data/sites.json", "data/reporting.json"].map((u) => fetch(u, { cache: "no-cache" }).then((r) => r.json()))); // revalidate: data must match this app.js
 const river = meta.river; // [lon, lat, chain_m, minutes, bedElev]
 const sites = sitesRaw.map((s) => ({ ...s, ...ev.sites[s.id] })); // before/after image pairs + their captions
 $("#t").max = Math.max(+$("#t").max, ...ev.events.map((e) => toMin(e.t))); // reach the last key event
@@ -353,6 +353,7 @@ function setTime(m, fly) {
   $("#clock-sub").textContent = (t === 0 ? "seismic signal" : reached ? `front past Devghat · +${Math.floor(t / 60)}h ${Math.round(t % 60)}m` : `front at ${(r[2] / 1000).toFixed(0)} km (est.) · +${Math.floor(t / 60)}h ${Math.round(t % 60)}m`)
     + (playing ? ` · playback 1 s = ${rateTxt}` : "");
   story(t);
+  reporting(t);
   document.querySelectorAll("#ev li[data-m]").forEach((li) => { const em = +li.dataset.m; li.classList.toggle("future", em > t); li.classList.toggle("now", em <= t && em > t - 15); });
   drawCharts(r);
   $("#area").textContent = n(meta.areaByMin[Math.min(Math.floor(t), meta.areaByMin.length - 1)]);
@@ -371,6 +372,23 @@ function story(m) {
     + (site ? `<button class="cmp-btn" data-site="${site.id}">Before / after: ${site.name} ▸</button>` : "");
 }
 storyBox.addEventListener("click", (e) => { const b = e.target.closest(".cmp-btn"); if (b) openSite(b.dataset.site); });
+
+// ---------- reporting at the time: a card appears when that version became public, never at the time it describes ----------
+const REP0 = Date.parse(rep.t0);
+const reports = rep.reports.map((r) => ({ ...r, m: (Date.parse(r.availableAt) - REP0) / 60000 })).sort((a, b) => a.m - b.m);
+const repWhen = (r) => `${r.availableAt.slice(8, 10) === "26" ? "" : `${+r.availableAt.slice(8, 10)} Aug `}${r.availableAt.slice(11, 16)} NPT`; // as printed, not rounded
+const repCard = (r) => `<article class="card rep"><h4>${r.outlet} <span>${repWhen(r)}</span></h4>
+  <p class="rep-title"><a href="${r.archiveUrl ?? r.url}" target="_blank" rel="noopener">${r.title}</a></p><p>${r.summary}</p>
+  ${r.atTheTime ? `<p class="rep-flag"><b>Unconfirmed at the time.</b> ${r.atTheTime}</p>` : ""}${r.correction ? `<p class="rep-flag fix"><b>New explanation.</b> ${r.correction}</p>` : ""}
+  ${r.note ? `<p class="note">${r.note}</p>` : ""}<p class="note">${r.locations.join(" · ")}. <b>Time:</b> ${r.timeEvidence}${r.archiveUrl ? ` <a href="${r.url}" target="_blank" rel="noopener">Live page</a> (since updated).` : ""}</p></article>`;
+$("#reporting").innerHTML = `<p class="note">${rep.note}</p><div id="rep-now" aria-live="polite"></div>
+  <details class="card"><summary><b>Later coverage</b> <span class="muted">after the timeline ends</span></summary>${reports.filter((r) => r.m > T_END).map(repCard).join("")}</details>`;
+let repShown = -1;
+function reporting(m) { // redraw only when the set of public reports changes
+  const now = reports.filter((r) => r.m <= m && r.m <= T_END);
+  if (now.length === repShown) return; repShown = now.length;
+  $("#rep-now").innerHTML = now.length ? now.toReversed().map(repCard).join("") : `<p class="card note">No verified report available by ${fmt(m)} NPT. The first archived report is from ${repWhen(reports[0])}.</p>`;
+}
 
 // ---------- before / after comparison ----------
 const cmp = $("#cmp");

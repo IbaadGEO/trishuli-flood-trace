@@ -91,7 +91,7 @@ def stretch(a):
 UA = {"User-Agent": "TrishuliFloodTrace/1.0 (non-commercial research map)"}
 C = "https://upload.wikimedia.org/wikipedia/commons/"
 PUBLISHED = [
-    ("esa", "During the flood: upper corridor, about 2 hours after the collapse", 116,
+    ("esa", "During the flood: upper corridor, about 2 hours after the 08:37 signal", 116,
      (C + "3/31/Nepal_glacier_collapse_and_flood_24_August_2026.jpg", "2026-08-24", "Sentinel-2, false colour (ESA rendering)",
       "© ESA, contains modified Copernicus Sentinel data (2026), CC BY-SA 3.0 IGO", "Commons: Nepal glacier collapse and flood 24 August 2026.jpg"),
      (C + "0/0b/Nepal_glacier_collapse_and_flood_%28after%29_%2855504451912%29.jpg", "2026-08-26", "Landsat 9, 04:47 UTC (10:33 NPT), false colour (ESA rendering)",
