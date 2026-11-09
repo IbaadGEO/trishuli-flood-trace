@@ -23,16 +23,26 @@ ZX = 12  # extent raster zoom (~34 m px); z13 exceeds the 4096 px texture limit 
 UNOSAT = glob.glob(os.path.join(RAW, "unosat", "**", "*.gdb"), recursive=True)[0]
 unosat = lambda layer: gpd.read_file(UNOSAT, layer=f"UNOSAT_{layer}").set_crs(4326, allow_override=True)
 
-# Anchors: observed times (NPT, minutes after 08:37 collapse) from the CHWRR / DHM technical report
-# as summarised in Wikipedia "Timeline of the 2026 Nepal–Tibet floods". Coordinates approximate, snapped to river.
+# Timing evidence, minutes after the 08:37 NPT collapse signal, as brackets (earliest, latest). Interpolation uses the
+# bracket midpoints; the earliest/latest bounds give a deterministic scenario envelope, not a statistical interval.
+# Gauge brackets and coordinates: DHM ten-minute record as archived in Acharya & Paudel (2026), Zenodo
+# 10.5281/zenodo.22679444 v3.0.0 (onset = last background sample -> first risen sample; destroyed stations:
+# last transmission -> next absent report, assuming the flood caused the loss).
+# (name, lat, lon, earliest, latest, evidence type, note, source)
 ANCHORS = [
-    ("Collapse (Lirung massif)", 28.289, 85.521, 0, "08:37:10 seismic signal (USGS us7000tbwb, M5.2 landslide)"),  # UNOSAT detachment-zone centroid
-    ("Gyirong Port / Rasuwagadhi", 28.276, 85.378, 7, "08:44 CCTV captures destruction"),
-    ("Syabrubesi gauge", 28.161, 85.344, 13, "08:50 station stops transmitting (assumed hit)"),
-    ("Betrawati gauge", 27.969, 85.187, 43, "09:20 station stops transmitting"),
-    ("Malekhu / Phurke", 27.820, 84.834, 169, "11:26 warning level crossed; danger level and station lost 11:43"),
-    ("Mugling", 27.853, 84.560, 263, "Reported past Mugling by 13:00 (upper bound, not a measured arrival)"),
-    ("Devghat", 27.743, 84.432, 403, "15:20 flood reaches Narayani confluence; peak 16:00"),
+    ("Route origin", 28.289, 85.521, 0, 2, "seismic origin time", "Collapse signal 02:52:10 UTC (USGS us7000tbwb); route starts at the OSM network ~0.9 km from the mapped source, so the source-to-channel runout is not timed", "USGS ComCat"),
+    ("Gyirong Port", 28.276, 85.378, 6, 8, "impact (CCTV, reported)", "Reported CCTV time 08:44; clock basis not independently verified", "Wikipedia timeline / CHWRR"),
+    ("Syabrubesi gauge", 28.170650, 85.342554, 13, 23, "telemetry loss", "Last report 08:50 (3.80 m), next report absent by 09:00", "DHM via Zenodo 22679444"),
+    ("Betrawati gauge", 27.970000, 85.180000, 43, 53, "telemetry loss", "Last report 09:20 (3.55 m), next report absent by 09:30", "DHM via Zenodo 22679444"),
+    ("Galchhi gauge", 27.802328, 85.003050, 103, 113, "rising-wave onset", "Last background sample 10:20, first risen 10:30", "DHM via Zenodo 22679444"),
+    ("Kali Khola gauge", 27.833000, 84.546000, 273, 283, "rising-wave onset", "Last background sample 13:10, first risen 13:20", "DHM via Zenodo 22679444"),
+    ("Devghat gauge", 27.710000, 84.430000, 353, 363, "rising-wave onset", "Last background sample 14:30, first risen 14:40", "DHM via Zenodo 22679444"),
+]
+# Reports that are not arrival observations: checked against the fitted onset, never fitted. (name, lat, lon, minute, relation, note, source)
+CHECKS = [
+    ("Rasuwagadhi gauge", 28.271297, 85.377649, 13, "onset by", "Last report 08:40 (1.62 m), next absent by 08:50", "DHM via Zenodo 22679444"),
+    ("Malekhu / Phurke", 27.820, 84.834, 169, "onset by", "Warning level reported crossed 11:26 (CHWRR); a threshold crossing follows onset", "CHWRR Assessment Report II"),
+    ("Mugling", 27.853, 84.560, 263, "onset by", "Reported past Mugling by 13:00; an upper bound", "Wikipedia timeline / CHWRR"),
 ]
 
 
@@ -95,10 +105,19 @@ dlat, dlon = np.interp(dense_c, chain, P[:, 0]), np.interp(dense_c, chain, P[:, 
 print(f"river path {chain[-1] / 1000:.1f} km, {len(path)} vertices")
 
 ptree = cKDTree(np.c_[dlat, dlon])
-anc_c = [float(dense_c[ptree.query([la, lo])[1]]) for _, la, lo, *_ in ANCHORS]
-anc_t = [a[3] for a in ANCHORS]
+snap = lambda la, lo: ptree.query([la, lo])
+anc_c = [float(dense_c[snap(a[1], a[2])[1]]) for a in ANCHORS]
 assert all(np.diff(anc_c) > 0), f"anchors out of order along river: {anc_c}"
-arrival = np.interp(dense_c, anc_c, anc_t)  # minutes after 08:37, piecewise linear between observations
+lo_t, hi_t = [a[3] for a in ANCHORS], [a[4] for a in ANCHORS]
+mid_t = [(a + b) / 2 for a, b in zip(lo_t, hi_t)]
+arrival = np.interp(dense_c, anc_c, mid_t)  # minutes after 08:37: piecewise linear between bracket midpoints
+arr_lo, arr_hi = np.interp(dense_c, anc_c, lo_t), np.interp(dense_c, anc_c, hi_t)  # scenario envelope
+check_rows = []
+for name, la, lo, m, rel, note, srcname in CHECKS:
+    c = float(dense_c[snap(la, lo)[1]]); est = float(np.interp(c, anc_c, mid_t)); earliest = float(np.interp(c, anc_c, lo_t))
+    status = "consistent" if est <= m else ("consistent within envelope" if earliest <= m else "CONFLICT")
+    check_rows.append((name, la, lo, c, m, rel, round(est, 1), status, note, srcname))
+    print(f"check {name}: reported {rel} {m} min, estimated onset {est:.0f} (earliest {earliest:.0f}) -> {status}")
 
 # ---------- 2. DEM mosaic (Terrarium, Web Mercator) ----------
 def tx(lon): return (lon + 180) / 360 * 2 ** Z
@@ -149,16 +168,19 @@ print(f"observed px kept {ok.sum()} / {ok.size}")
 
 ra, rb, ca, cb = r_.min(), r_.max() + 1, c_.min(), c_.max() + 1
 img = np.zeros((rb - ra, cb - ca, 4), np.uint8)
+untimed = idx == 0  # nearest route point is the origin: source/runout ground upstream of the timed route
 m = np.round(arrival[idx]).astype(np.uint16)
 img[r_ - ra, c_ - ca, 0], img[r_ - ra, c_ - ca, 1] = m >> 8, m & 255
-img[r_ - ra, c_ - ca, 2] = (255 * np.clip(1 - dist / 800, 0.35, 1)).astype(np.uint8)  # opacity: stronger near channel
+# B channel: display opacity (89-255, stronger near channel); the value 1 flags untimed source-zone pixels
+img[r_ - ra, c_ - ca, 2] = np.where(untimed, 1, 255 * np.clip(1 - dist / 800, 0.35, 1)).astype(np.uint8)
 img[r_ - ra, c_ - ca, 3] = 255
 Image.fromarray(img, "RGBA").save(os.path.join(OUT, "arrival.png"), optimize=True)
 lonx = lambda c: math.degrees((mx0 + c * res) / R)
 latx = lambda r: math.degrees(2 * math.atan(math.exp((my0 - r * res) / R)) - math.pi / 2)
 corners = [[lonx(ca), latx(ra)], [lonx(cb), latx(ra)], [lonx(cb), latx(rb)], [lonx(ca), latx(rb)]]
 cell_ha = (res * math.cos(lat0)) ** 2 / 1e4
-area_by_min = np.bincount(m, minlength=int(arrival.max()) + 1) * cell_ha
+area_by_min = np.bincount(m[~untimed], minlength=int(arrival.max()) + 1) * cell_ha
+untimed_ha = float(untimed.sum() * cell_ha)
 
 # ---------- 4. observed vectors ----------
 for name, layer in [("unosat_extent", "Multisensor_20260826_20260828_FloodExtent"),
@@ -183,17 +205,50 @@ meta = {
     "event": {"name": "Trishuli debris flow", "date": "2026-08-26", "t0": "2026-08-26T08:37:00+05:45", "tz": "NPT"},
     "bounds": [W, S, E, N],
     "arrival": {"corners": corners, "maxMin": int(arrival.max()), "cellHa": cell_ha},
-    "river": [[round(float(lo), 5), round(float(la), 5), round(float(c)), round(float(t), 1), round(float(e))]
-              for lo, la, c, t, e in zip(dlon[::step], dlat[::step], dense_c[::step], arrival[::step], bed[::step])],
-    "anchors": [{"name": n, "lon": float(dlon[ptree.query([la, lo])[1]]), "lat": float(dlat[ptree.query([la, lo])[1]]),
-                 "chain": c, "min": t, "note": note} for (n, la, lo, t, note), c in zip(ANCHORS, anc_c)],
+    # [lon, lat, chainage m, estimated minute (midpoint fit), DEM channel elevation, earliest minute, latest minute]
+    "river": [[round(float(lo), 5), round(float(la), 5), round(float(c)), round(float(t), 1), round(float(e)), round(float(a), 1), round(float(b), 1)]
+              for lo, la, c, t, e, a, b in zip(dlon[::step], dlat[::step], dense_c[::step], arrival[::step], bed[::step], arr_lo[::step], arr_hi[::step])],
+    "anchors": [{"name": n, "lon": la_lo[1], "lat": la_lo[0], "chain": c, "lo": a, "hi": b, "min": (a + b) / 2, "type": ty, "note": note, "src": s}
+                for (n, la, lo, a, b, ty, note, s), c in zip(ANCHORS, anc_c) for la_lo in [(float(dlat[snap(la, lo)[1]]), float(dlon[snap(la, lo)[1]]))]],
+    "checks": [{"name": n, "chain": c, "min": m, "relation": rel, "estimated": est, "status": st, "note": note, "src": s}
+               for n, la, lo, c, m, rel, est, st, note, s in check_rows],
+    "untimedHa": round(untimed_ha),
     "areaByMin": [round(float(x), 1) for x in np.cumsum(area_by_min)],
     "emsCounts": ems_counts,
     "unosatBuildings": len(ub),
     "extentHa": round(float(extent.to_crs(32645).area.sum() / 1e4)),
 }
 json.dump(meta, open(os.path.join(OUT, "meta.json"), "w"), separators=(",", ":"))
-print(f"timed extent {area_by_min.sum():.0f} ha (UNOSAT alone {meta['extentHa']} ha), raster {img.shape[1]}x{img.shape[0]}")
-assert abs(area_by_min.sum() - meta["extentHa"]) / meta["extentHa"] < 0.35, "timed extent drifted far from the observed area"
+print(f"timed extent {area_by_min.sum():.0f} ha + untimed source zone {untimed_ha:.0f} ha (UNOSAT alone {meta['extentHa']} ha), raster {img.shape[1]}x{img.shape[0]}")
+assert abs(area_by_min.sum() + untimed_ha - meta["extentHa"]) / meta["extentHa"] < 0.35, "rasterised extent drifted far from the mapped area"
+
+# ---------- 6. gauge hydrographs, anchor table, input manifest ----------
+import csv, hashlib
+ZEN = glob.glob(os.path.join(RAW, "zenodo", "extracted", "**", "gauge_timeseries.json"), recursive=True)[0]
+gts = json.load(open(ZEN, encoding="utf-8"))["stations"]
+hydro = []
+for key in ["Rasuwagadhi", "Syabrubesi", "Betrawati", "Galchhi", "Kali Khola", "Devghat"]:
+    s = gts[key]; a = s.get("arrival") or {}
+    base = a.get("local_level_m", a.get("background_m"))
+    ser = [[hh, v] for hh, v in s["series_26aug"] if "06:00" <= hh <= "20:00"]
+    peak = max(ser, key=lambda r: r[1])
+    hydro.append({"name": key, "dhm_station_id": s["station_id"], "series_id": s["series_id"], "lat": s["lat"], "lon": s["lon"],
+                  "warning_m": s["warning_m"], "danger_m": s["danger_m"], "base_m": base, "destroyed": not s["reported_through_end_of_day"],
+                  "onset": [a.get("after_npt"), a.get("by_npt")], "peak": peak, "series": ser})
+json.dump({"source": "DHM river-watch ten-minute stage, archived in Acharya & Paudel (2026), Zenodo 10.5281/zenodo.22679444 v3.0.0, CC BY 4.0",
+           "units": "stage, metres, station datum (not comparable between stations)", "stations": hydro},
+          open(os.path.join(OUT, "gauges.json"), "w"), separators=(",", ":"))
+with open(os.path.join(HERE, "anchors.csv"), "w", newline="", encoding="utf-8") as f:
+    w = csv.writer(f); w.writerow(["name", "lat", "lon", "chainage_km", "earliest_npt", "latest_npt", "use", "evidence_type", "note", "source"])
+    hm = lambda x: f"{(8 * 60 + 37 + int(round(x))) // 60:02d}:{(8 * 60 + 37 + int(round(x))) % 60:02d}"
+    for (n, la, lo, a, b, ty, note, s), c in zip(ANCHORS, anc_c):
+        w.writerow([n, la, lo, round(c / 1000, 2), hm(a), hm(b), "fitted (bracket midpoint)", ty, note, s])
+    for n, la, lo, c, m_, rel, est, st, note, s in check_rows:
+        w.writerow([n, la, lo, round(c / 1000, 2), "", hm(m_), f"check only: {st}", rel, note, s])
+manifest = {os.path.relpath(p, HERE).replace(os.sep, "/"): hashlib.sha256(open(p, "rb").read()).hexdigest()
+            for p in sorted(glob.glob(os.path.join(RAW, "ems", "*.zip")) + glob.glob(os.path.join(RAW, "unosat", "*.zip"))
+                            + glob.glob(os.path.join(RAW, "zenodo", "*.zip")) + [os.path.join(RAW, "osm_rivers.json")])}
+json.dump({"note": "SHA-256 of the downloaded inputs this build used (raw/ is not committed; see sources.csv for URLs)", "files": manifest},
+          open(os.path.join(HERE, "inputs_manifest.json"), "w"), indent=1)
 print("anchors km:", [round(c / 1000, 1) for c in anc_c])
 print("EMS:", {k: sum(v.values()) for k, v in ems_counts.items()}, "observed polys", len(obs), "damaged roads", len(rds))

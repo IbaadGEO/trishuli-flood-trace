@@ -6,6 +6,8 @@
 >
 > Independent, non-commercial reconstruction for education and understanding. Not an official product and not for emergency use. The flood extent is observed from satellite mapping; the timing between observation points is estimated.
 
+Documentation: [METHODS.md](METHODS.md) (how everything is built and its limits) · [sources.csv](sources.csv) (every source, version, licence) · [anchors.csv](anchors.csv) (timing evidence and checks) · [inputs_manifest.json](inputs_manifest.json) (input checksums) · [requirements.txt](requirements.txt).
+
 ## Deploy (Vercel)
 
 The site is the static `web/` folder. `vercel.json` sets it as the output directory, creates `web/config.js` from the example if absent, and sets cache headers (7 days for imagery tiles, 1 hour for data). Import the GitHub repository in Vercel with the default settings; no environment variables are needed.
@@ -28,9 +30,10 @@ By default the map uses the keyless EOxCloudless 2024 mosaic. The code can inste
 python -P build.py
 ```
 
-Needs numpy, scipy, pillow, requests, rasterio and geopandas. Downloads are cached in `raw/`. Two inputs must be placed by hand:
+Needs the packages in `requirements.txt`. Downloads are cached in `raw/`. Two inputs must be placed by hand:
 - `raw/ems/`: the Copernicus EMS EMSR927 grading products ("vectors" zips, unzipped)
 - `raw/unosat/`: the UNOSAT product 4256 geodatabase (`FL20260826NPL.gdb.zip`, unzipped)
+- `raw/zenodo/`: the Zenodo 22679444 archive (`zenodo_upload.zip`, unzipped into `raw/zenodo/extracted/`)
 
 Then build the before/after Sentinel-2 imagery (about 40 minutes; reads Sentinel-2 L2A COGs from AWS, no login):
 
@@ -46,9 +49,9 @@ The "before" and "after" composites are per-pixel medians of the clear observati
 |---|---|---|
 | Corridor flood extent, affected buildings, barrier lakes, detachment zone | Observed (satellite) | UNOSAT product 4256 (UNITAR terms of use) |
 | Mapped landslides (shown separately, not timed), building and road damage grading (4 areas) | Observed (photo-interpreted) | Copernicus EMS Rapid Mapping EMSR927, © 2026 European Union, CC BY |
-| Gauge readings and thresholds | Observed | CHWRR Assessment Report II (13 Sep 2026) |
+| Gauge stage series, station IDs/coordinates, thresholds | Observed (DHM ten-minute record; stage relative to station datum) | Acharya & Paudel (2026), Zenodo [10.5281/zenodo.22679444](https://doi.org/10.5281/zenodo.22679444), CC BY 4.0; Phurke values from CHWRR Assessment Report II |
 | Times at Gyirong Port, Syabrubesi, Betrawati, Malekhu, Mugling, Devghat | Reported | CHWRR/DHM reports, via Wikipedia timeline |
-| When each part of the mapped extent was reached | **Estimated**: arrival time of the nearest river point, interpolated linearly between reported times. The reported times mix evidence types (telemetry loss, threshold crossings, CCTV, an upper bound at Mugling) and some conflict, so the moving front and its implied rate are schematic | this repo |
+| When each part of the mapped extent was reached | **Estimated**: interpolated between the midpoints of typed evidence windows (gauge onsets and telemetry losses, USGS origin, reported CCTV), with an earliest/latest scenario envelope; reports such as threshold crossings are checks only. See [METHODS.md](METHODS.md) and [anchors.csv](anchors.csv) | this repo |
 | Channel elevation profile | **Derived**: DEM samples, minimum-filtered and forced non-increasing for display; not a surveyed bed | this repo |
 | Source parameters, precursor, rainfall, district deaths | Reported (ranges where studies disagree) | USGS, JMS, JISRS, ICIMOD, arXiv 2609.04563, NDRRMA SitRep 19 |
 | River path | OpenStreetMap contributors (ODbL) | Overpass |

@@ -1,0 +1,12 @@
+{
+ "note": "SHA-256 of the downloaded inputs this build used (raw/ is not committed; see sources.csv for URLs)",
+ "files": {
+  "raw/ems/EMSR927_AOI01_GRA_PRODUCT_v1.zip": "8a06ad670acf3b022406ee1ef8193c37dacc7cc1bb3efc95cae8ba55bbf539bc",
+  "raw/ems/EMSR927_AOI02_GRA_PRODUCT_v2.zip": "9f599f1aadf84494658f9b3f088685e55b28e2c96e393878d26065341aa7e761",
+  "raw/ems/EMSR927_AOI03_GRA_MONIT01_v1.zip": "326c101960811a8b5f8cd93cda2de476798495cea0d08b3d7be15c20ab8e6f42",
+  "raw/ems/EMSR927_AOI05_GRA_MONIT01_v2.zip": "4715c9266c0d43131e4a7d9ebaa7b9ee79207e624e069f69bedf253066971781",
+  "raw/osm_rivers.json": "bae8b62e06aecd293f5c90710bb03bd156eea64187272affeb9e4e04002e2a9b",
+  "raw/unosat/FL20260826NPL.gdb.zip": "1c09bd5cff4e5dee870cd8413af0eb036e0dcd75d254cf1a337aa49096aaec2e",
+  "raw/zenodo/zenodo_upload.zip": "9f2c60673c1d6ea8fa1e43f2339d376b147ba4de48bbda8279bf509cc30767f9"
+ }
+}

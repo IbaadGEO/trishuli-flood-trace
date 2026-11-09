@@ -6,7 +6,7 @@ const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return h *
 const n = (x) => Math.round(x).toLocaleString("en-GB");
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-const [meta, ev] = await Promise.all(["data/meta.json", "data/events.json"].map((u) => fetch(u).then((r) => r.json())));
+const [meta, ev, gauges] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json"].map((u) => fetch(u).then((r) => r.json())));
 const river = meta.river; // [lon, lat, chain_m, minutes, bedElev]
 const T_END = +$("#t").max;
 let t = 0;
@@ -21,6 +21,15 @@ const esriIds = esri ? esri.layers.map((l) => l.id) : [];
 const FONT = esri?.layers.find((l) => l.layout?.["text-font"])?.layout["text-font"] ?? ["Open Sans Semibold"]; // one glyph server per style
 
 // ---------- map ----------
+const RM = matchMedia("(prefers-reduced-motion: reduce)").matches; // no follow camera or animated flights
+const glProbe = document.createElement("canvas");
+if (!(glProbe.getContext("webgl2") || glProbe.getContext("webgl"))) {
+  const repo = "https://github.com/IbaadGEO/trishuli-flood-trace/blob/main";
+  $("#map").innerHTML = `<div class="nogl"><b>This 3D map needs WebGL, which isn't available in this browser.</b>
+    <p>The reconstruction's method, evidence and sources are readable without it: <a href="${repo}/METHODS.md">METHODS.md</a> ·
+    <a href="${repo}/anchors.csv">timing evidence (anchors.csv)</a> · <a href="${repo}/sources.csv">sources.csv</a> · <a href="${repo}/README.md">README</a>.</p></div>`;
+  throw new Error("WebGL unavailable: static fallback shown");
+}
 const map = new maplibregl.Map({
   container: "map",
   center: [85.37, 28.2], zoom: 10.6, pitch: 62, bearing: -20, maxPitch: 80,
@@ -201,7 +210,7 @@ const OPROP = { raster: "raster-opacity", fill: "fill-opacity", line: "line-opac
 const opOf = (L) => L.add && L.id !== "s2post" && OPROP[L.add.type]; // s2post opacity belongs to the before/after blend
 $("#layers").innerHTML = LAYERS.map((L) => L.group ? `<div class="layer"><h5>${L.group}</h5></div>` :
   `<label class="layer"><input type="checkbox" data-id="${L.id}" ${L.on ? "checked" : ""}><span>${L.sw ? `<i class="sw" style="background:${L.sw}"></i>` : ""}${L.name}${L.est ? '<span class="est">EST.</span>' : ""}${L.note ? `<small>${L.note}</small>` : ""}${opOf(L) ? `<span class="op"><input type="range" min="0" max="100" value="${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}" data-op="${L.id}" aria-label="${L.name} opacity"><output>${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}%</output></span>` : ""}</span></label>`).join("")
-  + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are estimates between observations; reported times mix different kinds of evidence (gauge telemetry loss, threshold crossings, CCTV, reports). They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances are measured along the river from where the flow entered the channel, ~0.9 km from the mapped source.</p>`;
+  + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are interpolated between the midpoints of evidence windows (gauge onsets and telemetry losses from the DHM record, the USGS origin time, a reported CCTV time); reports such as threshold crossings are used only as checks. They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances start at the OSM route origin, ~0.9 km from the mapped source; the source-to-channel runout is not timed.</p>`;
 document.querySelector(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
   document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-selected", b === e.target); });
   document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k)); };
@@ -214,7 +223,7 @@ if (s2) {
   box.className = "fade";
   box.innerHTML = `<b>Corridor imagery</b><div class="fade-row"><span>Before<small>${span(s2.pre.dates)}</small></span>
     <input type="range" min="0" max="100" value="0" aria-label="Blend before and after Sentinel-2 imagery"><span>After<small>${span(s2.post.dates)}</small></span></div>
-    <small class="note">Month-long cloud-free composites, for orientation only. Gaps in "after" show the 2024 basemap, which is pre-event.</small>`;
+    <small class="note">Cloud-masked median composites over the date windows shown, for orientation only. Gaps in "after" show the 2024 basemap, which is pre-event.</small>`;
   document.querySelector("#map").appendChild(box);
   box.querySelector("input").oninput = (e) => { const v = e.target.value / 100;
     map.setPaintProperty("s2post", "raster-opacity", v); map.setPaintProperty("s2pre", "raster-opacity", 1 - v); }; // so post-event gaps never show the "before" composite
@@ -238,7 +247,6 @@ function line(c) { return { type: "Feature", geometry: { type: "LineString", coo
 const nearestIdx = (lon, lat) => { let bi = 0, bd = Infinity; const k = Math.cos((lat * Math.PI) / 180);
   for (let i = 0; i < river.length; i++) { const d = ((river[i][0] - lon) * k) ** 2 + (river[i][1] - lat) ** 2; if (d < bd) { bd = d; bi = i; } }
   return [bi, Math.sqrt(bd) * 111320]; };
-const gaugesOnPath = ev.gauges.filter((g) => g.lon).map((g) => ({ ...g, r: river[nearestIdx(g.lon, g.lat)[0]] })).sort((a, b) => a.r[2] - b.r[2]);
 const fresh = [214, 245, 255], old = [122, 82, 45];
 const anyIn = (a, lo, hi) => { let l = 0, h = a.length; while (l < h) { const mid = (l + h) >> 1; if (a[mid] <= lo) l = mid + 1; else h = mid; } return l < a.length && a[l] <= hi; };
 let painted = null;
@@ -250,6 +258,7 @@ function paintArrival(m) {
     const d = ch.out.data; d.fill(0);
     for (let k = 0; k < ch.px.length; k += 2) {
       const si = ch.px[k], di = ch.px[k + 1], am = (src[si] << 8) | src[si + 1];
+      if (src[si + 2] === 1) { d[di] = 176; d[di + 1] = 168; d[di + 2] = 156; d[di + 3] = 150; continue; } // untimed source-zone ground: shown, never animated
       if (am > m) continue;
       const age = Math.min(1, (m - am) / AGE);
       d[di] = fresh[0] + (old[0] - fresh[0]) * age; d[di + 1] = fresh[1] + (old[1] - fresh[1]) * age; d[di + 2] = fresh[2] + (old[2] - fresh[2]) * age;
@@ -263,7 +272,7 @@ function paintArrival(m) {
 }
 const events = ev.events.map((e) => ({ ...e, m: toMin(e.t) }));
 
-let follow = true, cam = null; // cam: eased camera state {c:[lon,lat], b:bearing, ts}
+let follow = !RM, cam = null; // cam: eased camera state {c:[lon,lat], b:bearing, ts}
 function atChain(c) { // river point `c` metres from the source
   let i = river.findIndex((r) => r[2] > c);
   if (i <= 0) return i === 0 ? river[0] : river.at(-1);
@@ -286,11 +295,13 @@ function followCam(r) {
 function frontCard(r) {
   const km = r[2] / 1000, done = t >= river.at(-1)[3];
   const v = done ? 0 : ((at(t + 1)[2] - r[2]) / 60) * 3.6; // km/h over the next minute
-  const prev = gaugesOnPath.filter((g) => g.r[2] <= r[2] + 300).at(-1), next = gaugesOnPath.find((g) => g.r[2] > r[2] + 300); // 300 m: gauge snapping tolerance
-  $("#front-card").innerHTML = `<h4>At the flow front <span>${fmt(t)} NPT <span class="est">EST.</span></span></h4><div class="stats">
-    <div><b>${km.toFixed(1)} km</b><span>downstream</span></div><div><b>${done ? "–" : Math.round(v)}</b><span>km/h implied average rate</span></div><div><b>${n(r[4])} m</b><span>DEM channel elevation</span></div></div>
-    <dl style="margin-top:8px"><dt>Last gauge</dt><dd>${prev ? `${prev.name}: ${prev.reading}` : "none passed yet"}</dd>
-    <dt>Next gauge</dt><dd>${next ? `${next.name} in ~${Math.max(1, Math.round(next.r[3] - t))} min (${fmt(next.r[3])})` : "past Devghat"}</dd></dl>`;
+  const win = (a) => (a.lo === a.hi ? fmt(a.lo) : `${fmt(a.lo)}–${fmt(a.hi)}`);
+  const prev = meta.anchors.filter((a) => a.lo <= t).at(-1), next = meta.anchors.find((a) => a.lo > t); // only evidence already in the past is shown as passed
+  $("#front-card").innerHTML = `<h4>Estimated progression <span>${fmt(t)} NPT <span class="est">EST.</span></span></h4><div class="stats">
+    <div><b>${km.toFixed(1)} km</b><span>along route</span></div><div><b>${done ? "–" : Math.round(v)}</b><span>km/h implied average rate</span></div><div><b>${n(r[4])} m</b><span>DEM channel elevation</span></div></div>
+    <p class="note" style="margin:6px 0 0">Envelope at this point: ${fmt(r[5])}–${fmt(r[6])}</p>
+    <dl style="margin-top:6px"><dt>Last evidence</dt><dd>${prev ? `${prev.name}: ${prev.type}, ${win(prev)}` : "none yet"}</dd>
+    <dt>Next evidence</dt><dd>${next ? `${next.name} (${next.type}, ${win(next)})` : "none: end of route"}</dd></dl>`;
 }
 
 // During playback the camera, front marker and clock update every frame; the costly redraws
@@ -320,7 +331,7 @@ function setTime(m, fly) {
   document.querySelectorAll("#ev li").forEach((li) => { const em = +li.dataset.m; li.classList.toggle("future", em > t); li.classList.toggle("now", em <= t && em > t - 15); });
   drawCharts(r);
   $("#area").textContent = n(meta.areaByMin[Math.min(Math.floor(t), meta.areaByMin.length - 1)]);
-  if (fly) map.flyTo({ center: [r[0], r[1]], zoom: 11.8, pitch: map.getTerrain() ? 45 : 0, bearing: bearingAt(t), duration: 1500 }); // camera looks downstream; lower pitch keeps the valley floor in view
+  if (fly) map.flyTo({ center: [r[0], r[1]], zoom: 11.8, pitch: map.getTerrain() ? 45 : 0, bearing: bearingAt(t), duration: RM ? 0 : 1500 }); // camera looks downstream; lower pitch keeps the valley floor in view
 }
 // ---------- plain-English story caption + legend ----------
 const storyBox = document.createElement("div"); storyBox.className = "story"; storyBox.setAttribute("aria-live", "polite"); $("#map").appendChild(storyBox);
@@ -332,7 +343,8 @@ function story(m) {
 }
 const legend = document.createElement("details"); legend.className = "legend"; legend.open = true;
 legend.innerHTML = `<summary>Legend</summary>
-  <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Flow front (where the flood is now)</div>
+  <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Estimated progression along the mapped route</div>
+  <div data-for="arrival"><i class="lg-box fill" style="background:#b0a89c"></i>Mapped source-zone ground (untimed)</div>
   <div data-for="arrival"><i class="lg-grad"></i>Reached (est.): just now → earlier</div>
   <div data-for="reached"><i class="lg-line"></i>River already reached</div>
   <div data-for="river"><i class="lg-line dash"></i>River not reached yet</div>
@@ -400,19 +412,21 @@ $("#play").onclick = () => toggle(!playing);
 $("#restart").onclick = () => { toggle(false); evEl.hidden = true; setTime(0, true); };
 const setFollow = (on) => { follow = on; cam = null; $("#follow").classList.toggle("on", on); $("#follow").setAttribute("aria-pressed", on); };
 $("#follow").onclick = () => setFollow(!follow);
+setFollow(follow); // reflect the reduced-motion default in the button
 map.on("dragstart", (e) => e.originalEvent && follow && playing && setFollow(false)); // user took the camera
 $("#dim").onclick = (e) => { const v = e.target.dataset.v; if (!v) return; $("#dim").querySelectorAll("button").forEach((b) => b.classList.toggle("on", b === e.target)); map.easeTo({ pitch: v === "3" ? 62 : 0, bearing: v === "3" ? -20 : 0 }); setVis("terrain", v === "3"); };
 
 // ---------- key events ----------
-$("#ev").innerHTML = events.map((e) => `<li data-m="${e.m}"><i class="k-${e.kind}"></i><span>${e.title}${e.detail ? `<small>${e.detail}</small>` : ""}</span><time>${e.t}</time></li>`).join("")
-  + ev.after.map((e) => `<li data-m="${T_END}"><i class="k-alert"></i><span>${e.title}${e.detail ? `<small>${e.detail}</small>` : ""}</span><time>${e.d}</time></li>`).join("");
+$("#ev").innerHTML = events.map((e) => `<li data-m="${e.m}" tabindex="0" role="button"><i class="k-${e.kind}" aria-hidden="true"></i><span>${e.title}${e.detail ? `<small>${e.detail}</small>` : ""}</span><time>${e.t}</time></li>`).join("")
+  + ev.after.map((e) => `<li data-m="${T_END}" tabindex="0" role="button"><i class="k-alert" aria-hidden="true"></i><span>${e.title}${e.detail ? `<small>${e.detail}</small>` : ""}</span><time>${e.d}</time></li>`).join("");
+$("#ev").onkeydown = (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("li")) { e.preventDefault(); e.target.click(); } };
 $("#ev").onclick = (e) => { const li = e.target.closest("li"); if (!li) return;
   toggle(false); const k = [...$("#ev").children].indexOf(li);
   if (k < events.length) pinEvent(events[k]);
   setTime(Math.min(+li.dataset.m, T_END), true); };
 
 // ---------- charts (plain SVG) ----------
-function chart(svg, { xs, ys, xmax, ymax, fill, dots = [], cursor, xfmt, yfmt }) {
+function chart(svg, { xs, ys, xmax, ymax, fill, dots = [], bars = [], lines = [], marks = [], cursor, xfmt, yfmt }) {
   const W = svg.clientWidth || 300, H = svg.clientHeight || 120, L = 34, B = 16;
   const X = (x) => L + (x / xmax) * (W - L - 6), Y = (y) => H - B - (y / ymax) * (H - B - 6);
   const line = xs.map((x, i) => `${i ? "L" : "M"}${X(x).toFixed(1)},${Y(ys[i]).toFixed(1)}`).join("");
@@ -424,6 +438,9 @@ function chart(svg, { xs, ys, xmax, ymax, fill, dots = [], cursor, xfmt, yfmt })
     + (fill ? `${area} opacity=".08"/>${area} opacity=".3" clip-path="url(#${clip})"/>` : "")
     + `<path d="${line}" fill="none" stroke="${css("--water")}" stroke-width="1.3" stroke-dasharray="4 3" opacity=".45"/>`
     + `<path d="${line}" fill="none" stroke="${css("--water")}" stroke-width="1.8" clip-path="url(#${clip})"/>`
+    + lines.map((l) => `<path d="${l.xs.map((x, i) => `${i ? "L" : "M"}${X(x).toFixed(1)},${Y(l.ys[i]).toFixed(1)}`).join("")}" fill="none" stroke="${css("--water")}" stroke-width="1" opacity=".35"/>`).join("")
+    + bars.map(([x1, x2, y]) => `<line x1="${X(x1)}" x2="${Math.max(X(x2), X(x1) + 3)}" y1="${Y(y)}" y2="${Y(y)}" stroke="${css("--gauge")}" stroke-width="5" stroke-linecap="round"/>`).join("")
+    + marks.map(([x, y]) => `<path d="M${X(x) - 4},${Y(y) - 4}L${X(x)},${Y(y) + 3}L${X(x) + 4},${Y(y) - 4}Z" fill="none" stroke="${css("--alert")}" stroke-width="1.5"/>`).join("")
     + dots.map(([x, y]) => `<circle cx="${X(x)}" cy="${Y(y)}" r="3" fill="${css("--gauge")}"/>`).join("")
     + (cursor ? `<line x1="${X(cursor[0])}" x2="${X(cursor[0])}" y1="6" y2="${H - B}" stroke="${css("--ink")}" stroke-dasharray="3 2"/><circle cx="${X(cursor[0])}" cy="${Y(cursor[1])}" r="4" fill="${css("--front")}" stroke="#fff"/>` : "");
 }
@@ -433,12 +450,30 @@ const tf = (m) => fmt(m), kf = (v) => `${Math.round(v)} km`;
 function drawCharts(r) {
   const km = r[2] / 1000;
   chart($("#c-front"), { xs: rs.map((x) => x[3]), ys: rs.map((x) => x[2] / 1000), xmax: T_END, ymax: Math.ceil(kmMax / 50) * 50,
-    dots: meta.anchors.map((a) => [a.min, a.chain / 1000]), cursor: [t, km], xfmt: tf, yfmt: kf });
+    lines: [5, 6].map((k) => ({ xs: rs.map((x) => x[k]), ys: rs.map((x) => x[2] / 1000) })), // earliest / latest scenario
+    bars: meta.anchors.map((a) => [a.lo, a.hi, a.chain / 1000]), marks: meta.checks.map((c) => [c.min, c.chain / 1000]),
+    cursor: [t, km], xfmt: tf, yfmt: kf });
   chart($("#c-profile"), { xs: rs.map((x) => x[2] / 1000), ys: rs.map((x) => x[4]), xmax: kmMax, ymax: elevMax, fill: css("--mud"),
     dots: meta.anchors.map((a) => [a.chain / 1000, at(a.min)[4]]), cursor: [km, r[4]], xfmt: kf, yfmt: (v) => `${(v / 1000).toFixed(1)}k m` });
-  const A = meta.areaByMin, aMax = Math.ceil(A.at(-1) / 1000) * 1000, as = A.filter((_, i) => i % 3 === 0);
-  chart($("#c-area"), { xs: as.map((_, i) => i * 3), ys: as, xmax: T_END, ymax: aMax, fill: css("--water"),
-    cursor: [Math.min(t, T_END), A[Math.min(Math.floor(t), A.length - 1)]], xfmt: tf, yfmt: (v) => n(v) });
+  hydrograph($("#c-area"));
+}
+// Observed stage at each gauge, as rise above its own pre-event level (station datums are not comparable)
+const HCOL = { Rasuwagadhi: "#c8432b", Syabrubesi: "#e8873a", Betrawati: "#b07a10", Galchhi: "#2f8f5b", "Kali Khola": "#1c7fb8", Devghat: "#6d3fb3" };
+const minOf = (hh) => toMin(hh);
+function hydrograph(svg) {
+  const W = svg.clientWidth || 300, H = svg.clientHeight || 120, L = 30, B = 16, top = 10;
+  const X0 = minOf("06:00"), X1 = minOf("20:00"), X = (m) => L + ((m - X0) / (X1 - X0)) * (W - L - 6);
+  const Y = (y) => H - B - ((y + 1) / (top + 1)) * (H - B - 6);
+  const grid = [0, 5, 10].map((v) => `<text x="${L - 4}" y="${Y(v) + 3}" text-anchor="end">${v} m</text><line x1="${L}" x2="${W - 6}" y1="${Y(v)}" y2="${Y(v)}" stroke="${css("--line")}"/>`).join("")
+    + ["06:00", "12:00", "18:00"].map((h) => `<text x="${X(minOf(h))}" y="${H - 3}" text-anchor="middle">${h}</text>`).join("");
+  const series = gauges.stations.map((s) => {
+    const pts = s.series.map(([hh, v]) => [minOf(hh), v - s.base_m]);
+    const d = pts.map(([m, y], i) => `${i ? "L" : "M"}${X(m).toFixed(1)},${Y(Math.min(y, top)).toFixed(1)}`).join("");
+    const end = pts.at(-1), lost = s.destroyed ? `<text x="${X(end[0]) + 2}" y="${Y(end[1]) - 3}" fill="${HCOL[s.name]}" font-size="11">✕</text>` : "";
+    return `<path d="${d}" fill="none" stroke="${HCOL[s.name]}" stroke-width="1.4"><title>${s.name}</title></path>${lost}`;
+  }).join("");
+  const key = gauges.stations.map((s, i) => `<text x="${L + 4 + (i % 3) * 78}" y="${12 + Math.floor(i / 3) * 11}" fill="${HCOL[s.name]}" font-size="9.5">${s.name}${s.destroyed ? " ✕" : ""}</text>`).join("");
+  svg.innerHTML = grid + series + key + `<line x1="${X(t)}" x2="${X(t)}" y1="6" y2="${H - B}" stroke="${css("--ink")}" stroke-dasharray="3 2"/>`;
 }
 addEventListener("resize", () => drawCharts(at(t)));
 
@@ -454,20 +489,20 @@ $("#overview").innerHTML = `
   <dt>Origin</dt><dd>Lirung massif, Langtang NP (~5,200 m)</dd>
   <dt>Path</dt><dd>Lende Khola → Bhote Koshi → Trishuli → Narayani, ${kmMax.toFixed(0)} km to Devghat</dd>
   <dt>Districts</dt><dd>Rasuwa, Nuwakot, Dhading, Gorkha, Chitwan (+ Gyirong County, Tibet)</dd>
-  <dt>Duration</dt><dd>~10 h from collapse to Devghat recession</dd></dl>
+  <dt>Timing</dt><dd>Rising-wave onset at the Devghat gauge 14:30–14:40, about 6 h after the collapse; stage peaked 6.57 m at 16:00 (DHM record)</dd></dl>
   <p class="note">Independent reconstruction for education and understanding. Not an official product and not for emergency use. The moving front and the extent reveal are estimates between reported observations, not measured depth, velocity or a hydraulic simulation.</p></div>
 <div class="card"><h4>Human impact <span>${ev.totals.asOf}</span></h4><div class="stats">
-  <div><b>${ev.totals.deaths}</b><span>deaths reported</span></div><div><b>${ev.totals.missing}</b><span>still missing</span></div><div><b>${ev.totals.houses}</b><span>private houses damaged (RDNA)</span></div>
-  <div><b>${ev.totals.bridges}</b><span>bridges damaged</span></div><div><b>${ev.totals.roadKm} km</b><span>road damaged</span></div><div><b id="area">0</b><span>ha flooded so far <span class="est">EST. TIMING</span></span></div>
+  <div><b>${ev.totals.deaths}</b><span>deaths reported</span></div><div><b>${ev.totals.missing}</b><span>still missing</span></div><div><b>${ev.totals.houses}</b><span>private buildings affected (RDNA est.)</span></div>
+  <div><b>${ev.totals.bridges}</b><span>motorable bridges + 68 trail-bridge spans (RDNA)</span></div><div><b>${ev.totals.roadKm} km</b><span>road damaged (reported)</span></div><div><b id="area">0</b><span>ha of mapped area revealed <span class="est">EST. TIMING</span></span></div>
   <div><b>${ev.totals.effects}</b><span>damage and losses (RDNA, Sep)</span></div><div><b>${ev.totals.needs}</b><span>recovery needs (RDNA, Sep)</span></div><div><b>${n(meta.extentHa)}</b><span>ha mapped extent (UNOSAT, preliminary)</span></div></div>
   <p class="note">Aggregate figures only. Sources: ${src_("article")}; ${src_("rdna")}; The Guardian, 7 Nov 2026.</p></div>
 <div class="card"><h4>Source collapse <span>ranges across studies</span></h4><dl>
   ${ev.source.rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join("")}</dl>
   <p class="note">${ev.source.precursor} ${ev.source.rain}</p>
   <p class="note">${ev.source.conflicts} ${src_("usgs")}; ${src_("jms")}; ${src_("jisrs")}; ${src_("icimod")}; ${src_("imerg")}.</p></div>
-<div class="card"><h4>River gauges <span>26 Aug, ${src_("chwrr").replace(/>.*</, ">CHWRR<")}</span></h4><dl>
+<div class="card"><h4>River gauges <span>26 Aug, DHM ten-minute record</span></h4><dl>
   ${ev.gauges.map((g) => `<dt>${g.name}</dt><dd>${g.reading}${g.status === "destroyed" ? ' <span class="est" style="color:var(--impact)">LOST</span>' : ""}</dd>`).join("")}</dl>
-  <p class="note">Four of the stations were destroyed, so only their last readings survive.</p></div>
+  <p class="note">Stages are relative to each station's own datum, not water depth, and are not comparable between stations. Gauges that stopped transmitting only bracket arrival, assuming the flood caused the loss. Source: <a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">DHM record archived on Zenodo (Acharya &amp; Paudel 2026, CC BY 4.0)</a>; Phurke values from ${src_("chwrr")}.</p></div>
 <div class="card"><h4>Building damage <span>Copernicus EMS, 4 areas</span></h4><div class="bars">
   ${["Destroyed", "Damaged", "Possibly damaged"].map((k) => `<div><span>${k}</span><i style="width:${(100 * (ems[k] || 0)) / Math.max(...Object.values(ems))}%;background:${{ Destroyed: "#c8432b", Damaged: "#e8873a", "Possibly damaged": "#f1c24b" }[k] || "#9aa7b0"}"></i><em>${n(ems[k] || 0)}</em></div>`).join("")}
   </div><p class="note">Graded building points within the four EMS mapped areas only, not a corridor-wide count. ${src_("ems")}. UNOSAT separately flags ${n(meta.unosatBuildings)} buildings in or near mapped impacts (exposure, not confirmed damage; ${src_("unosat")}).</p></div>
@@ -475,8 +510,8 @@ $("#overview").innerHTML = `
   ${D.rows.map(([d, v]) => `<div><span>${d}</span><i style="width:${(100 * v) / bmax}%"></i><em>${v}</em></div>`).join("")}
   </div><p class="note">Districts where deaths were reported, largely reflecting recovery location rather than where people were lost. Rows total ${n(D.rows.reduce((s, r) => s + r[1], 0))} of 1,451; the remainder died during treatment in Kathmandu. Figures are provisional. ${src_("ndrrma")}.</p></div>
 <div class="card"><h4>Method & sources</h4><p class="note">
-  Flood extent: ${src_("unosat")} and ${src_("ems")}. Flow timing: ${src_("chwrr")}; ${src_("timeline")}. River path: © OpenStreetMap contributors (ODbL). Terrain: Terrarium/SRTM via AWS Open Data.
-  Arrival times between observation points are linear interpolations along the river, so the timing (not the extent) is the estimate.</p></div>`;
+  Mapped extent: ${src_("unosat")} (preliminary satellite interpretation, not field-validated). Landslides and building grading: ${src_("ems")}. Timing: DHM gauge brackets (<a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">Zenodo 22679444</a>), USGS origin time and reported CCTV time; ${src_("chwrr")} and ${src_("timeline")} for reports. River path: © OpenStreetMap contributors (ODbL). Terrain: Mapzen Terrarium (AWS Open Data).
+  Both are uncertain: the extent is a satellite interpretation, and the timing is interpolated between bracket midpoints of mixed evidence, with an earliest/latest scenario envelope. Full method: <a href="https://github.com/IbaadGEO/trishuli-flood-trace/blob/main/METHODS.md" target="_blank" rel="noopener">METHODS.md</a>.</p></div>`;
 // keep the panel short: front, overview and impact stay open; the detail cards fold away
 [...$("#overview").children].slice(3).forEach((card) => {
   const d = document.createElement("details"), s = document.createElement("summary"), h = card.querySelector("h4");
