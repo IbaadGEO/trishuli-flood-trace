@@ -108,5 +108,28 @@
    "credit": "© Vantor, Open Data Program (CC BY-NC 4.0)",
    "scene": "B030001100EF5510"
   }
+ },
+ {
+  "id": "esa",
+  "name": "During the flood: upper corridor, about 2 hours after the collapse",
+  "lon": null,
+  "lat": null,
+  "m": 116,
+  "aspect": 0.8,
+  "published": true,
+  "pre": {
+   "img": "data/sites/esa_pre.webp",
+   "date": "2026-08-24",
+   "sensor": "Sentinel-2, false colour (ESA rendering)",
+   "credit": "© ESA, contains modified Copernicus Sentinel data (2026), CC BY-SA 3.0 IGO",
+   "scene": "Commons: Nepal glacier collapse and flood 24 August 2026.jpg"
+  },
+  "post": {
+   "img": "data/sites/esa_post.webp",
+   "date": "2026-08-26",
+   "sensor": "Landsat 9, 04:47 UTC (10:33 NPT), false colour (ESA rendering)",
+   "credit": "© ESA, Landsat 9 data courtesy of USGS/NASA, CC BY 4.0",
+   "scene": "Commons: Nepal glacier collapse and flood (after) (55504451912).jpg"
+  }
  }
 ]

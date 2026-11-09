@@ -86,6 +86,18 @@ def stretch(a):
     return (np.clip((a.astype(np.float32) - lo) / max(hi - lo, 1), 0, 1) * 255).astype(np.uint8)
 
 
+# Published before/after pairs shown as released (resized only), not cut by this script: ESA's renderings of
+# Sentinel-2 (24 Aug) and Landsat 9 (26 Aug, ~2 h after the collapse) over the upper corridor, in false colour.
+UA = {"User-Agent": "TrishuliFloodTrace/1.0 (non-commercial research map)"}
+C = "https://upload.wikimedia.org/wikipedia/commons/"
+PUBLISHED = [
+    ("esa", "During the flood: upper corridor, about 2 hours after the collapse", 116,
+     (C + "3/31/Nepal_glacier_collapse_and_flood_24_August_2026.jpg", "2026-08-24", "Sentinel-2, false colour (ESA rendering)",
+      "© ESA, contains modified Copernicus Sentinel data (2026), CC BY-SA 3.0 IGO", "Commons: Nepal glacier collapse and flood 24 August 2026.jpg"),
+     (C + "0/0b/Nepal_glacier_collapse_and_flood_%28after%29_%2855504451912%29.jpg", "2026-08-26", "Landsat 9, 04:47 UTC (10:33 NPT), false colour (ESA rendering)",
+      "© ESA, Landsat 9 data courtesy of USGS/NASA, CC BY 4.0", "Commons: Nepal glacier collapse and flood (after) (55504451912).jpg")),
+]
+
 meta = json.load(open(os.path.join(HERE, "web", "data", "meta.json"), encoding="utf-8"))
 river = np.array([r[:4] for r in meta["river"]])
 os.makedirs(OUT, exist_ok=True)
@@ -100,6 +112,16 @@ for sid, name, lon, lat, size, pre, post in SITES:
     k = int(np.argmin((river[:, 0] - lon) ** 2 + (river[:, 1] - lat) ** 2))  # nearest route point gives the minute to open the panel
     rows.append({"id": sid, "name": name, "lon": lon, "lat": lat, "km": round(size / 1000, 1), "m": round(float(river[k, 3])), **pair})
     print(sid, "ok", rows[-1]["m"], "min")
+for sid, name, m, pre, post in PUBLISHED:
+    pair = {}
+    for phase, (url, date, sensor, credit, scene) in (("pre", pre), ("post", post)):
+        im = Image.open(io.BytesIO(urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=120).read())).convert("RGB")
+        im.thumbnail((1000, 1250), Image.LANCZOS)
+        im.save(os.path.join(OUT, f"{sid}_{phase}.webp"), quality=82)
+        pair[phase] = {"img": f"data/sites/{sid}_{phase}.webp", "date": date, "sensor": sensor, "credit": credit, "scene": scene}
+    assert pair["pre"]["img"] and im.size[0] > 500
+    rows.append({"id": sid, "name": name, "lon": None, "lat": None, "m": m, "aspect": round(im.size[0] / im.size[1], 3), "published": True, **pair})  # no map pin: a wide regional view
+    print(sid, "ok", m, "min")
 with open(os.path.join(HERE, "web", "data", "sites.json"), "w", encoding="utf-8") as f:
     json.dump(rows, f, ensure_ascii=False, indent=1)
 sys.stdout.flush()

@@ -16,6 +16,7 @@ The MIT licence in `LICENSE` covers the **code only**. Each data file published 
 | `media/gyirong_cctv1.mp4` and poster | Wikimedia Commons file "Mudslide at Gyirong Port 1.webm" (revision 1279062472) | Classified public domain on Commons (automated recording). This is the platform's assessment, not a release by an identified owner | Keep the source link and the "camera operator unidentified" note; re-encoded to MP4, no other changes |
 | `media/model_s7.mp4` and poster | Huang, Chen & Wang (2026), Zenodo 10.5281/zenodo.22884627 | **CC BY 4.0** | Cite the authors and DOI; label it as a model scenario |
 | `media/park_*.mp4` and posters | Park (2026), Zenodo 10.5281/zenodo.22566624 v2.0.0 | **CC BY 4.0** | Cite the author, version DOI and file name; label as model scenarios; keep the preprint caveat |
+| `sites/esa_pre.webp`, `sites/esa_post.webp` | ESA renderings via Wikimedia Commons: Sentinel-2 24 Aug 2026; Landsat 9 26 Aug 2026 | **CC BY-SA 3.0 IGO** (24 Aug) and **CC BY 4.0** (26 Aug) | Credit ESA (and Copernicus / USGS-NASA for the data); resized only; share adaptations of the 24 Aug image under CC BY-SA 3.0 IGO |
 | Basemap (not stored here; streamed) and `web/og.jpg` (share image) | EOxCloudless 2025 by EOX IT Services GmbH (the share image shows the earlier 2024 mosaic) | **CC BY-NC-SA 4.0** | Non-commercial use only; credit EOX with a link to https://cloudless.eox.at; adaptations such as the share image are shared under CC BY-NC-SA 4.0 |
 
 Notes:

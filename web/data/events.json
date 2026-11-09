@@ -103,6 +103,14 @@
   "park": {
    "label": "Park (2026), Zenodo 10.5281/zenodo.22566624 v2.0.0, CC BY 4.0 (preprint 10.31223/X5250R, not peer reviewed)",
    "url": "https://doi.org/10.5281/zenodo.22566624"
+  },
+  "esa": {
+   "label": "ESA: Nepal flash flood imaged by satellites (2026)",
+   "url": "https://www.esa.int/Applications/Observing_the_Earth/Copernicus/Sentinel-2/Nepal_flash_flood_imaged_by_satellites"
+  },
+  "commons_esa": {
+   "label": "Wikimedia Commons: ESA images, 24 Aug (CC BY-SA 3.0 IGO) and 26 Aug (CC BY 4.0)",
+   "url": "https://commons.wikimedia.org/wiki/Category:Satellite_pictures_of_2026_Nepal_and_Tibet_floods"
   }
  },
  "events": [
@@ -617,6 +625,15 @@
     "ems"
    ],
    "note": "The EMS count covers a mapping area larger than this 2 km view."
+  },
+  "esa": {
+   "seen": "Two days before (left) the valleys are green and the glaciers cyan. About two hours after the collapse (right), ESA marks flood water and debris along the valley, partly under cloud.",
+   "why": "Landsat 9 passed over at 04:47 UTC (10:33 NPT), while the flood was still under way: by this map's estimate the front was then about 100 km downstream, near Galchhi. The upper corridor shown here had already been scoured.",
+   "srcs": [
+    "esa",
+    "commons_esa"
+   ],
+   "note": "False colour: ice and snow appear cyan and vegetation green. These are ESA's own renderings with ESA's labels, so their framing differs from the other panels and there is no map pin."
   }
  },
  "simulations": {

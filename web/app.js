@@ -134,7 +134,7 @@ const evMarker = new maplibregl.Marker({ element: evEl, anchor: "bottom", offset
 const HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
 map.addSource("waypoints", { type: "geojson", data: { type: "FeatureCollection", features: HOURS.map((h) => ({ ...pt(at(toMin(h))), properties: { label: h } })) } });
 map.addSource("connector", { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: meta.connector.coords } } });
-map.addSource("sites", { type: "geojson", data: { type: "FeatureCollection", features: sites.map((s) => ({ type: "Feature", properties: { id: s.id, name: s.name }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })) } });
+map.addSource("sites", { type: "geojson", data: { type: "FeatureCollection", features: sites.filter((s) => s.lon != null).map((s) => ({ type: "Feature", properties: { id: s.id, name: s.name }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })) } });
 map.addSource("anchors", { type: "geojson", data: { type: "FeatureCollection", features: meta.anchors.map((a) => ({ type: "Feature", properties: a, geometry: { type: "Point", coordinates: [a.lon, a.lat] } })) } });
 
 const DMG = ["match", ["get", "d"], "Destroyed", "#c8432b", "Damaged", "#e8873a", "Possibly damaged", "#f1c24b", "#9aa7b0"];
@@ -380,8 +380,9 @@ function openSite(id) {
   $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `After · ${d(s.post)}`;
   $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
     <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>
-    <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. View ~${s.km} km across, north up; contrast stretched for display.</p>`
+    <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. ${s.published ? "Shown as published, resized only; labels are the publisher's." : `View ~${s.km} km across, north up; contrast stretched for display.`}</p>`
     + (s.videos || []).map(vidHTML).join("");
+  $("#cmp-view").style.aspectRatio = s.aspect ?? 1;
   $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
   setSplit(50);
   if (!cmp.open) cmp.showModal();
