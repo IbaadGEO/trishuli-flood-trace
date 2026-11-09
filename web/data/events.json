@@ -45,7 +45,7 @@
    "url": "https://www.icimod.org/press-releases/second-major-himalayan-flood-in-seven-weeks-raises-new-questions-about-mountain-risk/"
   },
   "imerg": {
-   "label": "arXiv 2609.04563 (GPM IMERG analysis)",
+   "label": "Li (2026), arXiv 2609.04563: source footprint, antecedent rainfall and temperature",
    "url": "https://arxiv.org/abs/2609.04563"
   },
   "clash": {
@@ -71,6 +71,14 @@
   "bipad": {
    "label": "BIPAD river-station register (DHM), Furke Khola (Malekhu), series 31967",
    "url": "https://bipadportal.gov.np/api/v1/river-stations/?format=json"
+  },
+  "wwa": {
+   "label": "World Weather Attribution report No. 92 (Clarke et al. 2026, corrected 28 Sep), doi 10.25560/136420",
+   "url": "https://www.worldweatherattribution.org/rapid-warming-in-the-himalaya-exacerbates-geohazard-cascades-beyond-adaptation-limits/"
+  },
+  "xu": {
+   "label": "Xu (2026), EarthArXiv preprint v2 (not peer reviewed), CC BY 4.0",
+   "url": "https://doi.org/10.31223/X56793"
   }
  },
  "events": [
@@ -103,9 +111,9 @@
     85.378,
     28.276
    ],
-   "title": "Gyirong Port hit (CCTV)",
-   "detail": "Reported CCTV time; clock basis not independently verified",
-   "src": "timeline"
+   "title": "Gyirong Port hit (time-stamped images)",
+   "detail": "08:44 NPT (10:59 Beijing time), reported by CHWRR and by China's preliminary investigation; camera clock not independently verified",
+   "src": "wwa"
   },
   {
    "t": "08:50",
@@ -250,22 +258,22 @@
   {
    "m": 0,
    "title": "The collapse",
-   "text": "Roughly 100 million m³ of rock and glacier ice (estimates vary by study) breaks off the Lirung massif at ~5,200 m and drops ~1.2 km into the valley. Seismometers record the collapse itself."
+   "text": "Roughly 100 million m³ of rock and glacier ice (estimates vary by study) breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (estimates vary). Seismometers record the collapse itself."
   },
   {
    "m": 2,
    "title": "A debris flow forms",
-   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water, racing down the narrow Lende Khola gorge."
+   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. Picking up loose glacial debris and buried ice from the valley floor, it races down the narrow Lende Khola gorge."
   },
   {
    "m": 7,
    "title": "The border crossing is hit",
-   "text": "CCTV shows it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims."
+   "text": "Time-stamped images show it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China."
   },
   {
    "m": 12,
    "title": "Almost no warning downstream",
-   "text": "The flow enters Nepal through Timure and Syabrubesi. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured."
+   "text": "The flow enters Nepal through Timure and Syabrubesi. This first wave came from the debris flow itself and/or a quick breach of the debris it dumped across the river, not from the barrier lakes, which only began overflowing two days later. Below Syabrubesi it drops its largest boulders and becomes a more water-laden flood. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured."
   },
   {
    "m": 38,
@@ -315,6 +323,12 @@
    "title": "Two new barrier lakes mapped",
    "detail": "~12 ha and ~19 ha (UNOSAT 4260, Cartosat-3); CHWRR gives ~16 ha and ~18 ha",
    "src": "unosat4260"
+  },
+  {
+   "d": "28 Aug",
+   "title": "Main barrier lake starts overflowing",
+   "detail": "17:50 Beijing time (15:35 NPT); outflow ~50 m³/s vs inflow ~23 m³/s (China MWR, via Xu 2026)",
+   "src": "xu"
   },
   {
    "d": "29 Aug",
@@ -397,8 +411,8 @@
    "name": "Barrier lake 1",
    "lon": 85.4831,
    "lat": 28.3331,
-   "area": "~12 ha (UNOSAT polygon, 28 Aug); CHWRR ~16 ha",
-   "note": "Lende–Lirung Khola confluence; reported overflowing from 28 Aug. Formed after the event"
+   "area": "~12 ha (UNOSAT polygon, 28 Aug); CHWRR ~16 ha; China MWR radar ~10 ha, ~2.2 million m³",
+   "note": "Lende–Lirung Khola confluence; likely the main lake surveyed by China's MWR (dam ~60 m high, ~300 m wide; Xu 2026). Overflow from 17:50 Beijing time (15:35 NPT) on 28 Aug. Formed after the event"
   },
   {
    "name": "Barrier lake 2",
@@ -412,11 +426,11 @@
   "rows": [
    [
     "Failure zone",
-    "~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,190 m"
+    "~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,190 m; ~2.2 km² (WWA preliminary)"
    ],
    [
     "Volume",
-    "~103 million m³ (JMS); 99 ± 10 million m³ (JISRS); ~132 million m³ (ICIMOD preliminary synthesis)"
+    "~103 million m³ (JMS); 99 ± 10 million m³ (JISRS); ~110 million m³ (WWA preliminary); ~132 million m³ (ICIMOD preliminary synthesis); up to ~30 million m³ more picked up on the valley floor (WWA)"
    ],
    [
     "Ice",
@@ -432,7 +446,7 @@
    ]
   ],
   "precursor": "ICIMOD reports up to 40 cm of line-of-sight ground deformation at the source in Sentinel-1 radar between 7 Jul and 24 Aug; this is retrospective and does not imply the failure time was predictable.",
-  "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain.",
+  "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain. The 7-day mean temperature at the source grid cell (9.43 °C) was above every matching week from 2001–2025 (Li 2026); this describes conditions, not a proven cause.",
   "conflicts": "Studies estimate geometry, volume, magnitude and speed differently; each figure is attributed to its source."
  },
  "deathsByDistrict": {

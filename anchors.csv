@@ -1,6 +1,6 @@
 name,lat,lon,chainage_km,earliest_npt,latest_npt,use,evidence_type,note,source
 Route origin,28.289,85.521,0.0,08:37,08:39,fitted (bracket midpoint),seismic origin time,"Collapse signal 02:52:10 UTC (USGS us7000tbwb); route starts at the OSM network ~0.9 km from the mapped source, so the source-to-channel runout is not timed",USGS ComCat
-Gyirong Port,28.276,85.378,21.08,08:43,08:45,fitted (bracket midpoint),"impact (CCTV, reported)",Reported CCTV time 08:44; clock basis not independently verified,Wikipedia timeline / CHWRR
+Gyirong Port,28.276,85.378,21.08,08:43,08:45,fitted (bracket midpoint),"impact (time-stamped images, reported)","Images time-stamped 08:44 NPT (10:59 Beijing time), reported by CHWRR and China's preliminary investigation; camera clock not independently verified",CHWRR via WWA report 92; Xu (2026)
 Syabrubesi gauge,28.17065,85.342554,34.36,08:50,09:00,fitted (bracket midpoint),telemetry loss,"Last report 08:50 (3.80 m), next report absent by 09:00",DHM via Zenodo 22679444
 Betrawati gauge,27.97,85.18,66.92,09:20,09:30,fitted (bracket midpoint),telemetry loss,"Last report 09:20 (3.55 m), next report absent by 09:30",DHM via Zenodo 22679444
 Galchhi gauge,27.802328,85.00305,100.8,10:20,10:30,fitted (bracket midpoint),rising-wave onset,"Last background sample 10:20, first risen 10:30",DHM via Zenodo 22679444
