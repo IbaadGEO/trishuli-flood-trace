@@ -12,6 +12,7 @@ The MIT licence in `LICENSE` covers the **code only**. Each data file published 
 | `gauges.json` | DHM river-watch record, archived by Acharya & Paudel (2026), Zenodo 10.5281/zenodo.22679444 | CC BY 4.0 (deposit); underlying DHM data | Cite the Zenodo DOI and DHM as the original source |
 | `events.json` | Mixed: reports, papers, USGS, NDRRMA, the Guardian, Wikipedia | Facts with attribution; any quoted text stays under its publisher's terms | Keep the per-item source links; Wikipedia-derived wording is CC BY-SA 4.0 |
 | `s2/` tiles, `s2.json` | Copernicus Sentinel-2 L2A (via Element84 Earth Search) | Copernicus Sentinel data terms | Credit "Contains modified Copernicus Sentinel data 2026" |
+| `sites/*.webp`, `sites.json` (before/after site comparisons) | Vantor Open Data Program and Planet Crisis Response Program scenes; source-area "before" from EOxCloudless 2025 | **CC BY-NC 4.0** (Vantor, Planet); **CC BY-NC-SA 4.0** for `source_pre.webp` | Non-commercial use; credit "© Vantor, Open Data Program" or "© Planet Labs PBC" with the scene ID; the crops are modified (warped, cropped, contrast-stretched); share adaptations of `source_pre.webp` under CC BY-NC-SA 4.0 |
 | Basemap (not stored here; streamed) and `web/og.jpg` (share image) | EOxCloudless 2025 by EOX IT Services GmbH (the share image shows the earlier 2024 mosaic) | **CC BY-NC-SA 4.0** | Non-commercial use only; credit EOX with a link to https://cloudless.eox.at; adaptations such as the share image are shared under CC BY-NC-SA 4.0 |
 
 Notes:

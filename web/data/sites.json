@@ -1,0 +1,112 @@
+[
+ {
+  "id": "source",
+  "name": "Collapse source, Langtang Lirung",
+  "lon": 85.52,
+  "lat": 28.291,
+  "km": 3.2,
+  "m": 1,
+  "pre": {
+   "img": "data/sites/source_pre.webp",
+   "date": "2025 mosaic",
+   "sensor": "EOxCloudless (Sentinel-2), 10 m",
+   "credit": "EOxCloudless 2025 by EOX IT Services GmbH, CC BY-NC-SA 4.0 (contains modified Copernicus Sentinel data 2025)",
+   "scene": "s2cloudless-2025"
+  },
+  "post": {
+   "img": "data/sites/source_post.webp",
+   "date": "2026-09-29",
+   "sensor": "Pelican, 0.6 m",
+   "credit": "© Planet Labs PBC, Crisis Response Program (CC BY-NC 4.0)",
+   "scene": "20260929_051336_88_300c"
+  }
+ },
+ {
+  "id": "timure",
+  "name": "Rasuwagadhi and Timure",
+  "lon": 85.374,
+  "lat": 28.268,
+  "km": 2.4,
+  "m": 8,
+  "pre": {
+   "img": "data/sites/timure_pre.webp",
+   "date": "2026-05-27",
+   "sensor": "PlanetScope, 3.7 m",
+   "credit": "© Planet Labs PBC, Crisis Response Program (CC BY-NC 4.0)",
+   "scene": "20260527_053219_95_254a"
+  },
+  "post": {
+   "img": "data/sites/timure_post.webp",
+   "date": "2026-09-01",
+   "sensor": "Pelican, 0.6 m",
+   "credit": "© Planet Labs PBC, Crisis Response Program (CC BY-NC 4.0)",
+   "scene": "20260901_050632_98_300b"
+  }
+ },
+ {
+  "id": "syabrubesi",
+  "name": "Syabrubesi",
+  "lon": 85.3394,
+  "lat": 28.1683,
+  "km": 2.0,
+  "m": 18,
+  "pre": {
+   "img": "data/sites/syabrubesi_pre.webp",
+   "date": "2026-05-27",
+   "sensor": "PlanetScope, 3.7 m",
+   "credit": "© Planet Labs PBC, Crisis Response Program (CC BY-NC 4.0)",
+   "scene": "20260527_053221_96_254a"
+  },
+  "post": {
+   "img": "data/sites/syabrubesi_post.webp",
+   "date": "2026-09-07",
+   "sensor": "WorldView Legion, 0.35 m",
+   "credit": "© Vantor, Open Data Program (CC BY-NC 4.0)",
+   "scene": "B1300011011E5610"
+  }
+ },
+ {
+  "id": "betrawati",
+  "name": "Betrawati",
+  "lon": 85.18,
+  "lat": 27.97,
+  "km": 2.0,
+  "m": 48,
+  "pre": {
+   "img": "data/sites/betrawati_pre.webp",
+   "date": "2026-05-27",
+   "sensor": "PlanetScope, 3.7 m",
+   "credit": "© Planet Labs PBC, Crisis Response Program (CC BY-NC 4.0)",
+   "scene": "20260527_053226_41_254a"
+  },
+  "post": {
+   "img": "data/sites/betrawati_post.webp",
+   "date": "2026-09-07",
+   "sensor": "WorldView Legion, 0.39 m",
+   "credit": "© Vantor, Open Data Program (CC BY-NC 4.0)",
+   "scene": "B160001101DA4B10"
+  }
+ },
+ {
+  "id": "bidur",
+  "name": "Bidur and Trishuli Bazaar",
+  "lon": 85.1466,
+  "lat": 27.9182,
+  "km": 2.0,
+  "m": 62,
+  "pre": {
+   "img": "data/sites/bidur_pre.webp",
+   "date": "2026-02-05",
+   "sensor": "WorldView Legion, 0.35 m",
+   "credit": "© Vantor, Open Data Program (CC BY-NC 4.0)",
+   "scene": "B160001100CDB210"
+  },
+  "post": {
+   "img": "data/sites/bidur_post.webp",
+   "date": "2026-09-08",
+   "sensor": "WorldView-2, 0.48 m",
+   "credit": "© Vantor, Open Data Program (CC BY-NC 4.0)",
+   "scene": "B030001100EF5510"
+  }
+ }
+]

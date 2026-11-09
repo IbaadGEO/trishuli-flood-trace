@@ -7,8 +7,9 @@ const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return h *
 const n = (x) => Math.round(x).toLocaleString("en-GB");
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-const [meta, ev, gauges] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json"].map((u) => fetch(u, { cache: "no-cache" }).then((r) => r.json()))); // revalidate: data must match this app.js
+const [meta, ev, gauges, sitesRaw] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json", "data/sites.json"].map((u) => fetch(u, { cache: "no-cache" }).then((r) => r.json()))); // revalidate: data must match this app.js
 const river = meta.river; // [lon, lat, chain_m, minutes, bedElev]
+const sites = sitesRaw.map((s) => ({ ...s, ...ev.sites[s.id] })); // before/after image pairs + their captions
 const T_END = +$("#t").max;
 let t = 0;
 
@@ -133,6 +134,7 @@ const evMarker = new maplibregl.Marker({ element: evEl, anchor: "bottom", offset
 const HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
 map.addSource("waypoints", { type: "geojson", data: { type: "FeatureCollection", features: HOURS.map((h) => ({ ...pt(at(toMin(h))), properties: { label: h } })) } });
 map.addSource("connector", { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: meta.connector.coords } } });
+map.addSource("sites", { type: "geojson", data: { type: "FeatureCollection", features: sites.map((s) => ({ type: "Feature", properties: { id: s.id, name: s.name }, geometry: { type: "Point", coordinates: [s.lon, s.lat] } })) } });
 map.addSource("anchors", { type: "geojson", data: { type: "FeatureCollection", features: meta.anchors.map((a) => ({ type: "Feature", properties: a, geometry: { type: "Point", coordinates: [a.lon, a.lat] } })) } });
 
 const DMG = ["match", ["get", "d"], "Destroyed", "#c8432b", "Damaged", "#e8873a", "Possibly damaged", "#f1c24b", "#9aa7b0"];
@@ -174,6 +176,8 @@ const LAYERS = [
     add: { type: "line", source: "unosat_extent", paint: { "line-color": "#9fd8f5", "line-width": 1, "line-opacity": 0.8 } } },
   { id: "connector", name: "Source to channel", note: `${meta.connector.m} m gap, not timed`, sw: "#e2483d", on: true,
     add: { type: "line", source: "connector", paint: { "line-color": "#e2483d", "line-width": 2, "line-dasharray": [1, 1.5] } } },
+  { id: "sites", name: "Before / after sites", note: "Click to compare satellite images", sw: "#ffffff", on: true,
+    add: { type: "circle", source: "sites", paint: { "circle-radius": 7, "circle-color": "#ffffff", "circle-stroke-width": 3, "circle-stroke-color": "#14212b" } } },
   { id: "detachment", name: "Detachment zone", note: "Landsat-9, 26 Aug", sw: "#e2483d", on: true,
     add: { type: "fill", source: "detachment", paint: { "fill-color": "#e2483d", "fill-opacity": 0.55, "fill-outline-color": "#fff" } } },
   { id: "lakes", name: "Barrier lakes", note: "Cartosat-3, 28 Aug", sw: "#2f6fd6", on: true,
@@ -199,9 +203,9 @@ const LAYERS = [
 // Views: each shows only the overlays its question needs. Base layers (imagery, hillshade, terrain, labels) stay as set.
 const OVERLAYS = LAYERS.filter((L) => L.add && !L.id.startsWith("s2")).map((L) => L.id);
 const VIEWS = {
-  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "connector", "lakes"],
-  damage: ["reached", "unosat_extent", "buildings", "roads", "gauges", "detachment", "connector", "lakes", "lake-labels"],
-  imagery: ["unosat_extent"],
+  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "connector", "lakes", "sites"],
+  damage: ["reached", "unosat_extent", "buildings", "roads", "gauges", "detachment", "connector", "lakes", "lake-labels", "sites"],
+  imagery: ["unosat_extent", "sites"],
   all: OVERLAYS,
 };
 for (const L of LAYERS) if (OVERLAYS.includes(L.id)) L.on = VIEWS.story.includes(L.id);
@@ -240,7 +244,8 @@ map.on("click", "gauges", (e) => { const p = e.features[0].properties; new mapli
 map.on("click", "lakes", (e) => { const l = ev.lakes.reduce((a, b) => Math.hypot(b.lon - e.lngLat.lng, b.lat - e.lngLat.lat) < Math.hypot(a.lon - e.lngLat.lng, a.lat - e.lngLat.lat) ? b : a);
   new maplibregl.Popup().setLngLat(e.lngLat).setHTML(`<b>${l.name}</b><br>${l.area}<br><span class="muted">${l.note}</span>`).addTo(map); });
 map.on("click", "anchors", (e) => { const p = e.features[0].properties; new maplibregl.Popup().setLngLat(e.lngLat).setHTML(`<b>${p.name}</b><br>${p.note}<br><span class="muted">${(p.chain / 1000).toFixed(1)} km downstream</span>`).addTo(map); });
-for (const id of ["buildings", "anchors", "gauges", "lakes"]) { map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer")); map.on("mouseleave", id, () => (map.getCanvas().style.cursor = "")); }
+map.on("click", "sites", (e) => openSite(e.features[0].properties.id));
+for (const id of ["buildings", "anchors", "gauges", "lakes", "sites"]) { map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer")); map.on("mouseleave", id, () => (map.getCanvas().style.cursor = "")); }
 
 // ---------- time model ----------
 function at(m) { // interpolate river position for minute m
@@ -351,9 +356,41 @@ const storyBox = document.createElement("div"); storyBox.className = "story"; st
 let storyKey = "";
 function story(m) {
   const s = ev.story.filter((x) => x.m <= m).at(-1), e = events.filter((x) => x.m <= m && x.m > m - 12).at(-1); // event "just happened" for 12 min
-  const key = `${s?.m}|${e?.m}`; if (key === storyKey) return; storyKey = key;
-  storyBox.innerHTML = (e ? `<div class="just"><i class="k-${e.kind}"></i>${e.t} · ${e.title}</div>` : "") + `<b>${s.title}</b><p>${s.text}</p>`;
+  const site = sites.filter((x) => x.m <= m + 1).at(-1); // the latest site the flow has reached
+  const key = `${s?.m}|${e?.m}|${site?.id}`; if (key === storyKey) return; storyKey = key;
+  storyBox.innerHTML = (e ? `<div class="just"><i class="k-${e.kind}"></i>${e.t} · ${e.title}</div>` : "") + `<b>${s.title}</b><p>${s.text}</p>`
+    + (site ? `<button class="cmp-btn" data-site="${site.id}">Before / after: ${site.name} ▸</button>` : "");
 }
+storyBox.addEventListener("click", (e) => { const b = e.target.closest(".cmp-btn"); if (b) openSite(b.dataset.site); });
+
+// ---------- before / after comparison ----------
+const cmp = $("#cmp");
+let siteIdx = 0;
+const setSplit = (v) => { $("#cmp-r").value = v; cmp.style.setProperty("--split", `${v}%`); };
+function openSite(id) {
+  siteIdx = sites.findIndex((s) => s.id === id);
+  const s = sites[siteIdx], d = (x) => new Date(x.date).toString() === "Invalid Date" ? x.date : new Date(x.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
+  toggle(false);
+  $("#cmp-title").textContent = s.name;
+  $("#cmp-pre").src = s.pre.img; $("#cmp-pre").alt = `${s.name} before the flood, ${d(s.pre)}`;
+  $("#cmp-post").src = s.post.img; $("#cmp-post").alt = `${s.name} after the flood, ${d(s.post)}`;
+  $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `After · ${d(s.post)}`;
+  $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
+    <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>
+    <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. View ~${s.km} km across, north up; contrast stretched for display.</p>`;
+  $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
+  setSplit(50);
+  if (!cmp.open) cmp.showModal();
+}
+$("#cmp-r").oninput = (e) => setSplit(e.target.value);
+$("#cmp-view").onpointerdown = (e) => {
+  const move = (ev) => { const r = $("#cmp-view").getBoundingClientRect(); setSplit(Math.round(Math.max(0, Math.min(100, ((ev.clientX - r.left) / r.width) * 100)))); };
+  move(e); $("#cmp-view").setPointerCapture(e.pointerId); $("#cmp-view").onpointermove = move;
+  $("#cmp-view").onpointerup = () => ($("#cmp-view").onpointermove = null);
+};
+$("#cmp-prev").onclick = () => openSite(sites[(siteIdx - 1 + sites.length) % sites.length].id);
+$("#cmp-next").onclick = () => openSite(sites[(siteIdx + 1) % sites.length].id);
+$("#cmp-x").onclick = () => cmp.close();
 const legend = document.createElement("details"); legend.className = "legend"; legend.open = true;
 legend.innerHTML = `<summary>Legend</summary>
   <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Estimated progression along the mapped route</div>
@@ -366,6 +403,7 @@ legend.innerHTML = `<summary>Legend</summary>
   <div data-for="buildings"><i class="lg-dot" style="background:#c8432b"></i>Destroyed · <i class="lg-dot" style="background:#e8873a;margin-left:4px"></i>damaged · <i class="lg-dot" style="background:#f1c24b;margin-left:4px"></i>possibly</div>
   <div data-for="roads"><i class="lg-line" style="border-color:#e8873a"></i>Damaged road</div>
   <div data-for="gauges"><i class="lg-dot" style="background:#c8432b"></i>Gauge destroyed · <i class="lg-dot" style="background:#2f8f5b;margin-left:4px"></i>survived</div>
+  <div data-for="sites"><i class="lg-dot" style="background:#fff;box-shadow:0 0 0 2px #14212b"></i>Before / after site (click to compare)</div>
   <div data-for="connector"><i class="lg-line dash" style="border-color:#e2483d"></i>Source to channel (shortest gap, not timed)</div>
   <div data-for="detachment lakes"><i class="lg-box fill" style="background:#e2483d"></i>Collapse source · <i class="lg-box fill" style="background:#2f6fd6;margin-left:4px"></i>barrier lake</div>`;
 $("#map").appendChild(legend);
@@ -432,7 +470,7 @@ const stepEvent = (dir) => {
 };
 $("#prev").onclick = () => stepEvent(-1); $("#next").onclick = () => stepEvent(1);
 document.addEventListener("keydown", (e) => {
-  if (e.target.closest("input, select, textarea, [role=button], li") || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (cmp.open || e.target.closest("input, select, textarea, [role=button], li") || e.altKey || e.ctrlKey || e.metaKey) return;
   if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); stepEvent(e.key === "ArrowRight" ? 1 : -1); }
 });
 const setFollow = (on) => { follow = on; cam = null; $("#follow").classList.toggle("on", on); $("#follow").setAttribute("aria-pressed", on); };

@@ -83,6 +83,14 @@
   "guo": {
    "label": "Guo et al. (2026), Chinese Science Bulletin (in Chinese), doi 10.1360/CSB-2026-1255",
    "url": "https://doi.org/10.1360/CSB-2026-1255"
+  },
+  "vantor": {
+   "label": "Vantor Open Data Program, Nepal-Flooding-Aug-2026 (CC BY-NC 4.0)",
+   "url": "https://vantor-opendata.s3.amazonaws.com/events/Nepal-Flooding-Aug-2026/collection.json"
+  },
+  "planet": {
+   "label": "Planet Crisis Response Program via Source Cooperative (CC BY-NC 4.0)",
+   "url": "https://source.coop/planet/disasterdata"
   }
  },
  "events": [
@@ -504,5 +512,58 @@
   "roadKm": "69",
   "effects": "$2.7bn",
   "needs": "$4.8bn"
+ },
+ "sites": {
+  "source": {
+   "seen": "A bare grey failure surface now replaces glacier ice on the mountain's north face, and grey debris covers the valley floor below it.",
+   "why": "Satellite images and field photographs show that both glacier ice and rock broke away, leaving a fresh headwall and hanging ice; the detached ice–rock body covered about 0.72 km² (Guo et al.). Published volume estimates range from about 99 to 132 million m³.",
+   "srcs": [
+    "guo",
+    "jisrs",
+    "jms",
+    "icimod"
+   ],
+   "note": "The before image is a cloud-free 2025 mosaic built from many Sentinel-2 dates at 10 m, so snow cover and detail differ from the 0.6 m after image: compare landforms, not snow."
+  },
+  "timure": {
+   "seen": "The riverside buildings at the Rasuwagadhi–Timure confluence are gone, and grey flood deposits fill a much wider channel.",
+   "why": "Here part of the flow surged about 2 km up the side valley into China, a sign it still carried great momentum at the confluence (Guo et al.; WWA). Copernicus EMS graded 372 building points in its Timure mapping area as destroyed, and the Rasuwagadhi gauge stopped reporting after 08:40.",
+   "srcs": [
+    "guo",
+    "wwa",
+    "ems",
+    "zenodo"
+   ],
+   "note": "The before image is from 27 May 2026, after the July 2025 Purepu flood had already scoured this reach, so the change shown is from 2026. Cloud covers part of the after image."
+  },
+  "syabrubesi": {
+   "seen": "Grey flood deposits now cover the low ground at the river junction where the bazaar stood, and the channel is much wider; buildings higher on the slope remain.",
+   "why": "WWA describes waves of 10 m to almost 100 m in the upper reaches tearing through Rasuwagadhi, Timure and Syabrubesi, and the flood beginning to drop its largest rock south of Syabrubesi. Copernicus EMS graded 323 building points here as destroyed; the Syabrubesi gauge stopped reporting after 08:50.",
+   "srcs": [
+    "wwa",
+    "ems",
+    "zenodo"
+   ],
+   "note": "May (dry season) and September (monsoon) images differ in vegetation colour and hill shadow."
+  },
+  "betrawati": {
+   "seen": "Muddy flood sediment now spans the valley floor, burying the riverside road and fields along the channel.",
+   "why": "Betrawati was the first Nuwakot town the flood reached; a large share of its homes were inundated and covered in mud debris (WWA, citing national press). The Betrawati gauge stopped reporting after 09:20, and the 55 km Betrawati–Rasuwagadhi road section was completely damaged (RDNA, via WWA).",
+   "srcs": [
+    "wwa",
+    "zenodo",
+    "rdna"
+   ],
+   "note": "Cloud hides part of the river junction in the after image."
+  },
+  "bidur": {
+   "seen": "The narrow river and its canal are replaced by a broad sheet of grey sediment, and buildings close to the river are buried or gone.",
+   "why": "Downstream, the debris-laden water left mud and debris several metres thick in the market towns of Trishuli and Battar (WWA). Copernicus EMS graded 2,479 building points in its wider Bidur mapping area as destroyed.",
+   "srcs": [
+    "wwa",
+    "ems"
+   ],
+   "note": "The EMS count covers a mapping area larger than this 2 km view."
+  }
  }
 }

@@ -3,6 +3,7 @@
 requirements.txt
 build.py
 imagery.py
+sites.py
 inputs_manifest.json
 anchors.csv
 sources.csv
