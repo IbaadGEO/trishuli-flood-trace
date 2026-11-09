@@ -67,6 +67,8 @@ The "before" and "after" composites are per-pixel medians of the clear observati
 | Terrain | Copernicus GLO-30 DEM (30 m) | Mapterhorn terrain tiles; GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the EU and ESA |
 | Satellite basemap (default) | Observed (2025 cloud-free mosaic, pre-event) | EOxCloudless 2025 by EOX IT Services GmbH, CC BY-NC-SA 4.0, free for non-commercial use with attribution; contains modified Copernicus Sentinel data 2025 |
 | Before/after imagery | Observed (median composites, date ranges shown in the app) | Contains modified Copernicus Sentinel data 2026, via Element84 Earth Search |
+| Gyirong Port camera clip (`web/data/media/gyirong_cctv1.mp4`) | Observed (fixed surveillance camera, 26 Aug; on-screen clock not independently verified) | Wikimedia Commons, classified public domain (automated recording); original camera operator unidentified; distributed by Resound News |
+| Avalanche simulation clip (`web/data/media/model_s7.mp4`) | **Model scenario, not footage** (imposed 200 million m³ release) | Huang, Chen & Wang (2026), Zenodo 10.5281/zenodo.22884627, Movie S7, CC BY 4.0; paper in preparation |
 | Before/after site comparisons (5 sites) | Observed (single scenes; dates, sensors and scene IDs shown in each panel) | Vantor Open Data Program and Planet Crisis Response Program, both CC BY-NC 4.0; source-area "before" from EOxCloudless 2025 (CC BY-NC-SA 4.0). Built by `sites.py` |
 
 The app shows aggregate figures only. It holds no names or personal details of victims.

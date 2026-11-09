@@ -377,7 +377,10 @@ function openSite(id) {
   $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `After · ${d(s.post)}`;
   $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
     <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>
-    <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. View ~${s.km} km across, north up; contrast stretched for display.</p>`;
+    <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. View ~${s.km} km across, north up; contrast stretched for display.</p>`
+    + (s.video ? `<h4>${s.video.title} <span class="vkind">${s.video.kind}</span></h4>${s.video.notice ? `<p class="note">${s.video.notice}</p>` : ""}
+    <video controls playsinline preload="none" poster="${s.video.poster}" src="${s.video.src}" aria-label="${s.video.title}"></video>
+    <p>${s.video.text}</p><p class="note">${s.video.credit} Sources: ${s.video.srcs.map(src_).join("; ")}.</p>` : "");
   $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
   setSplit(50);
   if (!cmp.open) cmp.showModal();
@@ -391,6 +394,7 @@ $("#cmp-view").onpointerdown = (e) => {
 $("#cmp-prev").onclick = () => openSite(sites[(siteIdx - 1 + sites.length) % sites.length].id);
 $("#cmp-next").onclick = () => openSite(sites[(siteIdx + 1) % sites.length].id);
 $("#cmp-x").onclick = () => cmp.close();
+cmp.addEventListener("close", () => cmp.querySelectorAll("video").forEach((v) => v.pause()));
 const legend = document.createElement("details"); legend.className = "legend"; legend.open = true;
 legend.innerHTML = `<summary>Legend</summary>
   <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Estimated progression along the mapped route</div>

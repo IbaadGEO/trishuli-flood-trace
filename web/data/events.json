@@ -91,6 +91,14 @@
   "planet": {
    "label": "Planet Crisis Response Program via Source Cooperative (CC BY-NC 4.0)",
    "url": "https://source.coop/planet/disasterdata"
+  },
+  "huang": {
+   "label": "Huang, Chen & Wang (2026), Zenodo 10.5281/zenodo.22884627, CC BY 4.0 (paper in preparation)",
+   "url": "https://doi.org/10.5281/zenodo.22884627"
+  },
+  "commons_cctv": {
+   "label": "Wikimedia Commons: Mudslide at Gyirong Port 1.webm (rev. 1279062472)",
+   "url": "https://commons.wikimedia.org/w/index.php?title=File:Mudslide_at_Gyirong_Port_1.webm&oldid=1279062472"
   }
  },
  "events": [
@@ -523,7 +531,19 @@
     "jms",
     "icimod"
    ],
-   "note": "The before image is a cloud-free 2025 mosaic built from many Sentinel-2 dates at 10 m, so snow cover and detail differ from the 0.6 m after image: compare landforms, not snow."
+   "note": "The before image is a cloud-free 2025 mosaic built from many Sentinel-2 dates at 10 m, so snow cover and detail differ from the 0.6 m after image: compare landforms, not snow.",
+   "video": {
+    "kind": "Model scenario, not footage",
+    "src": "data/media/model_s7.mp4",
+    "poster": "data/media/model_s7.jpg",
+    "title": "Published simulation of the first ten minutes (Movie S7)",
+    "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, matching the observed 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
+    "notice": "",
+    "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
+    "srcs": [
+     "huang"
+    ]
+   }
   },
   "timure": {
    "seen": "The riverside buildings at the Rasuwagadhi–Timure confluence are gone, and grey flood deposits fill a much wider channel.",
@@ -534,7 +554,20 @@
     "ems",
     "zenodo"
    ],
-   "note": "The before image is from 27 May 2026, after the July 2025 Purepu flood had already scoured this reach, so the change shown is from 2026. Cloud covers part of the after image."
+   "note": "The before image is from 27 May 2026, after the July 2025 Purepu flood had already scoured this reach, so the change shown is from 2026. Cloud covers part of the after image.",
+   "video": {
+    "kind": "Recorded footage",
+    "src": "data/media/gyirong_cctv1.mp4",
+    "poster": "data/media/gyirong_cctv1.jpg",
+    "title": "Gyirong Port camera, 26 August 2026",
+    "text": "A fixed surveillance camera at Gyirong Port, looking north-west (upstream), records the debris-laden surge reaching the port and engulfing the car park and buildings. Guo et al. give the port camera's time of arrival as 10:59 Beijing time (08:44 NPT); this clip's on-screen clock is not independently verified.",
+    "notice": "Shows the surge striking the port; people can be seen in the car park beforehand.",
+    "credit": "Distributed by Resound News; original camera operator unidentified. Classified as public domain on Wikimedia Commons (automated recording), accessed 9 Nov 2026. Re-encoded to MP4 without other changes.",
+    "srcs": [
+     "commons_cctv",
+     "guo"
+    ]
+   }
   },
   "syabrubesi": {
    "seen": "Grey flood deposits now cover the low ground at the river junction where the bazaar stood, and the channel is much wider; buildings higher on the slope remain.",

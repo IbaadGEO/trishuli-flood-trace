@@ -37,7 +37,7 @@ SITES = [
     ("source", "Collapse source, Langtang Lirung", 85.520, 28.291, 3200,
      ("eox", "2025 mosaic", "EOxCloudless (Sentinel-2), 10 m", EOX, "s2cloudless-2025"),
      planet("post-event/pelican-2026-09-29/items/20260929_051336_88_300c/20260929_051336_88_300c", "2026-09-29", "Pelican, 0.6 m")),
-    ("timure", "Rasuwagadhi and Timure", 85.374, 28.268, 2400,
+    ("timure", "Rasuwagadhi–Gyirong border and Timure", 85.374, 28.268, 2400,
      planet(PS_MAY + "20260527_053219_95_254a/20260527_053219_95_254a", "2026-05-27", "PlanetScope, 3.7 m"),
      planet("post-event/pelican-2026-09-01/items/20260901_050632_98_300b/20260901_050632_98_300b", "2026-09-01", "Pelican, 0.6 m")),
     ("syabrubesi", "Syabrubesi", 85.3394, 28.1683, 2000,
