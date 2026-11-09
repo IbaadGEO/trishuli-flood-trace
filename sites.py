@@ -1,11 +1,11 @@
 """Before/after image pairs for key sites -> web/data/sites/*.webp and web/data/sites.json.
 
 Reads openly licensed scenes over HTTP (no login) and warps a fixed square window around each site onto a
-UTM 45N grid, so the before and after images align pixel for pixel:
+UTM 45N grid, so the before and after images line up on a common grid:
   - Vantor Open Data Program, event "Nepal-Flooding-Aug-2026" (CC BY-NC 4.0)
   - Planet Crisis Response Program on Source Cooperative (CC BY-NC 4.0)
   - EOxCloudless 2025 (CC BY-NC-SA 4.0), only where no pre-event high-resolution scene covers the site
-"Before" scenes are from after the July 2025 Purepu flood wherever one exists, so the pair isolates 2026 change.
+"Before" scenes are from after the July 2025 Purepu flood wherever one exists, so the pair mostly reflects 2026 change.
 Each image gets a 1-99 percentile contrast stretch for display (stated in the app). Run: python -P sites.py
 """
 import io, json, os, sys, urllib.request

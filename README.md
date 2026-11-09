@@ -28,7 +28,7 @@ flowchart LR
   D --> E["<b>Devghat</b><br/>rise begins 14:30–14:40<br/>~200 km downstream"]
 ```
 
-The falling mass turned into a debris flow that scoured the narrow Lende Khola gorge and reached the border crossing at Gyirong Port about seven minutes later, after roughly 22 km and 3,400 m of descent (Guo et al., 2026). Below Syabrubesi it began dropping its largest rock and continued as a more water-laden flood down the Bhote Koshi and Trishuli (Clarke et al., 2026). River gauges stopped transmitting one after another, so the timing upstream is bracketed rather than measured (Acharya and Paudel, 2026). The rising wave reached the Devghat gauge between 14:30 and 14:40. This first wave did not come from barrier lakes: those formed after the event and only began overflowing on 28 August (Xu, 2026).
+The falling mass turned into a debris flow that scoured the narrow Lende Khola gorge and reached the border crossing at Gyirong Port about seven minutes later, after roughly 22 km and 3,400 m of descent (Guo et al., 2026). Below Syabrubesi it began dropping its largest rock and continued as a more water-laden flood down the Bhote Koshi and Trishuli (Clarke et al., 2026). River gauges stopped transmitting one after another, so the timing upstream is bracketed rather than measured (Acharya and Paudel, 2026). The rising wave reached the Devghat gauge between 14:30 and 14:40. Xu (2026) attributes this first wave to the debris flow itself, possibly with a quick breach of debris dumped across the river. The barrier lakes formed during the cascade, were mapped on 28 August and only began overflowing that afternoon.
 
 ## What the map does
 
@@ -47,7 +47,7 @@ Left: estimated progression against the evidence windows. Centre: channel elevat
 
 ## Before and after
 
-Open satellite imagery of four sites along the route, aligned pixel for pixel. In the app, each panel also says what the images show and, separately, what the cited sources report happened there.
+Open satellite imagery of four sites along the route, resampled to a common grid so they line up. In the app, each panel also says what the images show and, separately, what the cited sources report happened there.
 
 <table>
 <tr>

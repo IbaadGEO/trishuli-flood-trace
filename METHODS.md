@@ -9,7 +9,7 @@ Trishuli Flood Trace is a personal, non-commercial reconstruction of the 26 Augu
 | Mapped extent (UNOSAT 4256) | Observed: preliminary satellite interpretation (Sentinel-2, Planet; 26–28 Aug), not field-validated |
 | Mapped landslides, building and road grading (Copernicus EMS EMSR927) | Observed: photo-interpreted, within four mapped areas only. Shown separately, never timed |
 | Gauge stage series (DHM, ten-minute) | Observed: instrument record archived on Zenodo (10.5281/zenodo.22679444). Stage is relative to each station's datum, not water depth |
-| Barrier lakes (UNOSAT 4260) | Observed on 28 Aug (Cartosat-3). Formed after the event |
+| Barrier lakes (UNOSAT 4260) | Observed on 28 Aug (Cartosat-3). Formed during the disaster cascade; mapped on 28 Aug |
 | Progression marker, extent reveal, implied rate | **Constructed** (below) |
 | Channel elevation profile | **Derived** from a DEM (below), not a surveyed bed |
 
@@ -36,7 +36,7 @@ These are reports used **only as checks**, never fitted:
 |---|---|
 | Rasuwagadhi telemetry loss (08:40–08:50) | consistent |
 | Malekhu/Phurke warning-level crossing 11:26 (CHWRR) | consistent with the gauge's own record: warning 7.0 m crossed 11:20–11:30, danger 8.0 m 11:30–11:40 |
-| "Past Mugling by 13:00" (upper bound) | **conflict**: the instrument onset at Kali Khola, ~3 km downstream, is 13:10–13:20. The map follows the instrument record |
+| "Crossed Mugling" 13:00 (CHWRR; upper bound) | **conflict with the interpolation**, which puts the front at Mugling ~13:07. The Kali Khola gauge onset ~3 km downstream (13:10–13:20) is consistent with the report. The map keeps the gauge windows |
 
 Peaks, threshold crossings, alerts and forecasts appear in the chronology but never constrain the timing.
 
@@ -53,7 +53,7 @@ Peaks, threshold crossings, alerts and forecasts appear in the chronology but ne
 3. Pixels whose nearest route point is the route origin are ground upstream of the timed route (the source/runout zone, ~158 ha). They are shown as **untimed** grey and never animated.
 4. The reveal is **cumulative**: once revealed, a pixel stays. This is the mapped affected footprint appearing at its estimated time, not instantaneous inundation or depth. The fade from pale to brown over 25 min is illustrative only.
 
-Known limits: nearest-point assignment can mis-time pixels across meander necks, on tributary backwater or on slope deposits, and the 3 km cutoff is an inclusion rule, not a connectivity test. Rasterisation and clipping make the revealed total (~6,556 ha timed + 158 ha untimed) differ slightly from UNOSAT's vector area (6,491 ha).
+Known limits: nearest-point assignment can mis-time pixels across meander necks, on tributary backwater or on slope deposits, and the 3 km cutoff is an inclusion rule, not a connectivity test. Rasterisation and clipping make the revealed total (~6,556 ha timed + 158 ha untimed) about 3.4% larger than UNOSAT's vector area (6,491 ha). Tributary backflow (for example ~2 km up the side valley at the border) is documented in the sources but not reconstructed.
 
 ## Channel elevation profile
 
@@ -63,7 +63,7 @@ Copernicus GLO-30 DEM via Mapterhorn tiles (sampled on a zoom-12 grid, ~34 m pix
 
 - The "before" and "after" layers are per-pixel **median** composites of the rendered Sentinel-2 L2A true-colour (TCI) assets. Pixels are kept if the scene classification is not cloud, shadow or cirrus and the blue band is below 150; the bright pixels are a fallback only. They use up to 16 scenes nearest the event within the windows shown in the app.
 - They are for orientation only, not a reflectance change-analysis product.
-- Gaps in "after" show the 2024 EOxCloudless basemap, which is pre-event.
+- Gaps in "after" show the 2025 EOxCloudless basemap, which is pre-event.
 - Scene IDs and valid-observation counts are not yet exported (planned).
 
 ## Reproducing
@@ -72,6 +72,7 @@ Copernicus GLO-30 DEM via Mapterhorn tiles (sampled on a zoom-12 grid, ~34 m pix
 pip install -r requirements.txt
 python -P build.py      # data; downloads are cached in raw/ (not committed)
 python -P imagery.py    # imagery (~40 min)
+python -P sites.py      # before/after site images
 ```
 
 Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `inputs_manifest.json` records the SHA-256 of each input used.

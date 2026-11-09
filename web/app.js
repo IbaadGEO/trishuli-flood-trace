@@ -10,11 +10,12 @@ const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v
 const [meta, ev, gauges, sitesRaw] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json", "data/sites.json"].map((u) => fetch(u, { cache: "no-cache" }).then((r) => r.json()))); // revalidate: data must match this app.js
 const river = meta.river; // [lon, lat, chain_m, minutes, bedElev]
 const sites = sitesRaw.map((s) => ({ ...s, ...ev.sites[s.id] })); // before/after image pairs + their captions
+$("#t").max = Math.max(+$("#t").max, ...ev.events.map((e) => toMin(e.t))); // reach the last key event
 const T_END = +$("#t").max;
 let t = 0;
 
 // ---------- ArcGIS basemap (optional) ----------
-// config.js is not committed; locally you paste a key, the deploy workflow writes it from a repository secret.
+// config.js is git-ignored. The Vercel build copies config.example.js (no key), so the public site uses the EOxCloudless basemap.
 const cfg = (await import("./config.js").catch(() => ({ default: {} }))).default;
 const KEY = cfg.arcgisKey || "";
 const esri = KEY ? await fetch(`https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/arcgis/imagery/labels?token=${encodeURIComponent(KEY)}`)
@@ -234,7 +235,7 @@ if (s2) {
   box.className = "fade";
   box.innerHTML = `<b>Corridor imagery</b><div class="fade-row"><span>Before<small>${span(s2.pre.dates)}</small></span>
     <input type="range" min="0" max="100" value="0" aria-label="Blend before and after Sentinel-2 imagery"><span>After<small>${span(s2.post.dates)}</small></span></div>
-    <small class="note">Cloud-masked median composites over the date windows shown, for orientation only. Gaps in "after" show the 2024 basemap, which is pre-event.</small>`;
+    <small class="note">Cloud-masked median composites over the date windows shown, for orientation only. Gaps in "after" show the 2025 basemap, which is pre-event.</small>`;
   document.querySelector("#map").appendChild(box);
   box.querySelector("input").oninput = (e) => { const v = e.target.value / 100;
     map.setPaintProperty("s2post", "raster-opacity", v); map.setPaintProperty("s2pre", "raster-opacity", 1 - v); }; // so post-event gaps never show the "before" composite
@@ -376,7 +377,7 @@ function openSite(id) {
   toggle(false);
   $("#cmp-title").textContent = s.name;
   $("#cmp-pre").src = s.pre.img; $("#cmp-pre").alt = `${s.name} before the flood, ${d(s.pre)}`;
-  $("#cmp-post").src = s.post.img; $("#cmp-post").alt = `${s.name} after the flood, ${d(s.post)}`;
+  $("#cmp-post").src = s.post.img; $("#cmp-post").alt = `${s.name} ${s.published ? "during" : "after"} the flood, ${d(s.post)}`;
   $("#cmp-l").textContent = `Before · ${d(s.pre)}`; $("#cmp-rt").textContent = `After · ${d(s.post)}`;
   $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
     <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>

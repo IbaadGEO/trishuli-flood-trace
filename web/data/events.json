@@ -48,10 +48,6 @@
    "label": "Li (2026), arXiv 2609.04563: source footprint, antecedent rainfall and temperature",
    "url": "https://arxiv.org/abs/2609.04563"
   },
-  "clash": {
-   "label": "CLaSH / USGS story map",
-   "url": "https://storymaps.arcgis.com/stories/f2b2425eac544929a7d18f4c90b41d66"
-  },
   "zenodo": {
    "label": "DHM gauge record, Acharya & Paudel (2026), Zenodo v3.0.0, CC BY 4.0",
    "url": "https://doi.org/10.5281/zenodo.22679444"
@@ -161,16 +157,16 @@
   {
    "t": "09:00",
    "kind": "alert",
-   "title": "Flood Forecasting Division informed",
-   "detail": "Via Rasuwa District Administration and Betrawati station staff (reported)",
-   "src": "timeline"
+   "title": "Large flood from China reported",
+   "detail": "Rasuwa District Administration and Betrawati station staff report it; the Flood Forecasting Warning Centre receives first information at 09:05",
+   "src": "chwrr"
   },
   {
    "t": "09:15",
    "kind": "alert",
-   "title": "SMS alerts issued (reported time)",
-   "detail": "679,295 messages reported sent to riverbank areas; receipt not verified",
-   "src": "timeline"
+   "title": "SMS warnings sent",
+   "detail": "About 678,295 messages between 09:05 and 09:14 (CHWRR text); its chronology table and the RDNA list the warning at 09:15, and the RDNA gives 679,295. Receipt not verified",
+   "src": "chwrr"
   },
   {
    "t": "09:20",
@@ -186,9 +182,9 @@
   {
    "t": "10:28",
    "kind": "alert",
-   "title": "Forecast issued for Galchhi and Mugling",
-   "detail": "A forecast, not an observation",
-   "src": "timeline"
+   "title": "Flood reported at Galchhi; downstream forecast issued",
+   "detail": "CHWRR: the wave reached the Galchhi area and was expected to cross Mugling within hours; warnings issued for the Prithvi Highway and Mugling–Narayanghat road",
+   "src": "chwrr"
   },
   {
    "t": "10:30",
@@ -230,8 +226,8 @@
     85.4798,
     28.3281
    ],
-   "title": "Second landslide signal at the source",
-   "detail": "06:00:35 UTC; USGS landslide classification, M4.2 (ms_vx). No second downstream flood is implied",
+   "title": "Second landslide-classified seismic signal",
+   "detail": "06:00:35 UTC; USGS landslide classification, M4.2 (ms_vx); location approximate. No second downstream flood is implied",
    "src": "usgs2"
   },
   {
@@ -242,8 +238,8 @@
     27.853
    ],
    "title": "Reported past Mugling by 13:00",
-   "detail": "Conflicts by a few minutes with the Kali Khola gauge onset (13:10–13:20) ~3 km downstream; the map follows the gauge",
-   "src": "timeline"
+   "detail": "CHWRR: the wave crossed Mugling, and warnings went out as far as Devghat. The map's interpolated arrival here is ~13:07, a few minutes later; the Kali Khola gauge 3 km downstream (onset 13:10–13:20) is consistent with either. The map follows the gauge windows",
+   "src": "chwrr"
   },
   {
    "t": "13:20",
@@ -264,7 +260,7 @@
     27.71
    ],
    "title": "Devghat gauge starts rising",
-   "detail": "Onset 14:30–14:40 in the instrument record. CHWRR reports give 13:20 and 15:20 as arrival",
+   "detail": "Onset 14:30–14:40 in the instrument record. CHWRR logs 4.76 m at 13:20 and the wave reaching Devghat at 15:20",
    "src": "zenodo"
   },
   {
@@ -290,12 +286,12 @@
   {
    "m": 0,
    "title": "The collapse",
-   "text": "Roughly 100 million m³ of rock and glacier ice (estimates vary by study) breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (estimates vary). Seismometers record the collapse itself."
+   "text": "Roughly 100 million m³ of rock and glacier ice breaks off the Lirung massif at ~5,150–5,200 m and drops ~1.2–1.4 km into the valley (figures differ between studies). Seismometers record the collapse itself."
   },
   {
    "m": 2,
    "title": "A debris flow forms",
-   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris and buried ice from the valley floor and, by about 4,000 m, has mixed with river water and sediment as it races down the narrow Lende Khola gorge."
+   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris from the valley floor, may have entrained buried ice, and by about 4,000 m, has mixed with river water and sediment as it races down the narrow Lende Khola gorge."
   },
   {
    "m": 7,
@@ -305,17 +301,17 @@
   {
    "m": 12,
    "title": "Almost no warning downstream",
-   "text": "The flow enters Nepal through Timure and Syabrubesi. This first wave came from the debris flow itself and/or a quick breach of the debris it dumped across the river, not from the barrier lakes, which only began overflowing two days later. Below Syabrubesi it drops its largest boulders and becomes a more water-laden flood. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured."
+   "text": "The flow enters Nepal through Timure and Syabrubesi. Xu (2026) attributes this first wave to the debris flow itself, possibly with a quick breach of debris it dumped across the river; the barrier lakes mapped on 28 August only began overflowing that afternoon. Below Syabrubesi it drops its largest boulders and becomes a more water-laden flood. River gauges stop transmitting one after another, so the timing here is bracketed rather than measured."
   },
   {
    "m": 38,
    "title": "Warnings go out",
-   "text": "At 09:15 emergency SMS alerts are dispatched along the river. The flow slows as the valley widens but remains destructive."
+   "text": "From 09:05 emergency SMS warnings go out to six districts along the river: about 678,000 messages by 09:14 (CHWRR). The flow slows as the valley widens but remains destructive."
   },
   {
    "m": 43,
    "title": "Down the Trishuli",
-   "text": "Below Dhunche the river is the Trishuli. Around Betrawati hydropower projects, bridges and the riverside road are damaged or swept away."
+   "text": "Around Betrawati, hydropower projects, bridges and the riverside road are damaged or swept away."
   },
   {
    "m": 110,
@@ -325,12 +321,12 @@
   {
    "m": 158,
    "title": "Malekhu",
-   "text": "Around 11:15 the wave reaches Malekhu. Within twenty minutes the river rises past its warning and danger levels; the gauge stops transmitting after 11:40 and the Phurke bridge is lost."
+   "text": "The Malekhu gauge starts rising between 11:10 and 11:20. It passes its warning level by 11:30 and danger level by 11:40, its final transmission, and the Phurke bridge is lost."
   },
   {
    "m": 263,
    "title": "Past Mugling",
-   "text": "By 13:00 the flood is reported past Mugling. Riverside residents as far as Devghat are told to move away from the banks."
+   "text": "At 13:00 CHWRR reports the wave crossing Mugling. Riverside residents as far as Devghat are told to move away from the banks."
   },
   {
    "m": 353,
@@ -353,7 +349,7 @@
   {
    "d": "28 Aug",
    "title": "Two new barrier lakes mapped",
-   "detail": "~12 ha and ~19 ha (UNOSAT 4260, Cartosat-3); CHWRR gives ~16 ha and ~18 ha",
+   "detail": "~12 ha and ~19 ha (UNOSAT 4260, Cartosat-3); CHWRR gives ~16 ha and ~18 ha. Formed during the cascade",
    "src": "unosat4260"
   },
   {
@@ -443,26 +439,26 @@
    "name": "Barrier lake 1",
    "lon": 85.4831,
    "lat": 28.3331,
-   "area": "~12 ha (UNOSAT polygon, 28 Aug); CHWRR ~16 ha; China MWR radar ~10 ha, ~2.2 million m³",
-   "note": "Lende–Lirung Khola confluence; likely the main lake surveyed by China's MWR (dam ~60 m high, ~300 m wide; Xu 2026). Overflow from 17:50 Beijing time (15:35 NPT) on 28 Aug. Formed after the event"
+   "area": "~12 ha (UNOSAT polygon, 28 Aug); CHWRR ~16 ha",
+   "note": "Lende–Lirung Khola confluence. Possibly the lake China's MWR surveyed by radar (~10 ha, ~2.2 million m³; dam ~60 m high, ~300 m wide; Xu 2026), but the match is not confirmed. That lake overflowed from 17:50 Beijing time (15:35 NPT) on 28 Aug. Formed during the disaster cascade; mapped on 28 Aug"
   },
   {
    "name": "Barrier lake 2",
    "lon": 85.5106,
    "lat": 28.2933,
    "area": "~19 ha (UNOSAT polygon, 28 Aug); CHWRR ~18 ha",
-   "note": "Below the collapse area; reported overflow 29 Aug. Formed after the event"
+   "note": "Below the collapse area; reported overflow 29 Aug. Formed during the disaster cascade; mapped on 28 Aug"
   }
  ],
  "source": {
   "rows": [
    [
     "Failure zone",
-    "~0.72 km² detached ice–rock body (Guo et al., peer reviewed); ~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,200 m; ~2.2 km² (WWA preliminary)"
+    "~0.72 km² detached ice–rock body (Guo et al., peer reviewed); ~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,200 m; ~2.2 km² (WWA preliminary). Each study delineated its own source area, so these are not the same outline"
    ],
    [
     "Volume",
-    "~103 million m³ (JMS); 99 ± 10 million m³ (JISRS); ~110 million m³ (WWA preliminary); ~132 million m³ (ICIMOD preliminary synthesis); up to ~30 million m³ more picked up on the valley floor (WWA)"
+    "~103 million m³ (JMS); 99 ± 10 million m³ (JISRS); ~110 million m³ (WWA preliminary); ~132 million m³ (ICIMOD preliminary synthesis); up to ~30 million m³ more picked up on the valley floor (WWA). These are central estimates; their spread is ~99–132 million m³"
    ],
    [
     "Ice",
@@ -482,7 +478,7 @@
    ]
   ],
   "precursor": "ICIMOD reports up to 40 cm of line-of-sight ground deformation at the source in Sentinel-1 radar between 7 Jul and 24 Aug; this is retrospective and does not imply the failure time was predictable. At the Kakani seismic station, Guo et al. find several candidate signals in the ~3 hours before (around 06:04, 06:50 and 08:15–08:19 NPT), some close to eyewitness reports of a snow avalanche and an ice-snow dust cloud. They may be small ice or rock falls, but do not establish a deterministic precursor. Sentinel-2 shows the source glacier's middle and lower parts moving relatively fast through 2024–2026.",
-  "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain. The 7-day mean temperature at the source grid cell (9.43 °C) was above every matching week from 2001–2025 (Li 2026); this describes conditions, not a proven cause. Guo et al. (peer reviewed, ERA5-Land) likewise find limited rain in the final 72 hours and a warmer than average spring and summer (+0.58 °C up to 21 Aug).",
+  "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain. The 7-day mean ERA5-Land 2 m air temperature at the source grid cell (9.43 °C) was above every matching week from 2001–2025 (Li 2026); this describes conditions, not a proven cause. Guo et al. (peer reviewed, ERA5-Land) likewise find limited rain in the final 72 hours, a warmer than average spring, and a summer up to 21 Aug +0.58 °C above average.",
   "conflicts": "Studies estimate geometry, volume, magnitude and speed differently; each figure is attributed to its source."
  },
  "deathsByDistrict": {
@@ -536,7 +532,7 @@
  "sites": {
   "source": {
    "seen": "A bare grey failure surface now replaces glacier ice on the mountain's north face, and grey debris covers the valley floor below it.",
-   "why": "Satellite images and field photographs show that both glacier ice and rock broke away, leaving a fresh headwall and hanging ice; the detached ice–rock body covered about 0.72 km² (Guo et al.). Published volume estimates range from about 99 to 132 million m³.",
+   "why": "Satellite images and field photographs show that both glacier ice and rock broke away, leaving a fresh headwall and hanging ice; the detached ice–rock body covered about 0.72 km² (Guo et al.). Published central volume estimates range from about 99 to 132 million m³.",
    "srcs": [
     "guo",
     "jisrs",
@@ -550,7 +546,7 @@
      "src": "data/media/model_s7.mp4",
      "poster": "data/media/model_s7.jpg",
      "title": "Published simulation of the first ten minutes (Movie S7)",
-     "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, matching the observed 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
+     "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, close to the authors' benchmark of 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
      "notice": "",
      "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
      "srcs": [
@@ -562,7 +558,7 @@
      "src": "data/media/park_gorge_oblique_5s.mp4",
      "poster": "data/media/park_gorge_oblique_5s.jpg",
      "title": "Upper-gorge simulation, first 24 minutes (Park)",
-     "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out.",
+     "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out. The run shown is the scenario the author selected; other parameter choices change the timing.",
      "notice": "",
      "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
      "srcs": [
@@ -573,7 +569,7 @@
   },
   "timure": {
    "seen": "The riverside buildings at the Rasuwagadhi–Timure confluence are gone, and grey flood deposits fill a much wider channel.",
-   "why": "Here part of the flow surged about 2 km up the side valley into China, a sign it still carried great momentum at the confluence (Guo et al.; WWA). Copernicus EMS graded 372 building points in its Timure mapping area as destroyed, and the Rasuwagadhi gauge stopped reporting after 08:40.",
+   "why": "Here part of the flow surged about 2 km up the side valley into China, a sign it still carried great momentum at the confluence (Guo et al.; WWA). That backflow is documented but not reconstructed on this map. Copernicus EMS graded 372 building points in its Timure mapping area as destroyed, and the Rasuwagadhi gauge stopped reporting after 08:40.",
    "srcs": [
     "guo",
     "wwa",
@@ -599,7 +595,7 @@
   },
   "syabrubesi": {
    "seen": "Grey flood deposits now cover the low ground at the river junction where the bazaar stood, and the channel is much wider; buildings higher on the slope remain.",
-   "why": "WWA describes waves of 10 m to almost 100 m in the upper reaches tearing through Rasuwagadhi, Timure and Syabrubesi, and the flood beginning to drop its largest rock south of Syabrubesi. Copernicus EMS graded 323 building points here as destroyed; the Syabrubesi gauge stopped reporting after 08:50.",
+   "why": "WWA's narrative describes waves of 10 m to almost 100 m (a description, not a measurement) tearing through Rasuwagadhi, Timure and Syabrubesi, and the flood beginning to drop its largest rock south of Syabrubesi. Copernicus EMS graded 323 building points here as destroyed; the Syabrubesi gauge stopped reporting after 08:50.",
    "srcs": [
     "wwa",
     "ems",
@@ -608,7 +604,7 @@
    "note": "May (dry season) and September (monsoon) images differ in vegetation colour and hill shadow."
   },
   "betrawati": {
-   "seen": "Muddy flood sediment now spans the valley floor, burying the riverside road and fields along the channel.",
+   "seen": "Muddy flood sediment now spans the valley floor; the riverside road and fields along the channel are absent or obscured.",
    "why": "Betrawati was the first Nuwakot town the flood reached; a large share of its homes were inundated and covered in mud debris (WWA, citing national press). The Betrawati gauge stopped reporting after 09:20, and the 55 km Betrawati–Rasuwagadhi road section was completely damaged (RDNA, via WWA).",
    "srcs": [
     "wwa",
@@ -618,7 +614,7 @@
    "note": "Cloud hides part of the river junction in the after image."
   },
   "bidur": {
-   "seen": "The narrow river and its canal are replaced by a broad sheet of grey sediment, and buildings close to the river are buried or gone.",
+   "seen": "The narrow river and its canal are replaced by a broad sheet of grey sediment, and buildings close to the river are absent or obscured.",
    "why": "Downstream, the debris-laden water left mud and debris several metres thick in the market towns of Trishuli and Battar (WWA). Copernicus EMS graded 2,479 building points in its wider Bidur mapping area as destroyed.",
    "srcs": [
     "wwa",
@@ -644,7 +640,7 @@
     "src": "data/media/park_full_corridor_top_60s.mp4",
     "poster": "data/media/park_full_corridor_top_60s.jpg",
     "title": "Full-corridor simulation, 8 hours, plan view (Park)",
-    "text": "A 60 m two-dimensional model of the flow from the source to Devghat over eight hours, including settling and melting. The author states it is not a validated inundation map.",
+    "text": "A 60 m two-dimensional model of the flow from the source to Devghat over eight hours, including settling and melting. The author states it is not a validated inundation map. The run shown is the scenario the author selected; other parameter choices change the timing.",
     "notice": "",
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_top_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
@@ -656,7 +652,7 @@
     "src": "data/media/park_full_corridor_profile_60s.mp4",
     "poster": "data/media/park_full_corridor_profile_60s.jpg",
     "title": "Full-corridor simulation, 8 hours, long profile (Park)",
-    "text": "The wave travelling down the river's long profile. Below Syabrubesi this view uses a separate one-dimensional routing model fitted to the Galchhi, Kali Khola and Devghat gauges, so it differs from the plan view. Flow depth is exaggerated 50 times; the lower panel shows river rise in metres, capped at 10 m. The author reports that discrepancies remain at Devghat.",
+    "text": "The wave travelling down the river's long profile. Below Syabrubesi this view uses a separate one-dimensional routing model fitted to the Galchhi, Kali Khola and Devghat gauges, so it differs from the plan view. Flow depth is exaggerated 50 times; the lower panel shows river rise in metres, capped at 10 m. The author reports that discrepancies remain at Devghat. The run shown is the scenario the author selected; other parameter choices change the timing.",
     "notice": "",
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_profile_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
@@ -668,7 +664,7 @@
     "src": "data/media/model_s7.mp4",
     "poster": "data/media/model_s7.jpg",
     "title": "Published simulation of the first ten minutes (Movie S7)",
-    "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, matching the observed 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
+    "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, close to the authors' benchmark of 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
     "notice": "",
     "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
     "srcs": [
@@ -680,7 +676,7 @@
     "src": "data/media/park_gorge_oblique_5s.mp4",
     "poster": "data/media/park_gorge_oblique_5s.jpg",
     "title": "Upper-gorge simulation, first 24 minutes (Park)",
-    "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out.",
+    "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out. The run shown is the scenario the author selected; other parameter choices change the timing.",
     "notice": "",
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
