@@ -26,7 +26,7 @@ Each piece of evidence is a time **window** (`anchors.csv`), typed by what it ac
 | Evidence type | Meaning |
 |---|---|
 | Seismic origin time | USGS us7000tbwb, 02:52:10 UTC = 08:37 NPT. Applied at the route origin with a 0–2 min window, an assumption since the runout is untimed |
-| Impact (time-stamped images, reported) | Gyirong Port, 08:44 NPT (10:59 Beijing time), reported by CHWRR and China's preliminary investigation; camera clock not independently verified (±1 min window) |
+| Impact (surveillance camera) | Gyirong Port surveillance video, 10:59 Beijing time = 08:44 NPT (Guo et al. 2026, peer reviewed; CHWRR gives the same time); camera clock not independently verified (±1 min window) |
 | Telemetry loss | Destroyed gauge (Syabrubesi, Betrawati): last transmission → next report absent. Brackets arrival **only if** the flood caused the loss |
 | Rising-wave onset | Gauge (Galchhi, Malekhu, Kali Khola, Devghat): last sample at local background → first clearly risen sample. Malekhu (Phurke) is from the BIPAD river record (station 261, series 31967): background 3.35 m at 11:10, risen 3.96 m at 11:20, then lost after 11:40 |
 

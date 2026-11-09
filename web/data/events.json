@@ -79,6 +79,10 @@
   "xu": {
    "label": "Xu (2026), EarthArXiv preprint v2 (not peer reviewed), CC BY 4.0",
    "url": "https://doi.org/10.31223/X56793"
+  },
+  "guo": {
+   "label": "Guo et al. (2026), Chinese Science Bulletin (in Chinese), doi 10.1360/CSB-2026-1255",
+   "url": "https://doi.org/10.1360/CSB-2026-1255"
   }
  },
  "events": [
@@ -111,9 +115,9 @@
     85.378,
     28.276
    ],
-   "title": "Gyirong Port hit (time-stamped images)",
-   "detail": "08:44 NPT (10:59 Beijing time), reported by CHWRR and by China's preliminary investigation; camera clock not independently verified",
-   "src": "wwa"
+   "title": "Gyirong Port hit (surveillance camera)",
+   "detail": "Port surveillance video at 10:59 Beijing time (08:44 NPT), after ~22 km and ~3,400 m of descent (Guo et al. 2026); CHWRR gives the same time",
+   "src": "guo"
   },
   {
    "t": "08:50",
@@ -263,12 +267,12 @@
   {
    "m": 2,
    "title": "A debris flow forms",
-   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. Picking up loose glacial debris and buried ice from the valley floor, it races down the narrow Lende Khola gorge."
+   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris and buried ice from the valley floor and, by about 4,000 m, has mixed with river water and sediment as it races down the narrow Lende Khola gorge."
   },
   {
    "m": 7,
    "title": "The border crossing is hit",
-   "text": "Time-stamped images show it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China."
+   "text": "The port's surveillance camera shows it reaching the China–Nepal border about seven minutes after the collapse, at Gyirong Port, a busy crossing for traders and pilgrims. At the confluence it surges about 2 km upstream into China."
   },
   {
    "m": 12,
@@ -426,7 +430,7 @@
   "rows": [
    [
     "Failure zone",
-    "~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,190 m; ~2.2 km² (WWA preliminary)"
+    "~0.72 km² detached ice–rock body (Guo et al., peer reviewed); ~0.76 km² (JMS) or ~0.99 km² (JISRS), at ~5,130–5,200 m; ~2.2 km² (WWA preliminary)"
    ],
    [
     "Volume",
@@ -443,10 +447,14 @@
    [
     "Lende Khola",
     "14.2 km in ~350 s: a route-average rate (JMS), not a measured flow velocity"
+   ],
+   [
+    "Runout",
+    "~22 km and ~3,400 m of descent to Gyirong Port; flow area ~7.3 km² (Guo et al.); becomes a debris flow by ~4,000 m"
    ]
   ],
-  "precursor": "ICIMOD reports up to 40 cm of line-of-sight ground deformation at the source in Sentinel-1 radar between 7 Jul and 24 Aug; this is retrospective and does not imply the failure time was predictable.",
-  "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain. The 7-day mean temperature at the source grid cell (9.43 °C) was above every matching week from 2001–2025 (Li 2026); this describes conditions, not a proven cause.",
+  "precursor": "ICIMOD reports up to 40 cm of line-of-sight ground deformation at the source in Sentinel-1 radar between 7 Jul and 24 Aug; this is retrospective and does not imply the failure time was predictable. At the Kakani seismic station, Guo et al. find several candidate signals in the ~3 hours before (around 06:04, 06:50 and 08:15–08:19 NPT), some close to eyewitness reports of a snow avalanche and an ice-snow dust cloud. They may be small ice or rock falls, but do not establish a deterministic precursor. Sentinel-2 shows the source glacier's middle and lower parts moving relatively fast through 2024–2026.",
+  "rain": "Satellite rainfall at the source grid cell was low before the failure (4.0 mm in 24 h, 20th percentile; 8.3 mm over 3 days), so heavy rain is not thought to be the main trigger. Local rainfall and initiation remain uncertain. The 7-day mean temperature at the source grid cell (9.43 °C) was above every matching week from 2001–2025 (Li 2026); this describes conditions, not a proven cause. Guo et al. (peer reviewed, ERA5-Land) likewise find limited rain in the final 72 hours and a warmer than average spring and summer (+0.58 °C up to 21 Aug).",
   "conflicts": "Studies estimate geometry, volume, magnitude and speed differently; each figure is attributed to its source."
  },
  "deathsByDistrict": {

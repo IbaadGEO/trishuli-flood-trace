@@ -33,7 +33,7 @@ unosat = lambda layer: gpd.read_file(UNOSAT, layer=f"UNOSAT_{layer}").set_crs(43
 # (name, lat, lon, earliest, latest, evidence type, note, source)
 ANCHORS = [
     ("Route origin", 28.289, 85.521, 0, 2, "seismic origin time", "Collapse signal 02:52:10 UTC (USGS us7000tbwb); route starts at the OSM network ~0.9 km from the mapped source, so the source-to-channel runout is not timed", "USGS ComCat"),
-    ("Gyirong Port", 28.276, 85.378, 6, 8, "impact (time-stamped images, reported)", "Images time-stamped 08:44 NPT (10:59 Beijing time), reported by CHWRR and China's preliminary investigation; camera clock not independently verified", "CHWRR via WWA report 92; Xu (2026)"),
+    ("Gyirong Port", 28.276, 85.378, 6, 8, "impact (surveillance camera)", "Gyirong Port surveillance video 10:59 Beijing time = 08:44 NPT (Guo et al. 2026, peer reviewed); CHWRR gives the same time. Camera clock not independently verified", "Guo et al. (2026) Chin Sci Bull; CHWRR via WWA report 92"),
     ("Syabrubesi gauge", 28.170650, 85.342554, 13, 23, "telemetry loss", "Last report 08:50 (3.80 m), next report absent by 09:00", "DHM via Zenodo 22679444"),
     ("Betrawati gauge", 27.970000, 85.180000, 43, 53, "telemetry loss", "Last report 09:20 (3.55 m), next report absent by 09:30", "DHM via Zenodo 22679444"),
     ("Galchhi gauge", 27.802328, 85.003050, 103, 113, "rising-wave onset", "Last background sample 10:20, first risen 10:30", "DHM via Zenodo 22679444"),
