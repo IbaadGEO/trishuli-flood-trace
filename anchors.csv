@@ -4,8 +4,8 @@ Gyirong Port,28.276,85.378,21.08,08:43,08:45,fitted (bracket midpoint),"impact (
 Syabrubesi gauge,28.17065,85.342554,34.36,08:50,09:00,fitted (bracket midpoint),telemetry loss,"Last report 08:50 (3.80 m), next report absent by 09:00",DHM via Zenodo 22679444
 Betrawati gauge,27.97,85.18,66.92,09:20,09:30,fitted (bracket midpoint),telemetry loss,"Last report 09:20 (3.55 m), next report absent by 09:30",DHM via Zenodo 22679444
 Galchhi gauge,27.802328,85.00305,100.8,10:20,10:30,fitted (bracket midpoint),rising-wave onset,"Last background sample 10:20, first risen 10:30",DHM via Zenodo 22679444
+Malekhu (Phurke) gauge,27.802439,84.844102,121.84,11:10,11:20,fitted (bracket midpoint),rising-wave onset,"Last background sample 11:10 (3.35 m), first risen 11:20 (3.96 m); warning 7.0 m crossed 11:20-11:30 (7.78 m), danger 8.0 m 11:30-11:40 (10.48 m); no transmission after 11:40. CHWRR reports warning 11:26, consistent","DHM via BIPAD river API, station 261 (series 31967)"
 Kali Khola gauge,27.833,84.546,169.12,13:10,13:20,fitted (bracket midpoint),rising-wave onset,"Last background sample 13:10, first risen 13:20",DHM via Zenodo 22679444
 Devghat gauge,27.71,84.43,202.52,14:30,14:40,fitted (bracket midpoint),rising-wave onset,"Last background sample 14:30, first risen 14:40",DHM via Zenodo 22679444
 Rasuwagadhi gauge,28.271297,85.377649,21.56,,08:50,check only: consistent,onset by,"Last report 08:40 (1.62 m), next absent by 08:50",DHM via Zenodo 22679444
-Malekhu / Phurke gauge,27.802439,84.844102,121.84,,11:26,check only: consistent,onset by,Warning level reported crossed 11:26 (CHWRR); a threshold crossing follows onset,CHWRR Assessment Report II
 Mugling,27.853,84.56,166.04,,13:00,check only: CONFLICT,onset by,Reported past Mugling by 13:00; an upper bound,Wikipedia timeline / CHWRR

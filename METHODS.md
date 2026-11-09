@@ -16,7 +16,7 @@ Trishuli Flood Trace is a personal, non-commercial reconstruction of the 26 Augu
 ## Route
 
 1. OSM waterways in the corridor (Overpass) form an undirected graph. Dijkstra's shortest path runs from the node nearest the UNOSAT detachment-zone centroid to the node nearest the Devghat gauge.
-2. The route origin is ~0.9 km from the mapped source reference, at ~3,800 m DEM elevation, while the failure began at ~5,100–5,200 m. **The source-to-channel runout is not part of the route and is not timed.** Distances ("km along route") start at the route origin.
+2. The route origin is ~0.9 km from the mapped source reference, at ~3,800 m DEM elevation, while the failure began at ~5,100–5,200 m. **The source-to-channel runout is not part of the route and is not timed.** The map draws it as a dashed red line: the shortest gap (~209 m) from the UNOSAT detachment-zone edge to the route origin, a schematic link, not a mapped flow path. Distances ("km along route") start at the route origin.
 3. The path is densified to 40 m spacing. Shortest-path routing does not verify hydrological direction or the event's actual flow path at confluences.
 
 ## Timing evidence
@@ -28,14 +28,14 @@ Each piece of evidence is a time **window** (`anchors.csv`), typed by what it ac
 | Seismic origin time | USGS us7000tbwb, 02:52:10 UTC = 08:37 NPT. Applied at the route origin with a 0–2 min window, an assumption since the runout is untimed |
 | Impact (CCTV, reported) | Gyirong Port, 08:44 reported; clock basis unverified (±1 min window) |
 | Telemetry loss | Destroyed gauge (Syabrubesi, Betrawati): last transmission → next report absent. Brackets arrival **only if** the flood caused the loss |
-| Rising-wave onset | Surviving gauge (Galchhi, Kali Khola, Devghat): last sample at local background → first clearly risen sample |
+| Rising-wave onset | Gauge (Galchhi, Malekhu, Kali Khola, Devghat): last sample at local background → first clearly risen sample. Malekhu (Phurke) is from the BIPAD river record (station 261, series 31967): background 3.35 m at 11:10, risen 3.96 m at 11:20, then lost after 11:40 |
 
 These are reports used **only as checks**, never fitted:
 
 | Report | Check result |
 |---|---|
 | Rasuwagadhi telemetry loss (08:40–08:50) | consistent |
-| Malekhu/Phurke warning-level crossing 11:26 (CHWRR); a threshold crossing must follow onset | consistent |
+| Malekhu/Phurke warning-level crossing 11:26 (CHWRR) | consistent with the gauge's own record: warning 7.0 m crossed 11:20–11:30, danger 8.0 m 11:30–11:40 |
 | "Past Mugling by 13:00" (upper bound) | **conflict**: the instrument onset at Kali Khola, ~3 km downstream, is 13:10–13:20. The map follows the instrument record |
 
 Peaks, threshold crossings, alerts and forecasts appear in the chronology but never constrain the timing.

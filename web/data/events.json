@@ -162,15 +162,15 @@
    "src": "zenodo"
   },
   {
-   "t": "11:26",
+   "t": "11:20",
    "kind": "gauge",
    "at": [
     84.844102,
     27.802439
    ],
-   "title": "Phurke (Malekhu): warning level reported crossed",
-   "detail": "Threshold crossing reported by CHWRR (warning 7.0 m, danger 8.0 m)",
-   "src": "chwrr"
+   "title": "Malekhu (Phurke): flood wave arrives",
+   "detail": "Gauge rises 3.35 m → 3.96 m between 11:10 and 11:20, then crosses warning (7.0 m) between 11:20 and 11:30 (7.78 m); CHWRR reports 11:26",
+   "src": "bipad"
   },
   {
    "t": "11:43",
@@ -180,7 +180,7 @@
     27.802439
    ],
    "title": "Phurke: above danger level; station and bridge lost (reported)",
-   "detail": "Last reading 10.48 m",
+   "detail": "Above danger (8.0 m) between 11:30 and 11:40; last transmitted reading 10.48 m at 11:40, none after (BIPAD). CHWRR reports 11:43",
    "src": "chwrr"
   },
   {
@@ -283,9 +283,9 @@
    "text": "Lower down the valley is wider and the flood wave travels more slowly, giving authorities time to warn towns further downstream."
   },
   {
-   "m": 169,
+   "m": 158,
    "title": "Malekhu",
-   "text": "At 11:26 the river at Malekhu crosses its warning level; by 11:43 it is above danger and the gauge and Phurke bridge are lost."
+   "text": "Around 11:15 the wave reaches Malekhu. Within twenty minutes the river rises past its warning and danger levels; the gauge stops transmitting after 11:40 and the Phurke bridge is lost."
   },
   {
    "m": 263,
@@ -368,7 +368,7 @@
    "name": "Phurke (Malekhu)",
    "lon": 84.844102,
    "lat": 27.802439,
-   "reading": "warning (7.0 m) reported crossed 11:26, above danger (8.0 m) by 11:43, last 10.48 m, then lost (CHWRR report)",
+   "reading": "onset 11:10–11:20; warning (7.0 m) crossed 11:20–11:30, danger (8.0 m) 11:30–11:40; last 10.48 m at 11:40, then lost (BIPAD)",
    "status": "destroyed",
    "warn": 7.0,
    "danger": 8.0

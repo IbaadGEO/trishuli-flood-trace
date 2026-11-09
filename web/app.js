@@ -128,6 +128,7 @@ const evEl = document.createElement("div"); evEl.className = "ev-callout"; evEl.
 const evMarker = new maplibregl.Marker({ element: evEl, anchor: "bottom", offset: [0, -12] }).setLngLat([river[0][0], river[0][1]]).addTo(map);
 const HOURS = ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00"];
 map.addSource("waypoints", { type: "geojson", data: { type: "FeatureCollection", features: HOURS.map((h) => ({ ...pt(at(toMin(h))), properties: { label: h } })) } });
+map.addSource("connector", { type: "geojson", data: { type: "Feature", properties: {}, geometry: { type: "LineString", coordinates: meta.connector.coords } } });
 map.addSource("anchors", { type: "geojson", data: { type: "FeatureCollection", features: meta.anchors.map((a) => ({ type: "Feature", properties: a, geometry: { type: "Point", coordinates: [a.lon, a.lat] } })) } });
 
 const DMG = ["match", ["get", "d"], "Destroyed", "#c8432b", "Damaged", "#e8873a", "Possibly damaged", "#f1c24b", "#9aa7b0"];
@@ -167,6 +168,8 @@ const LAYERS = [
   { group: "Observed · UNOSAT (product 4256)" },
   { id: "unosat_extent", name: "Mapped extent outline", note: "Preliminary satellite interpretation (Sentinel-2 + Planet, 26–28 Aug), not field-validated", sw: "#9fd8f5", on: true,
     add: { type: "line", source: "unosat_extent", paint: { "line-color": "#9fd8f5", "line-width": 1, "line-opacity": 0.8 } } },
+  { id: "connector", name: "Source to channel", note: `${meta.connector.m} m gap, not timed`, sw: "#e2483d", on: true,
+    add: { type: "line", source: "connector", paint: { "line-color": "#e2483d", "line-width": 2, "line-dasharray": [1, 1.5] } } },
   { id: "detachment", name: "Detachment zone", note: "Landsat-9, 26 Aug", sw: "#e2483d", on: true,
     add: { type: "fill", source: "detachment", paint: { "fill-color": "#e2483d", "fill-opacity": 0.55, "fill-outline-color": "#fff" } } },
   { id: "lakes", name: "Barrier lakes", note: "Cartosat-3, 28 Aug", sw: "#2f6fd6", on: true,
@@ -192,8 +195,8 @@ const LAYERS = [
 // Views: each shows only the overlays its question needs. Base layers (imagery, hillshade, terrain, labels) stay as set.
 const OVERLAYS = LAYERS.filter((L) => L.add && !L.id.startsWith("s2")).map((L) => L.id);
 const VIEWS = {
-  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "lakes"],
-  damage: ["reached", "unosat_extent", "buildings", "roads", "gauges", "detachment", "lakes", "lake-labels"],
+  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "connector", "lakes"],
+  damage: ["reached", "unosat_extent", "buildings", "roads", "gauges", "detachment", "connector", "lakes", "lake-labels"],
   imagery: ["unosat_extent"],
   all: OVERLAYS,
 };
@@ -210,7 +213,7 @@ const OPROP = { raster: "raster-opacity", fill: "fill-opacity", line: "line-opac
 const opOf = (L) => L.add && L.id !== "s2post" && OPROP[L.add.type]; // s2post opacity belongs to the before/after blend
 $("#layers").innerHTML = LAYERS.map((L) => L.group ? `<div class="layer"><h5>${L.group}</h5></div>` :
   `<label class="layer"><input type="checkbox" data-id="${L.id}" ${L.on ? "checked" : ""}><span>${L.sw ? `<i class="sw" style="background:${L.sw}"></i>` : ""}${L.name}${L.est ? '<span class="est">EST.</span>' : ""}${L.note ? `<small>${L.note}</small>` : ""}${opOf(L) ? `<span class="op"><input type="range" min="0" max="100" value="${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}" data-op="${L.id}" aria-label="${L.name} opacity"><output>${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}%</output></span>` : ""}</span></label>`).join("")
-  + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are interpolated between the midpoints of evidence windows (gauge onsets and telemetry losses from the DHM record, the USGS origin time, a reported CCTV time); reports such as threshold crossings are used only as checks. They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances start at the OSM route origin, ~0.9 km from the mapped source; the source-to-channel runout is not timed.</p>`;
+  + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are interpolated between the midpoints of evidence windows (gauge onsets and telemetry losses from the DHM record, the USGS origin time, a reported CCTV time); reports such as threshold crossings are used only as checks. They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances start at the OSM route origin, ~0.9 km from the mapped source; the source-to-channel runout (dashed red) is not timed.</p>`;
 document.querySelector(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
   document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-selected", b === e.target); });
   document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k)); };
@@ -355,6 +358,7 @@ legend.innerHTML = `<summary>Legend</summary>
   <div data-for="buildings"><i class="lg-dot" style="background:#c8432b"></i>Destroyed · <i class="lg-dot" style="background:#e8873a;margin-left:4px"></i>damaged · <i class="lg-dot" style="background:#f1c24b;margin-left:4px"></i>possibly</div>
   <div data-for="roads"><i class="lg-line" style="border-color:#e8873a"></i>Damaged road</div>
   <div data-for="gauges"><i class="lg-dot" style="background:#c8432b"></i>Gauge destroyed · <i class="lg-dot" style="background:#2f8f5b;margin-left:4px"></i>survived</div>
+  <div data-for="connector"><i class="lg-line dash" style="border-color:#e2483d"></i>Source to channel (shortest gap, not timed)</div>
   <div data-for="detachment lakes"><i class="lg-box fill" style="background:#e2483d"></i>Collapse source · <i class="lg-box fill" style="background:#2f6fd6;margin-left:4px"></i>barrier lake</div>`;
 $("#map").appendChild(legend);
 const visible = (id) => id === "always" || ((x) => map.getLayer(x) && map.getLayoutProperty(x, "visibility") !== "none")(idsOf(id)[0]);
@@ -513,7 +517,7 @@ $("#overview").innerHTML = `
   ${D.rows.map(([d, v]) => `<div><span>${d}</span><i style="width:${(100 * v) / bmax}%"></i><em>${v}</em></div>`).join("")}
   </div><p class="note">Districts where deaths were reported, largely reflecting recovery location rather than where people were lost. Rows total ${n(D.rows.reduce((s, r) => s + r[1], 0))} of 1,451; the remainder died during treatment in Kathmandu. Figures are provisional. ${src_("ndrrma")}.</p></div>
 <div class="card"><h4>Method & sources</h4><p class="note">
-  Mapped extent: ${src_("unosat")} (preliminary satellite interpretation, not field-validated). Landslides and building grading: ${src_("ems")}. Timing: DHM gauge brackets (<a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">Zenodo 22679444</a>), USGS origin time and reported CCTV time; ${src_("chwrr")} and ${src_("timeline")} for reports. River path: © OpenStreetMap contributors (ODbL). Terrain: Mapzen Terrarium (AWS Open Data).
+  Mapped extent: ${src_("unosat")} (preliminary satellite interpretation, not field-validated). Landslides and building grading: ${src_("ems")}. Timing: DHM gauge brackets (<a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">Zenodo 22679444</a>; Malekhu from the <a href="https://bipadportal.gov.np/" target="_blank" rel="noopener">BIPAD</a> river record), USGS origin time and reported CCTV time; ${src_("chwrr")} and ${src_("timeline")} for reports. River path: © OpenStreetMap contributors (ODbL). Terrain: Mapzen Terrarium (AWS Open Data).
   Both are uncertain: the extent is a satellite interpretation, and the timing is interpolated between bracket midpoints of mixed evidence, with an earliest/latest scenario envelope. Full method: <a href="https://github.com/IbaadGEO/trishuli-flood-trace/blob/main/METHODS.md" target="_blank" rel="noopener">METHODS.md</a>.</p></div>`;
 // keep the panel short: front, overview and impact stay open; the detail cards fold away
 [...$("#overview").children].slice(3).forEach((card) => {

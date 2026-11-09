@@ -11,6 +11,8 @@ from rasterio import features
 from rasterio.transform import from_origin
 from scipy import ndimage
 from scipy.spatial import cKDTree
+from shapely.geometry import Point
+from shapely.ops import nearest_points
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 RAW, OUT = os.path.join(HERE, "raw"), os.path.join(HERE, "web", "data")
@@ -35,13 +37,13 @@ ANCHORS = [
     ("Syabrubesi gauge", 28.170650, 85.342554, 13, 23, "telemetry loss", "Last report 08:50 (3.80 m), next report absent by 09:00", "DHM via Zenodo 22679444"),
     ("Betrawati gauge", 27.970000, 85.180000, 43, 53, "telemetry loss", "Last report 09:20 (3.55 m), next report absent by 09:30", "DHM via Zenodo 22679444"),
     ("Galchhi gauge", 27.802328, 85.003050, 103, 113, "rising-wave onset", "Last background sample 10:20, first risen 10:30", "DHM via Zenodo 22679444"),
+    ("Malekhu (Phurke) gauge", 27.802439, 84.844102, 153, 163, "rising-wave onset", "Last background sample 11:10 (3.35 m), first risen 11:20 (3.96 m); warning 7.0 m crossed 11:20-11:30 (7.78 m), danger 8.0 m 11:30-11:40 (10.48 m); no transmission after 11:40. CHWRR reports warning 11:26, consistent", "DHM via BIPAD river API, station 261 (series 31967)"),
     ("Kali Khola gauge", 27.833000, 84.546000, 273, 283, "rising-wave onset", "Last background sample 13:10, first risen 13:20", "DHM via Zenodo 22679444"),
     ("Devghat gauge", 27.710000, 84.430000, 353, 363, "rising-wave onset", "Last background sample 14:30, first risen 14:40", "DHM via Zenodo 22679444"),
 ]
 # Reports that are not arrival observations: checked against the fitted onset, never fitted. (name, lat, lon, minute, relation, note, source)
 CHECKS = [
     ("Rasuwagadhi gauge", 28.271297, 85.377649, 13, "onset by", "Last report 08:40 (1.62 m), next absent by 08:50", "DHM via Zenodo 22679444"),
-    ("Malekhu / Phurke gauge", 27.802439, 84.844102, 169, "onset by", "Warning level reported crossed 11:26 (CHWRR); a threshold crossing follows onset", "CHWRR Assessment Report II"),
     ("Mugling", 27.853, 84.560, 263, "onset by", "Reported past Mugling by 13:00; an upper bound", "Wikipedia timeline / CHWRR"),
 ]
 
@@ -207,6 +209,12 @@ rds = rds[rds.damage_gra.isin(["Destroyed", "Damaged", "Possibly damaged"])].ass
 aoi = ems("areaOfInterestA")[["area_id", "locality", "geometry"]]
 for name, g in [("observed", slim(obs)), ("buildings", bld), ("roads", slim(rds)), ("aois", aoi)]:
     open(os.path.join(OUT, f"{name}.geojson"), "w").write(g.to_json(drop_id=True, to_wgs84=True))
+# Untimed source-to-channel connector: the shortest gap from the mapped detachment zone to the route origin (schematic, not a flow path)
+det = unosat("Landsat9_20260826_DetachmentZone").to_crs(32645).union_all()
+o = gpd.GeoSeries([Point(float(dlon[0]), float(dlat[0]))], crs=4326).to_crs(32645)[0]
+a_pt = gpd.GeoSeries([nearest_points(det, o)[0]], crs=32645).to_crs(4326)[0]
+connector = {"coords": [[round(a_pt.x, 5), round(a_pt.y, 5)], [round(float(dlon[0]), 5), round(float(dlat[0]), 5)]], "m": round(det.distance(o))}
+print(f"source-to-channel connector {connector['m']} m (untimed)")
 ems_counts = {a: bld[bld.aoi == a].d.value_counts().to_dict() for a in sorted(bld.aoi.unique())}
 
 # ---------- 5. meta ----------
@@ -222,6 +230,7 @@ meta = {
                 for (n, la, lo, a, b, ty, note, s), c in zip(ANCHORS, anc_c) for la_lo in [(float(dlat[snap(la, lo)[1]]), float(dlon[snap(la, lo)[1]]))]],
     "checks": [{"name": n, "chain": c, "min": m, "relation": rel, "estimated": est, "status": st, "note": note, "src": s}
                for n, la, lo, c, m, rel, est, st, note, s in check_rows],
+    "connector": connector,
     "untimedHa": round(untimed_ha),
     "areaByMin": [round(float(x), 1) for x in np.cumsum(area_by_min)],
     "emsCounts": ems_counts,
