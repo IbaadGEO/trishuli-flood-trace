@@ -12,7 +12,7 @@ Share image (`web/og.jpg`): screenshot of this app over the EOxCloudless 2024 ba
 
 ## Deploy (Vercel)
 
-The site is the static `web/` folder. `vercel.json` sets it as the output directory, creates `web/config.js` from the example if absent, and sets cache headers (7 days for imagery tiles, 1 hour for data). Import the GitHub repository in Vercel with the default settings; no environment variables are needed.
+The site is the static `web/` folder. `vercel.json` sets it as the output directory, creates `web/config.js` from the example if absent, and sets cache headers (7 days for imagery tiles; data files are revalidated on every load so they always match the code). Import the GitHub repository in Vercel with the default settings; no environment variables are needed.
 
 ## Run locally
 

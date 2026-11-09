@@ -6,7 +6,7 @@ const toMin = (hhmm) => { const [h, m] = hhmm.split(":").map(Number); return h *
 const n = (x) => Math.round(x).toLocaleString("en-GB");
 const css = (v) => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
 
-const [meta, ev, gauges] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json"].map((u) => fetch(u).then((r) => r.json())));
+const [meta, ev, gauges] = await Promise.all(["data/meta.json", "data/events.json", "data/gauges.json"].map((u) => fetch(u, { cache: "no-cache" }).then((r) => r.json()))); // revalidate: data must match this app.js
 const river = meta.river; // [lon, lat, chain_m, minutes, bedElev]
 const T_END = +$("#t").max;
 let t = 0;
@@ -70,7 +70,7 @@ map.setTerrain({ source: "dem", exaggeration: 1.2 });
 
 // Flood-arrival raster, split into 500 px chunks (only those with flooded pixels). Each repaint re-uploads just
 // the chunks whose colours change, i.e. near the front, instead of the whole 3264x2067 canvas.
-const img = new Image(); img.src = "data/arrival.png"; await img.decode();
+const img = new Image(); img.src = URL.createObjectURL(await fetch("data/arrival.png", { cache: "no-cache" }).then((r) => r.blob())); await img.decode();
 const full = document.createElement("canvas"); full.width = img.width; full.height = img.height;
 const fctx = full.getContext("2d", { willReadFrequently: true }); fctx.drawImage(img, 0, 0);
 const src = fctx.getImageData(0, 0, full.width, full.height).data;
@@ -102,7 +102,7 @@ geo("observed", "observed.geojson"); geo("buildings", "buildings.geojson"); geo(
 geo("unosat_extent", "unosat_extent.geojson"); geo("unosat_buildings", "unosat_buildings.geojson"); geo("lakes", "lakes.geojson"); geo("detachment", "detachment.geojson");
 const fc = (rows) => ({ type: "FeatureCollection", features: rows.filter((r) => r.lon).map((r) => ({ type: "Feature", properties: r, geometry: { type: "Point", coordinates: [r.lon, r.lat] } })) });
 map.addSource("gauges", { type: "geojson", data: fc(ev.gauges) });
-const s2 = await fetch("data/s2.json").then((r) => (r.ok ? r.json() : null)).catch(() => null); // absent until imagery.py has run
+const s2 = await fetch("data/s2.json", { cache: "no-cache" }).then((r) => (r.ok ? r.json() : null)).catch(() => null); // absent until imagery.py has run
 const span = (d) => (d.length > 1 ? `${d[0].slice(5)} → ${d.at(-1).slice(5)}` : d[0]?.slice(5) ?? "");
 if (s2) {
   // tiles exist only along the corridor: serve a blank tile for the rest instead of 404ing
