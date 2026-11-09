@@ -367,6 +367,9 @@ storyBox.addEventListener("click", (e) => { const b = e.target.closest(".cmp-btn
 const cmp = $("#cmp");
 let siteIdx = 0;
 const setSplit = (v) => { $("#cmp-r").value = v; cmp.style.setProperty("--split", `${v}%`); };
+const vidHTML = (v) => `<h4>${v.title} <span class="vkind">${v.kind}</span></h4>${v.notice ? `<p class="note">${v.notice}</p>` : ""}
+    <video controls playsinline preload="none" poster="${v.poster}" src="${v.src}" aria-label="${v.title}"></video>
+    <p>${v.text}</p><p class="note">${v.credit} Sources: ${v.srcs.map(src_).join("; ")}.</p>`;
 function openSite(id) {
   siteIdx = sites.findIndex((s) => s.id === id);
   const s = sites[siteIdx], d = (x) => new Date(x.date).toString() === "Invalid Date" ? x.date : new Date(x.date).toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" });
@@ -378,9 +381,7 @@ function openSite(id) {
   $("#cmp-text").innerHTML = `<h4>What the images show</h4><p>${s.seen}</p><h4>What happened here</h4><p>${s.why}</p>
     <p class="note">${s.note}</p><p class="note">Sources: ${s.srcs.map(src_).join("; ")}.</p>
     <p class="note">Before: ${s.pre.sensor}, ${s.pre.credit}, scene ${s.pre.scene}. After: ${s.post.sensor}, ${s.post.credit}, scene ${s.post.scene}. View ~${s.km} km across, north up; contrast stretched for display.</p>`
-    + (s.video ? `<h4>${s.video.title} <span class="vkind">${s.video.kind}</span></h4>${s.video.notice ? `<p class="note">${s.video.notice}</p>` : ""}
-    <video controls playsinline preload="none" poster="${s.video.poster}" src="${s.video.src}" aria-label="${s.video.title}"></video>
-    <p>${s.video.text}</p><p class="note">${s.video.credit} Sources: ${s.video.srcs.map(src_).join("; ")}.</p>` : "");
+    + (s.videos || []).map(vidHTML).join("");
   $("#cmp-n").textContent = `${siteIdx + 1} / ${sites.length}`;
   setSplit(50);
   if (!cmp.open) cmp.showModal();
@@ -394,7 +395,9 @@ $("#cmp-view").onpointerdown = (e) => {
 $("#cmp-prev").onclick = () => openSite(sites[(siteIdx - 1 + sites.length) % sites.length].id);
 $("#cmp-next").onclick = () => openSite(sites[(siteIdx + 1) % sites.length].id);
 $("#cmp-x").onclick = () => cmp.close();
-cmp.addEventListener("close", () => cmp.querySelectorAll("video").forEach((v) => v.pause()));
+for (const d of [cmp, $("#sims")]) d.addEventListener("close", () => d.querySelectorAll("video").forEach((v) => v.pause()));
+$("#sims-x").onclick = () => $("#sims").close();
+function openSims() { toggle(false); $("#sims-text").innerHTML = `<p>${ev.simulations.intro}</p>` + ev.simulations.videos.map(vidHTML).join(""); $("#sims").showModal(); }
 const legend = document.createElement("details"); legend.className = "legend"; legend.open = true;
 legend.innerHTML = `<summary>Legend</summary>
   <div data-for="always"><i class="lg-dot" style="background:#36c5f0"></i>Estimated progression along the mapped route</div>
@@ -476,7 +479,7 @@ const stepEvent = (dir) => {
 };
 $("#prev").onclick = () => stepEvent(-1); $("#next").onclick = () => stepEvent(1);
 document.addEventListener("keydown", (e) => {
-  if (cmp.open || e.target.closest("input, select, textarea, [role=button], li") || e.altKey || e.ctrlKey || e.metaKey) return;
+  if (cmp.open || $("#sims").open || e.target.closest("input, select, textarea, [role=button], li") || e.altKey || e.ctrlKey || e.metaKey) return;
   if (e.key === "ArrowRight" || e.key === "ArrowLeft") { e.preventDefault(); stepEvent(e.key === "ArrowRight" ? 1 : -1); }
 });
 const setFollow = (on) => { follow = on; cam = null; $("#follow").classList.toggle("on", on); $("#follow").setAttribute("aria-pressed", on); };
@@ -553,6 +556,7 @@ const ems = Object.values(meta.emsCounts).reduce((acc, o) => { for (const [k, v]
 const D = ev.deathsByDistrict, bmax = Math.max(...D.rows.map((r) => r[1]));
 $("#overview").innerHTML = `
 <div class="card front" id="front-card"></div>
+<button id="sims-btn" class="sims-btn">▶ Published simulations (${ev.simulations.videos.length})<small>Computer models of the cascade by other researchers</small></button>
 <div class="card"><h4>Incident overview <span>Reconstruction</span></h4><dl>
   <dt>Event</dt><dd>Rock-ice avalanche → debris flow → flood</dd>
   <dt>Date</dt><dd>26 Aug 2026, 08:37 NPT</dd>
@@ -582,6 +586,7 @@ $("#overview").innerHTML = `
 <div class="card"><h4>Method & sources</h4><p class="note">
   Mapped extent: ${src_("unosat")} (preliminary satellite interpretation, not field-validated). Landslides and building grading: ${src_("ems")}. Timing: DHM gauge brackets (<a href="https://doi.org/10.5281/zenodo.22679444" target="_blank" rel="noopener">Zenodo 22679444</a>; Malekhu from the <a href="https://bipadportal.gov.np/" target="_blank" rel="noopener">BIPAD</a> river record), USGS origin time and the Gyirong Port camera time; ${src_("chwrr")} and ${src_("timeline")} for reports. River path: © OpenStreetMap contributors (ODbL). Terrain: Mapterhorn (Copernicus GLO-30).
   Both are uncertain: the extent is a satellite interpretation, and the timing is interpolated between bracket midpoints of mixed evidence, with an earliest/latest scenario envelope. Full method: <a href="https://github.com/IbaadGEO/trishuli-flood-trace/blob/main/METHODS.md" target="_blank" rel="noopener">METHODS.md</a>.</p></div>`;
+$("#sims-btn").onclick = openSims;
 // keep the panel short: front, overview and impact stay open; the detail cards fold away
 [...$("#overview").children].slice(3).forEach((card) => {
   const d = document.createElement("details"), s = document.createElement("summary"), h = card.querySelector("h4");

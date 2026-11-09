@@ -69,6 +69,7 @@ The "before" and "after" composites are per-pixel medians of the clear observati
 | Before/after imagery | Observed (median composites, date ranges shown in the app) | Contains modified Copernicus Sentinel data 2026, via Element84 Earth Search |
 | Gyirong Port camera clip (`web/data/media/gyirong_cctv1.mp4`) | Observed (fixed surveillance camera, 26 Aug; on-screen clock not independently verified) | Wikimedia Commons, classified public domain (automated recording); original camera operator unidentified; distributed by Resound News |
 | Avalanche simulation clip (`web/data/media/model_s7.mp4`) | **Model scenario, not footage** (imposed 200 million m³ release) | Huang, Chen & Wang (2026), Zenodo 10.5281/zenodo.22884627, Movie S7, CC BY 4.0; paper in preparation |
+| Simulation clips `web/data/media/park_*.mp4` (upper gorge; full corridor plan and profile) | **Model scenarios, not footage** | Park (2026), Zenodo 10.5281/zenodo.22566624 v2.0.0, CC BY 4.0; preprint 10.31223/X5250R, not peer reviewed. Files match the record's SHA-256 provenance |
 | Before/after site comparisons (5 sites) | Observed (single scenes; dates, sensors and scene IDs shown in each panel) | Vantor Open Data Program and Planet Crisis Response Program, both CC BY-NC 4.0; source-area "before" from EOxCloudless 2025 (CC BY-NC-SA 4.0). Built by `sites.py` |
 
 The app shows aggregate figures only. It holds no names or personal details of victims.

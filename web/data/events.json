@@ -99,6 +99,10 @@
   "commons_cctv": {
    "label": "Wikimedia Commons: Mudslide at Gyirong Port 1.webm (rev. 1279062472)",
    "url": "https://commons.wikimedia.org/w/index.php?title=File:Mudslide_at_Gyirong_Port_1.webm&oldid=1279062472"
+  },
+  "park": {
+   "label": "Park (2026), Zenodo 10.5281/zenodo.22566624 v2.0.0, CC BY 4.0 (preprint 10.31223/X5250R, not peer reviewed)",
+   "url": "https://doi.org/10.5281/zenodo.22566624"
   }
  },
  "events": [
@@ -532,18 +536,32 @@
     "icimod"
    ],
    "note": "The before image is a cloud-free 2025 mosaic built from many Sentinel-2 dates at 10 m, so snow cover and detail differ from the 0.6 m after image: compare landforms, not snow.",
-   "video": {
-    "kind": "Model scenario, not footage",
-    "src": "data/media/model_s7.mp4",
-    "poster": "data/media/model_s7.jpg",
-    "title": "Published simulation of the first ten minutes (Movie S7)",
-    "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, matching the observed 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
-    "notice": "",
-    "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
-    "srcs": [
-     "huang"
-    ]
-   }
+   "videos": [
+    {
+     "kind": "Model scenario, not footage",
+     "src": "data/media/model_s7.mp4",
+     "poster": "data/media/model_s7.jpg",
+     "title": "Published simulation of the first ten minutes (Movie S7)",
+     "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, matching the observed 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
+     "notice": "",
+     "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
+     "srcs": [
+      "huang"
+     ]
+    },
+    {
+     "kind": "Model scenario, not footage",
+     "src": "data/media/park_gorge_oblique_5s.mp4",
+     "poster": "data/media/park_gorge_oblique_5s.jpg",
+     "title": "Upper-gorge simulation, first 24 minutes (Park)",
+     "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out.",
+     "notice": "",
+     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
+     "srcs": [
+      "park"
+     ]
+    }
+   ]
   },
   "timure": {
    "seen": "The riverside buildings at the Rasuwagadhi–Timure confluence are gone, and grey flood deposits fill a much wider channel.",
@@ -555,19 +573,21 @@
     "zenodo"
    ],
    "note": "The before image is from 27 May 2026, after the July 2025 Purepu flood had already scoured this reach, so the change shown is from 2026. Cloud covers part of the after image.",
-   "video": {
-    "kind": "Recorded footage",
-    "src": "data/media/gyirong_cctv1.mp4",
-    "poster": "data/media/gyirong_cctv1.jpg",
-    "title": "Gyirong Port camera, 26 August 2026",
-    "text": "A fixed surveillance camera at Gyirong Port, looking north-west (upstream), records the debris-laden surge reaching the port and engulfing the car park and buildings. Guo et al. give the port camera's time of arrival as 10:59 Beijing time (08:44 NPT); this clip's on-screen clock is not independently verified.",
-    "notice": "Shows the surge striking the port; people can be seen in the car park beforehand.",
-    "credit": "Distributed by Resound News; original camera operator unidentified. Classified as public domain on Wikimedia Commons (automated recording), accessed 9 Nov 2026. Re-encoded to MP4 without other changes.",
-    "srcs": [
-     "commons_cctv",
-     "guo"
-    ]
-   }
+   "videos": [
+    {
+     "kind": "Recorded footage",
+     "src": "data/media/gyirong_cctv1.mp4",
+     "poster": "data/media/gyirong_cctv1.jpg",
+     "title": "Gyirong Port camera, 26 August 2026",
+     "text": "A fixed surveillance camera at Gyirong Port, looking north-west (upstream), records the debris-laden surge reaching the port and engulfing the car park and buildings. Guo et al. give the port camera's time of arrival as 10:59 Beijing time (08:44 NPT); this clip's on-screen clock is not independently verified.",
+     "notice": "Shows the surge striking the port; people can be seen in the car park beforehand.",
+     "credit": "Distributed by Resound News; original camera operator unidentified. Classified as public domain on Wikimedia Commons (automated recording), accessed 9 Nov 2026. Re-encoded to MP4 without other changes.",
+     "srcs": [
+      "commons_cctv",
+      "guo"
+     ]
+    }
+   ]
   },
   "syabrubesi": {
    "seen": "Grey flood deposits now cover the low ground at the river junction where the bazaar stood, and the channel is much wider; buildings higher on the slope remain.",
@@ -598,5 +618,58 @@
    ],
    "note": "The EMS count covers a mapping area larger than this 2 km view."
   }
+ },
+ "simulations": {
+  "intro": "Published computer simulations of the cascade by other researchers, shown with their authors' own caveats. They are models, not footage, and their timings are independent of this map's evidence-based timeline: neither confirms the other.",
+  "videos": [
+   {
+    "kind": "Model scenario, not footage",
+    "src": "data/media/park_full_corridor_top_60s.mp4",
+    "poster": "data/media/park_full_corridor_top_60s.jpg",
+    "title": "Full-corridor simulation, 8 hours, plan view (Park)",
+    "text": "A 60 m two-dimensional model of the flow from the source to Devghat over eight hours, including settling and melting. The author states it is not a validated inundation map.",
+    "notice": "",
+    "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_top_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
+    "srcs": [
+     "park"
+    ]
+   },
+   {
+    "kind": "Model scenario, not footage",
+    "src": "data/media/park_full_corridor_profile_60s.mp4",
+    "poster": "data/media/park_full_corridor_profile_60s.jpg",
+    "title": "Full-corridor simulation, 8 hours, long profile (Park)",
+    "text": "The wave travelling down the river's long profile. Below Syabrubesi this view uses a separate one-dimensional routing model fitted to the Galchhi, Kali Khola and Devghat gauges, so it differs from the plan view. Flow depth is exaggerated 50 times; the lower panel shows river rise in metres, capped at 10 m. The author reports that discrepancies remain at Devghat.",
+    "notice": "",
+    "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_profile_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
+    "srcs": [
+     "park"
+    ]
+   },
+   {
+    "kind": "Model scenario, not footage",
+    "src": "data/media/model_s7.mp4",
+    "poster": "data/media/model_s7.jpg",
+    "title": "Published simulation of the first ten minutes (Movie S7)",
+    "text": "A rock–ice–water flow simulation (r.avaflow) on Copernicus GLO-30 terrain, starting from an imposed 200 million m³ release, larger than most volume estimates. With ice melting by friction included, the modelled flow reaches Gyirong at 457 s, matching the observed 458 s; the authors' runs without melting take 593 s or more. The study's paper is in preparation and not yet peer reviewed.",
+    "notice": "",
+    "credit": "Huang, S., Chen, C.-M. & Wang, B. (2026), Movie S7, Zenodo doi 10.5281/zenodo.22884627, CC BY 4.0. Shown unmodified.",
+    "srcs": [
+     "huang"
+    ]
+   },
+   {
+    "kind": "Model scenario, not footage",
+    "src": "data/media/park_gorge_oblique_5s.mp4",
+    "poster": "data/media/park_gorge_oblique_5s.jpg",
+    "title": "Upper-gorge simulation, first 24 minutes (Park)",
+    "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out.",
+    "notice": "",
+    "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
+    "srcs": [
+     "park"
+    ]
+   }
+  ]
  }
 }
