@@ -1,0 +1,9 @@
+# The site is only web/ + vercel.json. A root requirements.txt makes Vercel treat the repo as a
+# Python project and try to install the data-pipeline packages, which failed the build.
+requirements.txt
+build.py
+imagery.py
+inputs_manifest.json
+anchors.csv
+sources.csv
+METHODS.md
