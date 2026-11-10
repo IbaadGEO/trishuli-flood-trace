@@ -14,7 +14,7 @@
 
 ## About
 
-This project is part of a self-directed learning initiative across different fields, including coding, data, machine learning and geoscience projects. It is not a professional or commissioned study. Every figure comes from already published, citable public data (satellite mapping, agency reports, gauge records and research papers), and where sources disagree the map shows both. It is a reconstruction for understanding, not an official product and not for emergency use.
+This is part of my wider learning in coding, data, machine learning and geoscience. It is not a professional or commissioned study. The map uses published, citable public data (satellite mapping, agency reports, gauge records and research papers) and derives its route, arrival estimates and display figures from them. Where sources disagree, the map shows both.
 
 ## The event
 
@@ -37,7 +37,7 @@ By 7 November 2026, 1,459 people were reported dead and 5,285 were still missing
 <img src="docs/media/app.jpg" alt="The full app: 3D map with the flood front near Betrawati, an evidence panel on the right, a key-events list and three charts along the bottom">
 
 - **Follows the front** along a 203 km river route in 3D, revealing the satellite-mapped flood extent (UNITAR-UNOSAT, 2026a) by estimated arrival time.
-- **Times every step from evidence:** a seismic origin, a border-port camera, and gauge onsets and telemetry losses. The map interpolates between them and shows an earliest–latest envelope. Reported times that disagree with the gauges are shown as conflicts, not hidden.
+- **Interpolates timing between evidence windows:** a seismic origin, a border-port camera, and gauge onsets and telemetry losses. The map shows an earliest–latest envelope, and reported times that disagree with the gauges are marked as conflicts with their sources.
 - **Separates what was observed from what is estimated**: mapped landslides and building damage (Copernicus EMS, 2026) are never given a time.
 - **Steps through 17 key events**, each with a sourced caption, and links them to before/after imagery and published simulations.
 - **Shows what was reported at the time:** a Reporting tab plays as a live feed, adding each news or responder report at the time that version went public, so early guesses about the cause appear as they were made. Times come from archived copies or from records that show no later edits.
@@ -73,7 +73,7 @@ Other researchers have modelled the cascade, and the app shows their animations 
 
 <table>
 <tr>
-<td width="56%"><img src="docs/media/sim_huang_s7.webp" alt="Simulation of the first ten minutes: flow height of the rock, ice and water mass from the source to Gyirong"><br><b>The first ten minutes.</b> A rock–ice–water flow model (r.avaflow) from an imposed 200 million m³ release. With frictional melting included it reaches Gyirong at 457 s against the observed 458 s; runs without melting take 593 s or more.<br><sub>Huang, Chen and Wang (2026), Movie S7, CC BY 4.0. Paper in preparation.</sub></td>
+<td width="56%"><img src="docs/media/sim_huang_s7.webp" alt="Simulation of the first ten minutes: flow height of the rock, ice and water mass from the source to Gyirong"><br><b>The first ten minutes.</b> A rock–ice–water flow model (r.avaflow) from an imposed 200 million m³ release. With frictional melting included it reaches Gyirong at 457 s, close to the authors' benchmark of 458 s; runs without melting take 593 s or more.<br><sub>Huang, Chen and Wang (2026), Movie S7, CC BY 4.0. Paper in preparation.</sub></td>
 <td width="44%"><img src="docs/media/sim_park_gorge.webp" alt="Oblique 3D view of a simulated flow descending the upper gorge from the source to Syabrubesi"><br><b>The upper gorge, first 24 minutes.</b> A 30 m rock–ice flow model from the source to Syabrubesi; flow thickness exaggerated four times for display.<br><sub>Park (2026), v2.0.0, CC BY 4.0. Preprint, not peer reviewed.</sub></td>
 </tr>
 </table>
@@ -95,12 +95,11 @@ Other researchers have modelled the cascade, and the app shows their animations 
 
 The app shows aggregate figures only and holds no names or personal details of victims.
 
-### What this is not
+### How to read it
 
-- **Not a hydraulic or runout model.** Nothing here simulates flow, depth or velocity.
-- **Not a measured front.** Between evidence points the front position is interpolated.
-- **Not a per-pixel observation of arrival.** Each mapped pixel takes the time of its nearest river point.
-- **Not for emergency use.**
+The moving marker and the timed footprint are interpolated displays, not a hydraulic or runout model. Between evidence points the front position is interpolated, and each mapped pixel takes the time of its nearest river point. The simulation videos are other researchers' models, credited separately, and play no part in this timing.
+
+**Not for emergency use.**
 
 ## Built with
 

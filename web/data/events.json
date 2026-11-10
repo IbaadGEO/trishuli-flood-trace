@@ -289,7 +289,7 @@
   {
    "m": 2,
    "title": "A debris flow forms",
-   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris from the valley floor, may have entrained buried ice, and by about 4,000 m, has mixed with river water and sediment as it races down the narrow Lende Khola gorge.",
+   "text": "The falling mass becomes a debris flow, a fast slurry of mud, rock, ice and water. It scours loose glacial debris from the valley floor and may entrain buried ice. By about 4,000 m it has mixed with river water and sediment as it moves down the narrow Lende Khola gorge.",
    "srcs": [
     "guo",
     "wwa"
@@ -317,7 +317,7 @@
   {
    "m": 38,
    "title": "Warnings go out",
-   "text": "From 09:05 emergency SMS warnings go out to six districts along the river: about 678,000 messages by 09:14 (CHWRR). The flow slows as the valley widens but remains destructive.",
+   "text": "From 09:05 emergency SMS warnings go out to six districts along the river: about 678,000 messages by 09:14 (CHWRR).",
    "srcs": [
     "chwrr",
     "rdna"
@@ -673,14 +673,14 @@
   }
  },
  "simulations": {
-  "intro": "Published computer simulations of the cascade by other researchers, shown with their authors' own caveats. They are models, not footage, and their timings are independent of this map's evidence-based timeline: neither confirms the other.",
+  "intro": "Published computer simulations of the cascade by other researchers, shown with their authors' own caveats. They are models, not footage, and their timings are independent of this map's evidence-based timeline: neither confirms the other. Each clip shows one run its authors selected; other parameter choices change the timing.",
   "videos": [
    {
     "kind": "Model scenario, not footage",
     "src": "data/media/park_full_corridor_top_60s.mp4",
     "poster": "data/media/park_full_corridor_top_60s.jpg",
     "title": "Full-corridor simulation, 8 hours, plan view (Park)",
-    "text": "A 60 m two-dimensional model of the flow from the source to Devghat over eight hours, including settling and melting. The author states it is not a validated inundation map. The run shown is the scenario the author selected; other parameter choices change the timing.",
+    "text": "A 60 m two-dimensional model of the flow from the source to Devghat over eight hours, including settling and melting. The author states it is not a validated inundation map.",
     "notice": "",
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_top_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
@@ -693,7 +693,7 @@
     "src": "data/media/park_full_corridor_profile_60s.mp4",
     "poster": "data/media/park_full_corridor_profile_60s.jpg",
     "title": "Full-corridor simulation, 8 hours, long profile (Park)",
-    "text": "The wave travelling down the river's long profile. Below Syabrubesi this view uses a separate one-dimensional routing model fitted to the Galchhi, Kali Khola and Devghat gauges, so it differs from the plan view. Flow depth is exaggerated 50 times; the lower panel shows river rise in metres, capped at 10 m. The author reports that discrepancies remain at Devghat. The run shown is the scenario the author selected; other parameter choices change the timing.",
+    "text": "The wave travelling down the river's long profile. Below Syabrubesi this view uses a separate one-dimensional routing model fitted to the Galchhi, Kali Khola and Devghat gauges, so it differs from the plan view. Flow depth is exaggerated 50 times; the lower panel shows river rise in metres, capped at 10 m. The author reports that discrepancies remain at Devghat.",
     "notice": "",
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_full_corridor_profile_60s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
@@ -719,7 +719,7 @@
     "src": "data/media/park_gorge_oblique_5s.mp4",
     "poster": "data/media/park_gorge_oblique_5s.jpg",
     "title": "Upper-gorge simulation, first 24 minutes (Park)",
-    "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out. The run shown is the scenario the author selected; other parameter choices change the timing.",
+    "text": "A 30 m rock–ice flow model from the source down to Syabrubesi, with source material starting at rest and melting that conserves mass. Flow thickness is exaggerated four times for display, and the clock converts model time to NPT. No separate temporary-dam outburst is prescribed, which the author notes does not rule one out.",
     "notice": "",
     "credit": "Park, H. (2026), Langtang 2026 rock-ice avalanche and flood: revised simulation animations and supporting outputs (v2.0.0), Zenodo doi 10.5281/zenodo.22566624, file animation_gorge_oblique_5s.mp4, CC BY 4.0. Shown unmodified. Accompanying manuscript: preprint doi 10.31223/X5250R, not peer reviewed.",
     "srcs": [
