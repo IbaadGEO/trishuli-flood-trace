@@ -51,7 +51,7 @@ const map = new maplibregl.Map({
     layers: [
       { id: "bg", type: "background", paint: { "background-color": "#c9cfc4" } }, // shown only where no imagery
       { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 150 } },
-      { id: "hill", type: "hillshade", source: "demHill", paint: { "hillshade-exaggeration": 0.3, "hillshade-shadow-color": "#000" } },
+      { id: "hill", type: "hillshade", source: "demHill", paint: { "hillshade-method": "igor", "hillshade-exaggeration": 0.5, "hillshade-shadow-color": "#12181c" } },
     ],
   },
 });
@@ -117,6 +117,7 @@ map.addSource("river", { type: "geojson", data: { type: "Feature", geometry: { t
 const frontEl = document.createElement("div"); frontEl.className = "front-marker"; frontEl.setAttribute("aria-label", "Flow front");
 const frontMarker = new maplibregl.Marker({ element: frontEl }).setLngLat([river[0][0], river[0][1]]).addTo(map);
 map.addSource("reached", { type: "geojson", data: line([]) });
+map.addSource("tip", { type: "geojson", data: line([]) }); // the last 1.5 km behind the front
 // Selected-event callout: a DOM card anchored above the spot (cleaner than a haloed map label)
 const evEl = document.createElement("div"); evEl.className = "ev-callout"; evEl.hidden = true;
 const evMarker = new maplibregl.Marker({ element: evEl, anchor: "bottom", offset: [0, -12] }).setLngLat([river[0][0], river[0][1]]).addTo(map);
@@ -144,14 +145,16 @@ const LAYERS = [
   { id: "reached", name: "Path reached", est: true, sw: "#36c5f0", on: true,
     add: { type: "line", source: "reached", layout: { "line-cap": "round", "line-join": "round" },
       paint: { "line-color": "#36c5f0", "line-width": ["interpolate", ["linear"], ["zoom"], 9, 1, 12, 1.8, 15, 3], "line-blur": 0.4 } } },
+  { id: "tip", name: "Leading edge", est: true, note: "Soft highlight on the last 1.5 km behind the estimated front", sw: "#e6f7ff", on: true,
+    add: { type: "line", source: "tip", layout: { "line-cap": "round", "line-join": "round" }, paint: { "line-color": "#e6f7ff", "line-width": 9, "line-blur": 7, "line-opacity": 0.6 } } },
   { id: "flow-arrows", name: "Flow direction", on: true,
-    add: { type: "symbol", source: "river", layout: { "symbol-placement": "line", "symbol-spacing": 90, "text-field": "›", "text-size": 22, "text-font": FONT, "text-keep-upright": false, "text-allow-overlap": true },
+    add: { type: "symbol", source: "river", layout: { "symbol-placement": "line", "symbol-spacing": 160, "text-field": "›", "text-size": 18, "text-font": FONT, "text-keep-upright": false, "text-allow-overlap": true },
       paint: { "text-color": "#bfefff", "text-halo-color": "#06364d", "text-halo-width": 1 } } },
   { id: "waypoints", name: "Hourly front positions", est: true, sw: "#ffd166", on: true,
     add: { type: "circle", source: "waypoints", paint: { "circle-radius": 4.5, "circle-color": "#ffd166", "circle-stroke-width": 2, "circle-stroke-color": "#3a2a00" } } },
   { id: "waypoint-labels", name: "Hourly labels", on: true,
     add: { type: "symbol", source: "waypoints", layout: { "text-field": ["get", "label"], "text-size": 12, "text-offset": [0.9, 0], "text-anchor": "left", "text-font": FONT },
-      paint: { "text-color": "#fff4d6", "text-halo-color": "rgba(0,0,0,0.7)", "text-halo-width": 1.3, "text-halo-blur": 0.6 } } },
+      paint: { "text-color": "#ffffff", "text-halo-color": "rgba(15,22,28,0.92)", "text-halo-width": 3 } } }, // wide dark halo reads as a label plate
   { id: "arrival", name: "Mapped extent, revealed over time", est: true, note: "UNOSAT satellite-mapped extent, shown cumulatively by estimated arrival time. Not water depth; colour change is illustrative", sw: "#8a5a2b", on: true,
     add: { type: "raster", paint: { "raster-opacity": 0.9, "raster-resampling": "linear", "raster-fade-duration": 0 } } }, // one layer per chunk source
   { id: "anchors", name: "Observation points", note: "Gauges and reported impact times", sw: "#2f8f5b", on: true,
@@ -191,8 +194,8 @@ const LAYERS = [
 // Views: each shows only the overlays its question needs. Base layers (imagery, hillshade, terrain) stay as set.
 const OVERLAYS = LAYERS.filter((L) => L.add && !L.id.startsWith("s2")).map((L) => L.id);
 const VIEWS = {
-  story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "connector", "lakes", "sites"],
-  damage: ["reached", "unosat_extent", "buildings", "roads", "gauges", "detachment", "connector", "lakes", "lake-labels", "sites"],
+  story: ["river", "reached", "tip", "flow-arrows", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "connector", "lakes", "sites"],
+  damage: ["reached", "tip", "unosat_extent", "buildings", "roads", "gauges", "detachment", "connector", "lakes", "lake-labels", "sites"],
   imagery: ["unosat_extent", "sites"],
   all: OVERLAYS,
 };
@@ -265,7 +268,7 @@ function paintArrival(m) {
       if (am > m) continue;
       const age = Math.min(1, (m - am) / AGE);
       d[di] = fresh[0] + (old[0] - fresh[0]) * age; d[di + 1] = fresh[1] + (old[1] - fresh[1]) * age; d[di + 2] = fresh[2] + (old[2] - fresh[2]) * age;
-      d[di + 3] = 90 + 0.65 * src[si + 2];
+      d[di + 3] = Math.min(255, 90 + 0.65 * src[si + 2] + 70 * (1 - age)); // newest ground stands out, then settles
     }
     ch.ctx.putImageData(ch.out, 0, 0);
     const s = map.getSource(ch.id); s.play(); played.push(s);
@@ -325,6 +328,7 @@ function setTime(m, fly) {
   lastHeavy = now;
   const upto = river.filter((x) => x[3] <= t).map((x) => [x[0], x[1]]);
   map.getSource("reached").setData(line(upto.length > 1 ? [...upto, [r[0], r[1]]] : []));
+  map.getSource("tip").setData(line(upto.length > 1 ? [...river.filter((x) => x[3] <= t && x[2] >= r[2] - 1500).map((x) => [x[0], x[1]]), [r[0], r[1]]] : []));
   document.querySelectorAll("#ticks i").forEach((i) => i.classList.toggle("past", +i.dataset.m <= t));
   frontCard(r);
   paintArrival(t);
@@ -417,6 +421,7 @@ legend.innerHTML = `<summary>Legend</summary>
   <div data-for="arrival"><i class="lg-box fill" style="background:#b0a89c"></i>Mapped source-zone ground (untimed)</div>
   <div data-for="arrival"><i class="lg-grad"></i>Reached (est.): just now → earlier</div>
   <div data-for="reached"><i class="lg-line"></i>River already reached</div>
+  <div data-for="tip"><i class="lg-line" style="border-color:#e6f7ff;filter:drop-shadow(0 0 2px #7fd3ff)"></i>Leading edge, last 1.5 km (est.)</div>
   <div data-for="river"><i class="lg-line dash"></i>River not reached yet</div>
   <div data-for="waypoints"><i class="lg-dot" style="background:#ffd166"></i>Front position each hour</div>
   <div data-for="unosat_extent"><i class="lg-box" style="border-color:#9fd8f5"></i>Mapped extent (satellite, preliminary)</div>
@@ -535,7 +540,7 @@ const kmMax = river.at(-1)[2] / 1000, elevMax = Math.ceil(Math.max(...river.map(
 const kf = (v) => `${Math.round(v)} km`;
 function drawCharts(r) {
   const km = r[2] / 1000;
-  chart($("#c-front"), { xs: rs.map((x) => x[3]), ys: rs.map((x) => x[2] / 1000), xmax: T_END, ymax: Math.ceil(kmMax / 50) * 50,
+  chart($("#c-front"), { xs: rs.map((x) => x[3]), ys: rs.map((x) => x[2] / 1000), xmax: T_END, ymax: Math.ceil(kmMax / 50) * 50, fill: css("--water"),
     lines: [5, 6].map((k) => ({ xs: rs.map((x) => x[k]), ys: rs.map((x) => x[2] / 1000) })), // earliest / latest scenario
     bars: meta.anchors.map((a) => [a.lo, a.hi, a.chain / 1000]), marks: meta.checks.map((c) => [c.min, c.chain / 1000]),
     cursor: [t, km], xfmt: fmt, yfmt: kf });

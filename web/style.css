@@ -1,10 +1,11 @@
 :root {
-  --bg: #f4f6f7; --panel: #ffffff; --ink: #14212b; --muted: #5d6b75; --line: #dde3e7;
+  /* quiet stone neutrals: this records a disaster, so the interface stays restrained and the data carries the colour */
+  --bg: #efeeea; --panel: #faf9f6; --ink: #1c262c; --muted: #5a656b; --line: #dcd9d2;
   --water: #1c7fb8; --front: #36c5f0; --mud: #8a5a2b; --impact: #c8432b; --gauge: #2f8f5b; --alert: #b07a10;
-  --chip: #eef3f6; --link: #176fa3; --alert-ink: #8f6200;
+  --chip: #eae8e2; --link: #176490; --alert-ink: #8a5e00;
 }
 @media (prefers-color-scheme: dark) {
-  :root { --bg: #0e1418; --panel: #151d23; --ink: #e3eaee; --muted: #8fa0ab; --line: #26323a; --chip: #1d2830; --link: #5cb3e6; --alert-ink: #e0a63a; }
+  :root { --bg: #111415; --panel: #181c1e; --ink: #e4e6e4; --muted: #99a3a6; --line: #2b3134; --chip: #222829; --link: #6db6e0; --alert-ink: #dba544; }
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; height: 100%; }
