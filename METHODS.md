@@ -1,5 +1,7 @@
 # Methods
 
+Trishuli Flood Trace is created and maintained by **Ibaad Sidik**. © 2026 Ibaad Sidik for the original code and project text. Code is licensed under [MIT](LICENSE); third-party material retains the [licences and credits of its sources](DATA-LICENCES.md).
+
 Trishuli Flood Trace is a personal, non-commercial reconstruction of the 26 August 2026 rock-ice avalanche, debris flow and flood that travelled from the Lirung massif (Langtang) down the Lende Khola, Bhote Koshi and Trishuli to the Narayani at Devghat. It uses only public, citable data (see `sources.csv`). It is an **illustrative reconstruction**, not a hydraulic or runout model, and not a validated flood-propagation dataset.
 
 ## What is observed and what is constructed

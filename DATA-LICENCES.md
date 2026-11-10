@@ -1,5 +1,7 @@
 # Data licences
 
+Trishuli Flood Trace is created and maintained by **Ibaad Sidik**. © 2026 Ibaad Sidik for the original code and project text. This ownership notice does not claim ownership of the third-party material listed below or replace its licences and required credits.
+
 The MIT licence in `LICENSE` covers the **code only**. Each data file published in `web/data/` keeps the terms of its source. This table records, from each source's published terms, what applies and what that requires of anyone reusing the files. Full source details are in `sources.csv`.
 
 | Published file(s) | Derived from | Terms | What that requires |

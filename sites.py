@@ -1,3 +1,4 @@
+# © 2026 Ibaad Sidik. Code licensed under MIT; see LICENSE.
 """Before/after image pairs for key sites -> web/data/sites/*.webp and web/data/sites.json.
 
 Reads openly licensed scenes over HTTP (no login) and warps a fixed square window around each site onto a

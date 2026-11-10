@@ -1,3 +1,4 @@
+# © 2026 Ibaad Sidik. Code licensed under MIT; see LICENSE.
 """Cloud-masked Sentinel-2 before/after composites, cut into XYZ WebP tiles along the flood corridor.
 
 Before/after = per-pixel median of clear observations (SCL mask + blue-brightness filter) from the scenes nearest the event,

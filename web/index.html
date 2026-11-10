@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="author" content="Ibaad Sidik">
 <title>Trishuli Flood Trace</title>
 <meta name="description" content="Interactive 3D reconstruction of the 26 August 2026 Nepal–Tibet debris flow down the Trishuli river, built from satellite mapping, river-gauge records and official reports.">
 <meta property="og:type" content="website">
@@ -21,7 +22,7 @@
 </head>
 <body>
 <header>
-  <div class="brand"><b>Trishuli Flood Trace</b><span>26 Aug 2026 · Rasuwa → Devghat</span></div>
+  <div class="brand"><div><b>Trishuli Flood Trace</b><span>26 Aug 2026 · Rasuwa → Devghat</span></div><small>Created by <a href="https://github.com/IbaadGEO" target="_blank" rel="noopener">Ibaad Sidik</a></small></div>
   <div class="hdr-right">
     <div class="seg" id="views" role="group" aria-label="Map view">
       <button data-view="story" class="on" aria-pressed="true" title="The flood unfolding: front, path and timing">Story</button>
@@ -63,9 +64,15 @@
 
 <aside id="events"><h3>Key events <span>26 Aug, NPT</span></h3><ol id="ev"></ol></aside>
 
+<footer id="ownership" aria-label="Project ownership and licences">
+  <span>© 2026 Ibaad Sidik · Original code and project text.</span>
+  <span><a href="https://github.com/IbaadGEO/trishuli-flood-trace/blob/main/LICENSE" target="_blank" rel="noopener">Code: MIT</a> · <a href="https://github.com/IbaadGEO/trishuli-flood-trace/blob/main/DATA-LICENCES.md" target="_blank" rel="noopener">Third-party data, imagery and simulations: respective owners and licences</a>.</span>
+</footer>
+
 <dialog id="sims" aria-labelledby="sims-title">
   <div class="cmp-head"><h3 id="sims-title">Published simulations</h3><button id="sims-x" aria-label="Close">✕</button></div>
   <div id="sims-text"></div>
+  <p class="panel-credit">Trishuli Flood Trace · Created by Ibaad Sidik. Simulations retain their creators’ credits and licences above.</p>
 </dialog>
 
 <dialog id="cmp" aria-labelledby="cmp-title">
@@ -74,6 +81,7 @@
   <input id="cmp-r" type="range" min="0" max="100" value="50" aria-label="Slide between before and after images">
   <div id="cmp-text"></div>
   <nav class="cmp-nav"><button id="cmp-prev">⏴ Previous site</button><span id="cmp-n"></span><button id="cmp-next">Next site ⏵</button></nav>
+  <p class="panel-credit">Trishuli Flood Trace · Created by Ibaad Sidik. Imagery and videos retain their creators’ credits and licences above.</p>
 </dialog>
 
 <script type="module" src="app.js"></script>

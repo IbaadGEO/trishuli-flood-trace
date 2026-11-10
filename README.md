@@ -2,6 +2,8 @@
 
 # Trishuli Flood Trace
 
+Created and maintained by **[Ibaad Sidik](https://github.com/IbaadGEO)**.
+
 **Tracing the 26 August 2026 Lirung rock–ice avalanche and flood, 200 km from a Himalayan ice face to the plains of Nepal**
 
 [![Live map](https://img.shields.io/badge/live_map-trishuli--flood--trace.vercel.app-1971c2?style=flat-square)](https://trishuli-flood-trace.vercel.app) ![MapLibre GL JS 6.17](https://img.shields.io/badge/MapLibre_GL_JS-6.17-396cb2?style=flat-square) ![Python 3.13](https://img.shields.io/badge/Python-3.13-3776ab?style=flat-square) ![Data: public and cited](https://img.shields.io/badge/data-public_%26_cited-2f9e44?style=flat-square) [![Code: MIT](https://img.shields.io/badge/code-MIT-868e96?style=flat-square)](LICENSE)
@@ -166,5 +168,7 @@ python -m http.server 5173 -d web
 Open http://localhost:5173. The site is static files with no build step. The data can be rebuilt from the public inputs; the steps are in the [Reproducing](METHODS.md#reproducing) section of the methods.
 
 ## Licence
+
+© 2026 Ibaad Sidik. The original code and project text are my work; the cited data, imagery and simulations remain the work of their respective creators.
 
 Code: [MIT](LICENSE). Data and imagery keep their sources' terms, several of them non-commercial; see [DATA-LICENCES.md](DATA-LICENCES.md). The animations and images in `docs/media/` are screen recordings of the app and adaptations of the imagery and simulations credited above, shared under the same terms.

@@ -1,3 +1,4 @@
+# © 2026 Ibaad Sidik. Code licensed under MIT; see LICENSE.
 """Draw docs/media/method.svg, the README method figure, from web/data/meta.json.
 
 Run from the repo root after build.py:  python -P docs/method_figure.py
