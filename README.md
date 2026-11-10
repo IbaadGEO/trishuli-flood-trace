@@ -84,7 +84,9 @@ Other researchers have modelled the cascade, and the app shows their animations 
 
 <img src="docs/media/method.svg" alt="Method figure. Left: five stages, from raw observations to evidence anchors, temporal interpolation, uncertainty and 3D visualisation. Right: distance along the river route against time, showing the eight evidence windows coloured by basis, the interpolated arrival line, the earliest to latest envelope and two reports used only as checks, one of which conflicts">
 
-<sub>The plot is drawn from the project's own anchor and route data by <a href="docs/method_figure.py"><code>docs/method_figure.py</code></a>, so it changes if the evidence does. The Mugling report (13:00) conflicts with the interpolation by about seven minutes and is shown, not fitted. Full method and limits: <a href="METHODS.md">METHODS.md</a>.</sub>
+**Figure 1. Methodological framework and temporal reconstruction of the 26th August 2026 Langtang Lirung flood.** The workflow illustrates the processing of observational data into evidence anchors, temporal interpolation, uncertainty estimates and 3D visualisation. The time-distance diagram shows eight evidence windows along the reconstructed river route, the interpolated flood arrival trajectory and its earliest-to-latest timing envelope. Two independently reported observations are included as validation checks, including one that conflicts with the reconstructed timing.
+
+<sub>Drawn from the project's data by <a href="docs/method_figure.py"><code>docs/method_figure.py</code></a>. Full method and limits: <a href="METHODS.md">METHODS.md</a>.</sub>
 
 ## Observed, reported or estimated
 
