@@ -80,6 +80,12 @@ Other researchers have modelled the cascade, and the app shows their animations 
 
 <sub>Shown sped up (2×) and converted to animated WebP for this page; the app plays the original files unmodified. Two further full-corridor animations by Park are in the app's "Published simulations" panel.</sub>
 
+## Method at a glance
+
+<img src="docs/media/method.svg" alt="Method figure. Left: five stages, from raw observations to evidence anchors, temporal interpolation, uncertainty and 3D visualisation. Right: distance along the river route against time, showing the eight evidence windows coloured by basis, the interpolated arrival line, the earliest to latest envelope and two reports used only as checks, one of which conflicts">
+
+<sub>The plot is drawn from the project's own anchor and route data by <a href="docs/method_figure.py"><code>docs/method_figure.py</code></a>, so it changes if the evidence does. The Mugling report (13:00) conflicts with the interpolation by about seven minutes and is shown, not fitted. Full method and limits: <a href="METHODS.md">METHODS.md</a>.</sub>
+
 ## Observed, reported or estimated
 
 | Layer | Status | Source |
