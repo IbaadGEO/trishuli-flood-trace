@@ -216,7 +216,8 @@ $("#layers").innerHTML = LAYERS.map((L) => L.group ? `<div class="layer"><h5>${L
   + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are interpolated between the midpoints of evidence windows (gauge onsets and telemetry losses from the DHM record, the USGS origin time, the Gyirong Port camera time); reports such as threshold crossings are used only as checks. They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances start at the OSM route origin, ~0.9 km from the mapped source; the source-to-channel runout (dashed red) is not timed.</p>`;
 $(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
   document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-pressed", b === e.target); });
-  document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k)); };
+  document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k));
+  if (k === "reporting") { repUnseen = 0; e.target.dataset.n = ""; } };
 $("#layers").addEventListener("change", (e) => { const id = e.target.dataset.id; if (!id) return; setVis(id, e.target.checked); if (id === "terrain") showDim(e.target.checked); });
 $("#layers").addEventListener("input", (e) => { const id = e.target.dataset.op; if (!id) return;
   idsOf(id).forEach((x) => map.setPaintProperty(x, opOf(LAYERS.find((L) => L.id === id)), e.target.value / 100)); e.target.nextElementSibling.value = `${e.target.value}%`; });
@@ -361,17 +362,31 @@ storyBox.addEventListener("click", (e) => { const b = e.target.closest(".cmp-btn
 const REP0 = Date.parse(rep.t0);
 const reports = rep.reports.map((r) => ({ ...r, m: (Date.parse(r.availableAt) - REP0) / 60000 })).sort((a, b) => a.m - b.m);
 const repWhen = (r) => `${r.availableAt.slice(8, 10) === "26" ? "" : `${+r.availableAt.slice(8, 10)} Aug `}${r.availableAt.slice(11, 16)} NPT`; // as printed, not rounded
-const repCard = (r) => `<article class="card rep"><h4>${r.outlet} <span>${repWhen(r)}</span></h4>
+const repCard = (r) => `<article class="card rep" data-m="${r.m}"><h4>${r.outlet} <span>${repWhen(r)}<em class="rep-age"></em></span></h4>
   <p class="rep-title"><a href="${r.archiveUrl ?? r.url}" target="_blank" rel="noopener">${r.title}</a></p><p>${r.summary}</p>
   ${r.atTheTime ? `<p class="rep-flag"><b>Unconfirmed at the time.</b> ${r.atTheTime}</p>` : ""}${r.correction ? `<p class="rep-flag fix"><b>New explanation.</b> ${r.correction}</p>` : ""}
   ${r.note ? `<p class="note">${r.note}</p>` : ""}<p class="note">${r.locations.join(" · ")}. <b>Time:</b> ${r.timeEvidence}${r.archiveUrl ? ` <a href="${r.url}" target="_blank" rel="noopener">Live page</a> (since updated).` : ""}</p></article>`;
-$("#reporting").innerHTML = `<p class="note">${rep.note}</p><div id="rep-now" aria-live="polite"></div>
+$("#reporting").innerHTML = `<p class="note">${rep.note}</p><p id="rep-live" class="rep-live"></p><div id="rep-now" aria-live="polite"></div>
   <details class="card"><summary><b>Later coverage</b> <span class="muted">after the timeline ends</span></summary>${reports.filter((r) => r.m > T_END).map(repCard).join("")}</details>`;
-let repShown = -1;
-function reporting(m) { // redraw only when the set of public reports changes
-  const now = reports.filter((r) => r.m <= m);
-  if (now.length === repShown) return; repShown = now.length;
-  $("#rep-now").innerHTML = now.length ? now.toReversed().map(repCard).join("") : `<p class="card note">No verified report available by ${fmt(m)} NPT. The first archived report is from ${repWhen(reports[0])}.</p>`;
+const dur = (x) => (x < 60 ? `${x} min` : `${Math.floor(x / 60)} h ${x % 60} min`);
+const repTab = $('.tabs [data-tab="reporting"]');
+let repShown = -1, repMin = -1, repUnseen = 0;
+function reporting(m) { // a live feed: cards arrive as their version went public, newest on top, ages tick with the clock
+  const now = reports.filter((r) => r.m <= m), n = now.length, next = reports[n];
+  if (n !== repShown) {
+    const fresh = repShown < 0 ? 0 : n - repShown; repShown = n; repMin = -1;
+    $("#rep-now").innerHTML = n ? now.toReversed().map(repCard).join("") : `<p class="card note">No verified report available yet. The first archived report is from ${repWhen(reports[0])}.</p>`;
+    if (fresh > 0) { // arrived while playing or scrubbing forward: flag them, and bring the feed back to the top
+      [...$("#rep-now").children].slice(0, fresh).forEach((c) => c.classList.add("new"));
+      if ($("#reporting").classList.contains("on")) $("#side").scrollTo({ top: 0, behavior: RM ? "auto" : "smooth" });
+      else repUnseen += fresh;
+    } else repUnseen = 0; // scrubbed back: nothing is new
+    repTab.dataset.n = repUnseen || "";
+  }
+  const mm = Math.floor(m); if (mm === repMin) return; repMin = mm; // the status line and ages change once a minute
+  $("#rep-live").innerHTML = `<i></i><b>${fmt(mm)} NPT</b> · ${n} of ${reports.filter((r) => r.m <= T_END).length} reports public`
+    + (next && next.m <= T_END ? ` · next in ${dur(Math.ceil(next.m - m))}` : n ? " · no later report in this timeline" : "");
+  for (const c of $("#rep-now").querySelectorAll(".rep")) { const a = Math.floor(m - c.dataset.m); c.querySelector(".rep-age").textContent = a < 1 ? " · just now" : ` · ${dur(a)} ago`; }
 }
 
 // ---------- before / after comparison ----------

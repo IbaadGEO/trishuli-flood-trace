@@ -1,5 +1,5 @@
 {
- "note": "What was being reported as the flood unfolded. Each card appears at the time that version of the report became public, not when the events it describes happened. Summaries are my paraphrases of archived versions (Internet Archive), so later edits to the live pages do not leak into earlier playback. Broadcast clips are not included: no on-air times could be verified.",
+ "note": "What was being reported as the flood unfolded. Each card appears at the time that version of the report became public, not when the events it describes happened. Summaries are my paraphrases of archived versions (Internet Archive) or of records that show no later edits, so later edits to the live pages do not leak into earlier playback. Broadcast clips are not included: no on-air times could be verified.",
  "t0": "2026-08-26T08:37:00+05:45",
  "reports": [
   {
@@ -11,9 +11,46 @@
    "timeEvidence": "The archived copy captured at 04:46:49 UTC (10:31 NPT) prints 'Updated at: August 26, 2026 10:30'. The live page was updated again at 12:12, so only the 10:30 version is used.",
    "url": "https://kathmandupost.com/national/2026/08/26/major-flood-damages-syabrubesi-hydropower-projects-in-rasuwa",
    "archiveUrl": "https://web.archive.org/web/20260826044649/https://kathmandupost.com/national/2026/08/26/major-flood-damages-syabrubesi-hydropower-projects-in-rasuwa",
-   "locations": ["Timure", "Syabrubesi", "Trishuli (Nuwakot, Dhading)"],
+   "locations": [
+    "Timure",
+    "Syabrubesi",
+    "Trishuli (Nuwakot, Dhading)"
+   ],
    "summary": "Rasuwa's chief district officer says a sudden surge on the Bhote Koshi has hit Timure and Syabrubesi, but the damage and the cause are not yet known, and there has been no rain. A rescue helicopter turned back from Timure because the helipad had been swept away. Dhading's administration deploys security personnel along the Trishuli and tells people to stay away from the river.",
    "atTheTime": "The cause was unknown. Officials and residents wondered whether a glacial lake or a dam had burst; later studies identified a rock-ice avalanche and debris flow."
+  },
+  {
+   "id": "ifrc-1124",
+   "outlet": "IFRC and Nepal Red Cross (field report)",
+   "kind": "report",
+   "title": "NPL: Flood - 08-2026 - Rasuwa Flood",
+   "availableAt": "2026-08-26T11:24:07+05:45",
+   "timeEvidence": "The IFRC GO record for field report 18558 was created at 05:39:07 UTC (11:24 NPT) and its last-updated time is the same, so the text was not edited afterwards. ReliefWeb's copy was captured by the Internet Archive at 10:00 UTC (15:45 NPT) the same day.",
+   "url": "https://reliefweb.int/report/nepal/npl-flood-08-2026-rasuwa-flood-2026-08-26",
+   "archiveUrl": "https://web.archive.org/web/20260826100024/https://reliefweb.int/report/nepal/npl-flood-08-2026-rasuwa-flood-2026-08-26",
+   "locations": [
+    "Timure",
+    "Rasuwagadhi",
+    "Syabrubesi",
+    "Trishuli corridor (Rasuwa to Chitwan)"
+   ],
+   "summary": "The first Red Cross field report says a sudden surge entered the Bhote Koshi from the Tibet side and hit Timure, Rasuwagadhi and Syabrubesi, with flood waves estimated at 8 to 10 m in places. It lists severe damage to Timure market, the customs office, hydropower projects including Chilime, and three police posts. Thirty to forty drivers may be missing, though this is not verified. Riverside communities in Rasuwa, Nuwakot, Dhading, Gorkha and Chitwan are on high alert and travel on the Prithvi Highway is discouraged.",
+   "atTheTime": "The cause was still under investigation and a high-altitude outburst upstream in Tibet was suspected. The report puts the surge at about 9:15 AM; the camera and gauge records used on this map place it earlier (Gyirong Port 08:44, Syabrubesi gauge lost by 09:00)."
+  },
+  {
+   "id": "xinhua-1311",
+   "outlet": "Xinhua",
+   "kind": "article",
+   "title": "Mudslide hits near border port in Xizang, people feared missing",
+   "availableAt": "2026-08-26T13:11:15+05:45",
+   "timeEvidence": "The archived copy captured at 11:27 UTC (17:12 NPT) prints 2026-08-26 15:26:15, read as Beijing time, which is 13:11 NPT. The page does not state its time zone; Beijing time is Xinhua's usual practice and is consistent with the capture time.",
+   "url": "https://english.news.cn/20260826/8f78a2f10acd4141ae095490343689e8/c.html",
+   "archiveUrl": "https://web.archive.org/web/20260826112705/http://english.news.cn/20260826/8f78a2f10acd4141ae095490343689e8/c.html",
+   "locations": [
+    "Gyirong Port (Tibet)"
+   ],
+   "summary": "China's state news agency reports from Lhasa that a mudslide has struck near Gyirong Port and that people are feared missing. The county emergency management bureau says roads to the port on the Chinese side, communications and power have all been cut.",
+   "atTheTime": "No casualty figures were given, and the report does not say where the mudslide began."
   },
   {
    "id": "tht-1356",
@@ -24,7 +61,12 @@
    "timeEvidence": "The archived copy captured at 10:32 UTC (16:17 NPT) carries datePublished 13:56:53 and dateModified 13:56:49 (+05:45), so this text was public from 13:56.",
    "url": "https://thehimalayantimes.com/nepal/bhotekoshi-flood-three-dead-17-rescued-14-customs-staff-missing",
    "archiveUrl": "https://web.archive.org/web/20260826103234/https://thehimalayantimes.com/nepal/bhotekoshi-flood-three-dead-17-rescued-14-customs-staff-missing",
-   "locations": ["Timure", "Syabrubesi", "Trishuli Bazaar (Nuwakot)", "Devighat (Nuwakot)"],
+   "locations": [
+    "Timure",
+    "Syabrubesi",
+    "Trishuli Bazaar (Nuwakot)",
+    "Devighat (Nuwakot)"
+   ],
    "summary": "Police recover three bodies on the Trishuli bank in Nuwakot, 17 people are rescued, and 14 staff of the customs office at Timure are out of contact. About 60 houses near Trishuli Bazaar are swept away, though residents there had moved after early warnings. The hydrology department says rainfall in Rasuwa was light, under 7 mm in 24 hours.",
    "atTheTime": "Authorities were studying a possible glacial lake outburst flood (GLOF). Later studies identified a rock-ice avalanche and debris flow instead.",
    "note": "'Devighat' here is the Devighat hydropower site in Nuwakot, not the Devghat gauge in Chitwan, which the wave reached around 14:30–14:40."
@@ -38,7 +80,10 @@
    "timeEvidence": "The archived copy captured at 08:22 UTC (14:07 NPT) prints 13:50:34 IST, which is 14:05 NPT.",
    "url": "https://www.firstpost.com/world/nepal-flash-floods-villages-washed-away-hydropower-projects-damaged-near-tibet-border-14040909.html",
    "archiveUrl": "https://web.archive.org/web/20260826082205/https://www.firstpost.com/world/nepal-flash-floods-villages-washed-away-hydropower-projects-damaged-near-tibet-border-14040909.html",
-   "locations": ["Syabrubesi", "Timure"],
+   "locations": [
+    "Syabrubesi",
+    "Timure"
+   ],
    "summary": "District administrator Narendra Pariyar tells Reuters that villages and project sites have been washed away and heavy losses are possible, but he cannot yet confirm them. The Water Resources Ministry reports damaged hydropower projects, roads and bridges, and the prime minister says rescue teams, police and the army have been sent.",
    "atTheTime": "The cause was 'not immediately known'. The report recalls that last year's flood on the same river was linked to a draining glacier lake."
   },
@@ -51,7 +96,11 @@
    "timeEvidence": "The archived copy captured at 12:03:46 UTC (17:48 NPT) shows 'Updated: 28 minutes ago' and a last-modified time of 11:36:16 UTC (17:21 NPT). It was first published at 09:48 UTC (15:33 NPT), but no earlier version was archived.",
    "url": "https://www.aljazeera.com/news/2026/8/26/at-least-eight-killed-in-nepal-flash-floods-that-swept-away-villages-roads",
    "archiveUrl": "https://web.archive.org/web/20260826120346/https://www.aljazeera.com/news/2026/8/26/at-least-eight-killed-in-nepal-flash-floods-that-swept-away-villages-roads",
-   "locations": ["Syabrubesi", "Timure", "Gyirong County (Tibet)"],
+   "locations": [
+    "Syabrubesi",
+    "Timure",
+    "Gyirong County (Tibet)"
+   ],
    "summary": "At least eight people are reported killed and hundreds missing. Xinhua reports 'major casualties' in Gyirong County, Tibet, after a mudslide hit the border port. Nepal's electricity authority says about 430 MW of generating capacity is damaged, and several highways are closed.",
    "correction": "ICIMOD specialists say an ice-rock avalanche from a glacier on the Nepal side probably caused the flood, after blocking the Lhende Khola and releasing a surge. It is the first explanation in these reports that matches the later studies."
   },
@@ -64,7 +113,10 @@
    "timeEvidence": "The archived copy captured at 14:15 UTC (20:00 NPT) carries article:published_time 09:58:46 EDT, which is 19:43 NPT.",
    "url": "https://www.pbs.org/newshour/world/at-least-22-killed-and-hundreds-missing-after-avalanche-triggers-deadly-flash-floods-in-nepal",
    "archiveUrl": "https://web.archive.org/web/20260826141530/https://www.pbs.org/newshour/world/at-least-22-killed-and-hundreds-missing-after-avalanche-triggers-deadly-flash-floods-in-nepal",
-   "locations": ["Rasuwa", "Tibet"],
+   "locations": [
+    "Rasuwa",
+    "Tibet"
+   ],
    "summary": "At least 22 people are reported killed and hundreds of tourists, workers and others missing. The headline attributes the floods to an avalanche, and China has launched search and rescue with no toll reported yet."
   },
   {
@@ -75,7 +127,10 @@
    "availableAt": "2026-08-27T00:13:51+05:45",
    "timeEvidence": "The page metadata gives article:published_time 18:28:51 UTC on 26 Aug, which is 00:13 NPT on 27 Aug. The page was edited until 28 Aug and its first version was not checked, so only the publication time is shown.",
    "url": "https://www.theguardian.com/world/2026/aug/26/major-casualties-feared-after-flash-floods-along-nepal-tibet-border",
-   "locations": ["Rasuwa", "Tibet"],
+   "locations": [
+    "Rasuwa",
+    "Tibet"
+   ],
    "summary": "Filed after the timeline ends. Its figures are not reproduced here, because the live text was revised over the following two days."
   }
  ]
