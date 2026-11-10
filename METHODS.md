@@ -75,6 +75,8 @@ The Reporting tab shows what news outlets and responders were publishing as the 
 
 ## Reproducing
 
+Python 3.13.
+
 ```bash
 pip install -r requirements.txt
 python -P build.py      # data; downloads are cached in raw/ (not committed)
@@ -83,6 +85,6 @@ python -P sites.py      # before/after site images
 python -P docs/method_figure.py   # README method figure, from web/data/meta.json
 ```
 
-Inputs placed by hand in `raw/`: EMSR927 vector zips (`raw/ems/`), the UNOSAT 4256 geodatabase (`raw/unosat/`) and the Zenodo 22679444 archive (`raw/zenodo/`). `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if any input listed in `inputs_manifest.json` is missing, added or changed (use `--update-manifest` after a deliberate change). The manifest covers the downloaded zips, the extracted files the build reads and the cached DEM tiles (`raw/dem/`); a folder's hash is the SHA-256 of its `sha256  relative/path` lines.
+Inputs placed by hand in `raw/`: the EMSR927 grading "vectors" zips, unzipped (`raw/ems/`), the UNOSAT 4256 geodatabase `FL20260826NPL.gdb.zip`, unzipped (`raw/unosat/`), and the Zenodo 22679444 archive `zenodo_upload.zip`, unzipped into `raw/zenodo/extracted/`. `build.py` stops with instructions if one is missing, checks that the UNOSAT and EMS layers are in WGS 84, and refuses to run if any input listed in `inputs_manifest.json` is missing, added or changed (use `--update-manifest` after a deliberate change, and once on a fresh clone, because the OSM and terrain downloads are fetched new and may differ slightly from the ones I used). The manifest covers the downloaded zips, the extracted files the build reads and the cached DEM tiles (`raw/dem/`); a folder's hash is the SHA-256 of its `sha256  relative/path` lines.
 
 The Malekhu (Phurke) readings came from the BIPAD river API, which serves the current record and can change. The saved response is hashed in `inputs_manifest.json` with its request URL and retrieval date, and the 26 August readings are kept in `archive/bipad_malekhu_261_20260826.csv`.

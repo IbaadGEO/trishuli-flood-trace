@@ -155,44 +155,13 @@ Method, limits and every timing decision: [METHODS.md](METHODS.md) · Evidence a
 
 Accessed 8–9 November 2026. Links, versions and licences for every source are in [sources.csv](sources.csv). Secondary summaries used for cross-checks (Wikipedia timeline; The Guardian, 7 November 2026) are listed there too.
 
-<details>
-<summary><b>Run it locally or rebuild the data</b></summary>
-
-### Run the site
+## Run it locally
 
 ```bash
 python -m http.server 5173 -d web
 ```
 
-Open http://localhost:5173. Static files only, no build step. Vercel serves the `web/` folder (see `vercel.json`); no environment variables are needed.
-
-### Rebuild the data
-
-Python 3.13 with the packages in `requirements.txt`. Downloads are cached in `raw/` (not committed; checksums in `inputs_manifest.json`). Three inputs must be placed by hand:
-
-- `raw/ems/`: the Copernicus EMS EMSR927 grading products ("vectors" zips, unzipped)
-- `raw/unosat/`: the UNOSAT product 4256 geodatabase (`FL20260826NPL.gdb.zip`, unzipped)
-- `raw/zenodo/`: the Zenodo 22679444 archive (`zenodo_upload.zip`, unzipped into `raw/zenodo/extracted/`)
-
-`build.py` stops with instructions if any of these is missing and checks each input against `inputs_manifest.json`. On a fresh clone, run it once with `--update-manifest`: the OSM and terrain downloads are fetched new and may differ slightly from the ones I used. The Malekhu gauge readings it uses as evidence are kept in `archive/` because the BIPAD API only serves the current record.
-
-```bash
-python -P build.py
-```
-
-Before/after site comparisons (reads open Vantor and Planet scenes over HTTP, a few minutes):
-
-```bash
-python -P sites.py
-```
-
-Sentinel-2 before/after composites (about 40 minutes; reads Sentinel-2 L2A COGs from AWS, no login). Per-pixel medians of clear observations from late July to late September, with the scene-classification cloud mask and a haze filter, in a ~1.5 km buffer around the corridor:
-
-```bash
-python -P imagery.py
-```
-
-</details>
+Open http://localhost:5173. The site is static files with no build step. The data can be rebuilt from the public inputs; the steps are in the [Reproducing](METHODS.md#reproducing) section of the methods.
 
 ## Licence
 
