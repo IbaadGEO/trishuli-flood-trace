@@ -40,9 +40,9 @@ By 7 November 2026, 1,459 people were reported dead and 5,285 were still missing
 - **Times every step from evidence:** a seismic origin, a border-port camera, and gauge onsets and telemetry losses. The map interpolates between them and shows an earliest–latest envelope. Reported times that disagree with the gauges are shown as conflicts, not hidden.
 - **Separates what was observed from what is estimated**: mapped landslides and building damage (Copernicus EMS, 2026) are never given a time.
 - **Steps through 17 key events**, each with a sourced caption, and links them to before/after imagery and published simulations.
-- **Shows what was reported at the time:** a Reporting tab adds each news report when that version went public, taken from archived copies, so early guesses about the cause appear as they were made.
+- **Shows what was reported at the time:** a Reporting tab plays as a live feed, adding each news or responder report at the time that version went public, so early guesses about the cause appear as they were made. Times come from archived copies or from records that show no later edits.
 
-<img src="docs/media/reporting.jpg" width="320" alt="A Reporting tab card: a Firstpost copy of a Reuters report timed 14:05 NPT, with a note that the cause was unconfirmed at the time">
+<img src="docs/media/reporting.jpg" width="320" alt="The Reporting feed at 13:12 NPT: a status line showing 3 of 6 reports public, a Xinhua report that has just arrived with a note on what was unconfirmed at the time, and the earlier Red Cross field report below it">
 
 ### Charts that move with the timeline
 
