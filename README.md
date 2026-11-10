@@ -8,7 +8,7 @@
 
 <a href="https://trishuli-flood-trace.vercel.app"><img src="docs/media/map_run.webp" width="820" alt="The 3D map following the flood front from the Lirung massif down the Lende Khola and Bhote Koshi gorges, with event captions"></a>
 
-<sub>The live map following the flood front at 4× speed (Lirung massif to Malekhu). Basemap: EOxCloudless 2025, CC BY-NC-SA 4.0.</sub>
+<sub>The live map following the flood front at its 4× playback setting, sped up further here (Lirung massif to Malekhu). Basemap: EOxCloudless 2025, CC BY-NC-SA 4.0.</sub>
 
 </div>
 
@@ -41,6 +41,8 @@ By 7 November 2026, 1,459 people were reported dead and 5,285 were still missing
 - **Separates what was observed from what is estimated**: mapped landslides and building damage (Copernicus EMS, 2026) are never given a time.
 - **Steps through 17 key events**, each with a sourced caption, and links them to before/after imagery and published simulations.
 - **Shows what was reported at the time:** a Reporting tab adds each news report when that version went public, taken from archived copies, so early guesses about the cause appear as they were made.
+
+<img src="docs/media/reporting.jpg" width="320" alt="A Reporting tab card: a Firstpost copy of a Reuters report timed 14:05 NPT, with a note that the cause was unconfirmed at the time">
 
 ### Charts that move with the timeline
 
