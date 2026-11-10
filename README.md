@@ -18,7 +18,7 @@ This project is part of a self-directed learning initiative across different fie
 
 ## The event
 
-At 08:37 Nepal time on 26 August 2026, roughly 100 million m³ of rock and glacier ice broke away from the north side of the Langtang Lirung massif at about 5,150–5,200 m (estimates vary by study: Roy et al., 2026; Li, H. et al., 2026; Clarke et al., 2026). Seismometers recorded the collapse as a magnitude 5.2 landslide signal (USGS, 2026a).
+At about 08:37 Nepal time on 26 August 2026, roughly 100 million m³ of rock and glacier ice broke away from the north side of the Langtang Lirung massif at about 5,150–5,200 m (estimates vary by study: Roy et al., 2026; Li, H. et al., 2026; Clarke et al., 2026). Seismometers recorded a magnitude 5.2 landslide-classified signal at 08:37 (USGS, 2026a). This project uses that signal as its time reference; the exact moment the failure began cannot be read from it (Guo et al., 2026).
 
 ```mermaid
 flowchart LR
@@ -38,6 +38,7 @@ The falling mass turned into a debris flow that scoured the narrow Lende Khola g
 - **Times every step from evidence:** a seismic origin, a border-port camera, and gauge onsets and telemetry losses. The map interpolates between them and shows an earliest–latest envelope. Reported times that disagree with the gauges are shown as conflicts, not hidden.
 - **Separates what was observed from what is estimated**: mapped landslides and building damage (Copernicus EMS, 2026) are never given a time.
 - **Steps through 17 key events**, each with a sourced caption, and links them to before/after imagery and published simulations.
+- **Shows what was reported at the time:** a Reporting tab adds each news report when that version went public, taken from archived copies, so early guesses about the cause appear as they were made.
 
 ### Charts that move with the timeline
 
@@ -82,8 +83,8 @@ Other researchers have modelled the cascade, and the app shows their animations 
 | Flood extent, affected buildings, barrier lakes, detachment zone | Observed (satellite interpretation, 26–28 Aug) | UNITAR-UNOSAT (2026a, 2026b) |
 | Mapped landslides; building and road damage grading | Observed (photo-interpreted, four mapping areas) | Copernicus EMS (2026) |
 | River stage at seven gauges | Observed (DHM ten-minute record) | Acharya and Paudel (2026); NDRRMA (2026c) |
-| Origin time | Observed (seismic) | USGS (2026a) |
-| Border-port arrival | Observed (camera, 10:59 Beijing = 08:44 NPT) | Guo et al. (2026) |
+| Seismic signal time (the time reference, not the measured start of the failure) | Observed (seismic) | USGS (2026a) |
+| Border-port arrival | Reported (camera, 10:59 Beijing = 08:44 NPT; clock not independently verified) | Guo et al. (2026) |
 | Arrival time along the rest of the route | **Estimated** between evidence windows | this project, see [METHODS.md](METHODS.md) |
 | Channel elevation profile | **Derived** from the GLO-30 DEM | this project |
 | Source size, volume, precursors, weather | Reported, with ranges where studies differ | see references |
@@ -157,7 +158,7 @@ Python 3.13 with the packages in `requirements.txt`. Downloads are cached in `ra
 - `raw/unosat/`: the UNOSAT product 4256 geodatabase (`FL20260826NPL.gdb.zip`, unzipped)
 - `raw/zenodo/`: the Zenodo 22679444 archive (`zenodo_upload.zip`, unzipped into `raw/zenodo/extracted/`)
 
-`build.py` stops with instructions if any of these is missing and checks each input against `inputs_manifest.json`. The Malekhu gauge readings it uses as evidence are kept in `archive/` because the BIPAD API only serves the current record.
+`build.py` stops with instructions if any of these is missing and checks each input against `inputs_manifest.json`. On a fresh clone, run it once with `--update-manifest`: the OSM and terrain downloads are fetched new and may differ slightly from the ones I used. The Malekhu gauge readings it uses as evidence are kept in `archive/` because the BIPAD API only serves the current record.
 
 ```bash
 python -P build.py
@@ -174,10 +175,6 @@ Sentinel-2 before/after composites (about 40 minutes; reads Sentinel-2 L2A COGs 
 ```bash
 python -P imagery.py
 ```
-
-### Optional ArcGIS basemap
-
-The default basemap is the keyless EOxCloudless 2025 mosaic. The code can instead use Esri World Imagery with a personal ArcGIS API key (basemap privilege only, referrer-restricted): copy `web/config.example.js` to `web/config.js` and add the key. `config.js` is git-ignored; browser map keys are visible to anyone who opens the page.
 
 </details>
 

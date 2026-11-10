@@ -80,14 +80,6 @@
    "label": "Guo et al. (2026), Chinese Science Bulletin (in Chinese), doi 10.1360/CSB-2026-1255",
    "url": "https://doi.org/10.1360/CSB-2026-1255"
   },
-  "vantor": {
-   "label": "Vantor Open Data Program, Nepal-Flooding-Aug-2026 (CC BY-NC 4.0)",
-   "url": "https://vantor-opendata.s3.amazonaws.com/events/Nepal-Flooding-Aug-2026/collection.json"
-  },
-  "planet": {
-   "label": "Planet Crisis Response Program via Source Cooperative (CC BY-NC 4.0)",
-   "url": "https://source.coop/planet/disasterdata"
-  },
   "huang": {
    "label": "Huang, Chen & Wang (2026), Zenodo 10.5281/zenodo.22884627, CC BY 4.0 (paper in preparation)",
    "url": "https://doi.org/10.5281/zenodo.22884627"

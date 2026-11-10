@@ -1,11 +1,12 @@
 """Build static data for the Trishuli flood viewer.
 
 Inputs (cached under raw/): OSM rivers (Overpass), Mapterhorn terrain tiles (Copernicus GLO-30 over Nepal),
-Copernicus EMS EMSR927 grading vectors (raw/ems/), UNOSAT product 4256 geodatabase (raw/unosat/).
+Copernicus EMS EMSR927 grading vectors (raw/ems/), UNOSAT product 4256 geodatabase (raw/unosat/),
+DHM gauge series from Zenodo 22679444 (raw/zenodo/), BIPAD Malekhu readings (raw/bipad/).
 Outputs under web/data/. Run: python -P build.py  (add --update-manifest after deliberately replacing an input)
 """
-import glob, hashlib, heapq, io, json, math, os, sys
-import numpy as np, requests, geopandas as gpd, pandas as pd
+import csv, glob, hashlib, heapq, io, json, math, os, sys
+import numpy as np, requests, geopandas as gpd, pandas as pd, shapely
 from PIL import Image
 from rasterio import features
 from rasterio.transform import from_origin
@@ -42,15 +43,15 @@ def inputs():  # the downloads, plus the extracted files the build actually read
             + g("zenodo", "*.zip") + g("zenodo", "extracted", "**", "gauge_timeseries.json") + g("bipad", "*.json") + g("osm_rivers.json") + g("dem"))
 
 
+UNOSAT = need("unosat/**/*.gdb", "Download product 4256 (FL20260826NPL.gdb.zip) from https://unosat.org/products/4256 and unzip it into raw/unosat/")
+ZEN = need("zenodo/extracted/**/gauge_timeseries.json", "Download zenodo_upload.zip from https://doi.org/10.5281/zenodo.22679444 into raw/zenodo/ and unzip it into raw/zenodo/extracted/")
+
 relp = lambda p: os.path.relpath(p, HERE).replace(os.sep, "/")
 MANIFEST = os.path.join(HERE, "inputs_manifest.json")
 if os.path.exists(MANIFEST) and "--update-manifest" not in sys.argv:  # same inputs as the committed build, or stop
     want, have = json.load(open(MANIFEST))["files"], {relp(p): sha(p) for p in inputs()}
     bad = {f: "missing" if f not in have else "not in manifest" if f not in want else "changed" for f in want.keys() | have.keys() if want.get(f) != have.get(f)}
     if bad: sys.exit(f"Inputs differ from inputs_manifest.json: {bad}\n  Rerun with --update-manifest if the change is deliberate.")
-
-UNOSAT = need("unosat/**/*.gdb", "Download product 4256 (FL20260826NPL.gdb.zip) from https://unosat.org/products/4256 and unzip it into raw/unosat/")
-need("zenodo/extracted/**/gauge_timeseries.json", "Download zenodo_upload.zip from https://doi.org/10.5281/zenodo.22679444 into raw/zenodo/ and unzip it into raw/zenodo/extracted/")
 
 
 def unosat(layer):
@@ -150,8 +151,9 @@ print(f"river path {chain[-1] / 1000:.1f} km, {len(path)} vertices")
 
 ptree = cKDTree(np.c_[dlat, dlon])
 snap = lambda la, lo: ptree.query([la, lo])
-anc_c = [float(dense_c[snap(a[1], a[2])[1]]) for a in ANCHORS]
-anc_snap = [round(hav(a[1], a[2], dlat[snap(a[1], a[2])[1]], dlon[snap(a[1], a[2])[1]])) for a in ANCHORS]  # m from given point to route
+anc_i = [snap(a[1], a[2])[1] for a in ANCHORS]  # each anchor's nearest route point
+anc_c = [float(dense_c[i]) for i in anc_i]
+anc_snap = [round(hav(a[1], a[2], dlat[i], dlon[i])) for a, i in zip(ANCHORS, anc_i)]  # m from given point to route
 assert all(np.diff(anc_c) > 0), f"anchors out of order along river: {anc_c}"
 lo_t, hi_t = [a[3] for a in ANCHORS], [a[4] for a in ANCHORS]
 mid_t = [(a + b) / 2 for a, b in zip(lo_t, hi_t)]
@@ -159,9 +161,9 @@ arrival = np.interp(dense_c, anc_c, mid_t)  # minutes after 08:37: piecewise lin
 arr_lo, arr_hi = np.interp(dense_c, anc_c, lo_t), np.interp(dense_c, anc_c, hi_t)  # scenario envelope
 check_rows = []
 for name, la, lo, m, rel, note, srcname in CHECKS:
-    c = float(dense_c[snap(la, lo)[1]]); est = float(np.interp(c, anc_c, mid_t)); earliest = float(np.interp(c, anc_c, lo_t))
+    i = snap(la, lo)[1]; c = float(dense_c[i]); est = float(np.interp(c, anc_c, mid_t)); earliest = float(np.interp(c, anc_c, lo_t))
     status = "consistent" if est <= m else ("consistent within envelope" if earliest <= m else "CONFLICT")
-    check_rows.append((name, la, lo, c, m, rel, round(est, 1), status, note, srcname, round(hav(la, lo, dlat[snap(la, lo)[1]], dlon[snap(la, lo)[1]]))))
+    check_rows.append((name, la, lo, c, m, rel, round(est, 1), status, note, srcname, round(hav(la, lo, dlat[i], dlon[i]))))
     print(f"check {name}: reported {rel} {m} min, estimated onset {est:.0f} (earliest {earliest:.0f}) -> {status}")
 
 # ---------- 2. DEM mosaic (Mapterhorn Copernicus GLO-30, Terrarium-encoded, Web Mercator) ----------
@@ -183,7 +185,6 @@ bed = np.minimum.accumulate(bed)  # display conditioning of a DEM channel profil
 
 # ---------- 3. observed extent (UNOSAT + Copernicus EMS) timed by interpolated arrival ----------
 def slim(g):  # ~3 m simplification + 1e-5° grid keeps polygon files small for the browser
-    import shapely
     return g.set_geometry(shapely.set_precision(g.geometry.simplify(0.00003).values, 1e-5))
 
 
@@ -271,16 +272,16 @@ print(f"source-to-channel connector {connector['m']} m (untimed)")
 ems_counts = {a: bld[bld.aoi == a].d.value_counts().to_dict() for a in sorted(bld.aoi.unique())}
 
 # ---------- 5. meta ----------
-step = 1  # full 40 m path: coarser sampling cut corners across meanders and looked jagged on 3D terrain
 meta = {
     "event": {"name": "Trishuli debris flow", "date": "2026-08-26", "t0": "2026-08-26T08:37:00+05:45", "tz": "NPT"},
     "bounds": [W, S, E, N],
     "arrival": {"corners": corners, "maxMin": int(arrival.max()), "cellHa": cell_ha},
     # [lon, lat, chainage m, estimated minute (midpoint fit), DEM channel elevation, earliest minute, latest minute]
+    # every 40 m point is kept: coarser sampling cut corners across meanders and looked jagged on 3D terrain
     "river": [[round(float(lo), 5), round(float(la), 5), round(float(c)), round(float(t), 1), round(float(e)), round(float(a), 1), round(float(b), 1)]
-              for lo, la, c, t, e, a, b in zip(dlon[::step], dlat[::step], dense_c[::step], arrival[::step], bed[::step], arr_lo[::step], arr_hi[::step])],
-    "anchors": [{"name": n, "lon": la_lo[1], "lat": la_lo[0], "chain": c, "snapM": sm, "lo": a, "hi": b, "min": (a + b) / 2, "type": ty, "basis": BASIS[ty][0], "note": note, "src": s}
-                for (n, la, lo, a, b, ty, note, s), c, sm in zip(ANCHORS, anc_c, anc_snap) for la_lo in [(float(dlat[snap(la, lo)[1]]), float(dlon[snap(la, lo)[1]]))]],
+              for lo, la, c, t, e, a, b in zip(dlon, dlat, dense_c, arrival, bed, arr_lo, arr_hi)],
+    "anchors": [{"name": n, "lon": float(dlon[i]), "lat": float(dlat[i]), "chain": c, "snapM": sm, "lo": a, "hi": b, "min": (a + b) / 2, "type": ty, "basis": BASIS[ty][0], "note": note, "src": s}
+                for (n, la, lo, a, b, ty, note, s), c, sm, i in zip(ANCHORS, anc_c, anc_snap, anc_i)],
     "checks": [{"name": n, "chain": c, "min": m, "relation": rel, "estimated": est, "status": st, "note": note, "src": s}
                for n, la, lo, c, m, rel, est, st, note, s, _ in check_rows],
     "connector": connector,
@@ -296,8 +297,6 @@ print(f"timed extent {area_by_min.sum():.0f} ha + untimed source zone {untimed_h
 assert abs(area_by_min.sum() + untimed_ha - meta["extentHa"]) / meta["extentHa"] < 0.35, "rasterised extent drifted far from the mapped area"
 
 # ---------- 6. gauge hydrographs, anchor table, input manifest ----------
-import csv
-ZEN = need("zenodo/extracted/**/gauge_timeseries.json", "")
 gts = json.load(open(ZEN, encoding="utf-8"))["stations"]
 hydro = []
 for key in ["Rasuwagadhi", "Syabrubesi", "Betrawati", "Galchhi", "Kali Khola", "Devghat"]:

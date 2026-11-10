@@ -1,7 +1,6 @@
 {
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "framework": null,
-  "buildCommand": "test -f web/config.js || cp web/config.example.js web/config.js",
   "outputDirectory": "web",
   "headers": [
     {

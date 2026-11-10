@@ -87,7 +87,7 @@ def stretch(a):
 
 
 # Published before/after pairs shown as released (resized only), not cut by this script: ESA's renderings of
-# Sentinel-2 (24 Aug) and Landsat 9 (26 Aug, ~2 h after the collapse) over the upper corridor, in false colour.
+# Sentinel-2 (24 Aug) and Landsat 9 (26 Aug, ~2 h after the 08:37 signal) over the upper corridor, in false colour.
 UA = {"User-Agent": "TrishuliFloodTrace/1.0 (non-commercial research map)"}
 C = "https://upload.wikimedia.org/wikipedia/commons/"
 PUBLISHED = [

@@ -5,7 +5,7 @@ built from the rendered TCI visual assets: for orientation, not a reflectance ch
 Reads Sentinel-2 L2A COGs straight from AWS (Element84 Earth Search), no login.
 Run after build.py:  python -P imagery.py
 """
-import io, json, math, os, threading
+import json, math, os, threading
 from concurrent.futures import ThreadPoolExecutor
 os.environ.update(GDAL_DISABLE_READDIR_ON_OPEN="EMPTY_DIR", CPL_VSIL_CURL_ALLOWED_EXTENSIONS=".tif", GDAL_CACHEMAX="2048",
                   VSI_CACHE="TRUE", GDAL_HTTP_MULTIRANGE="YES", GDAL_HTTP_MERGE_CONSECUTIVE_RANGES="YES", GDAL_HTTP_MAX_RETRY="4")

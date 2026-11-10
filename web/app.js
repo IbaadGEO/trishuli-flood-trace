@@ -14,19 +14,9 @@ $("#t").max = Math.max(+$("#t").max, ...ev.events.map((e) => toMin(e.t))); // re
 const T_END = +$("#t").max;
 let t = 0;
 
-// ---------- ArcGIS basemap (optional) ----------
-// config.js is git-ignored. The Vercel build copies config.example.js (no key), so the public site uses the EOxCloudless basemap.
-const cfg = (await import("./config.js").catch(() => ({ default: {} }))).default;
-const KEY = cfg.arcgisKey || "";
-const esri = KEY ? await fetch(`https://basemapstyles-api.arcgis.com/arcgis/rest/services/styles/v2/styles/arcgis/imagery/labels?token=${encodeURIComponent(KEY)}`)
-  .then((r) => r.json()).then((s) => (s.layers ? s : (console.warn("ArcGIS labels unavailable:", s.error?.message), null))).catch(() => null) : null;
-const esriIds = esri ? esri.layers.map((l) => l.id) : [];
-const FONT = esri?.layers.find((l) => l.layout?.["text-font"])?.layout["text-font"] ?? ["Open Sans Semibold"]; // one glyph server per style
-
 // ---------- map ----------
 const RM = matchMedia("(prefers-reduced-motion: reduce)").matches; // no follow camera or animated flights
-const glProbe = document.createElement("canvas");
-if (!glProbe.getContext("webgl2")) { // MapLibre 6 requires WebGL2
+if (!document.createElement("canvas").getContext("webgl2")) { // MapLibre 6 requires WebGL2
   const repo = "https://github.com/IbaadGEO/trishuli-flood-trace/blob/main";
   $("#map").innerHTML = `<div class="nogl"><b>This 3D map needs WebGL2, which isn't available in this browser.</b>
     <p>The reconstruction's method, evidence and sources are readable without it: <a href="${repo}/METHODS.md">METHODS.md</a> ·
@@ -47,31 +37,25 @@ const map = new maplibregl.Map({
     version: 8,
     // light valley haze toward the horizon in tilted 3D views
     sky: { "sky-color": "#7fa6cc", "horizon-color": "#d3dee8", "fog-color": "#d3dee8", "sky-horizon-blend": 0.7, "horizon-fog-blend": 0.6, "fog-ground-blend": 0.8 },
-    glyphs: esri?.glyphs ?? "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
-    ...(esri?.sprite ? { sprite: esri.sprite } : {}),
+    glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
     sources: {
-      sat: KEY
-        ? { type: "raster", tileSize: 256, maxzoom: 19, attribution: "Powered by Esri | Esri, Maxar, Earthstar Geographics, and the GIS User Community",
-          tiles: [`https://ibasemaps-api.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}?token=${encodeURIComponent(KEY)}`] }
-        : { type: "raster", tileSize: 256, maxzoom: 14, // free for non-commercial use, no key or account
-          attribution: '<a href="https://cloudless.eox.at" target="_blank" rel="noopener">EOxCloudless 2025</a> by EOX IT Services GmbH, CC BY-NC-SA 4.0 (contains modified Copernicus Sentinel data 2025)',
-          tiles: ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2025_3857/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg"] },
+      sat: { type: "raster", tileSize: 256, maxzoom: 14, // free for non-commercial use, no key or account
+        attribution: '<a href="https://cloudless.eox.at" target="_blank" rel="noopener">EOxCloudless 2025</a> by EOX IT Services GmbH, CC BY-NC-SA 4.0 (contains modified Copernicus Sentinel data 2025)',
+        tiles: ["https://tiles.maps.eox.at/wmts/1.0.0/s2cloudless-2025_3857/default/GoogleMapsCompatible/{z}/{y}/{x}.jpg"] },
       // Mapterhorn: Copernicus GLO-30 over Nepal (30 m), 512 px tiles, served to z12 here and overzoomed beyond
       dem: { type: "raster-dem", encoding: "terrarium", tileSize: 512, maxzoom: 12,
         attribution: '<a href="https://mapterhorn.com/attribution" target="_blank" rel="noopener">Terrain: Mapterhorn</a> (Copernicus GLO-30 © DLR e.V. 2010-2014 and © Airbus Defence and Space GmbH 2014-2018, provided under COPERNICUS by the EU and ESA)',
         tiles: ["https://tiles.mapterhorn.com/{z}/{x}/{y}.webp"] },
       demHill: { type: "raster-dem", encoding: "terrarium", tileSize: 512, maxzoom: 12, tiles: ["https://tiles.mapterhorn.com/{z}/{x}/{y}.webp"] },
-      ...(esri?.sources ?? {}),
     },
     layers: [
       { id: "bg", type: "background", paint: { "background-color": "#c9cfc4" } }, // shown only where no imagery
       { id: "sat", type: "raster", source: "sat", paint: { "raster-fade-duration": 150 } },
       { id: "hill", type: "hillshade", source: "demHill", paint: { "hillshade-exaggeration": 0.3, "hillshade-shadow-color": "#000" } },
-      ...(esri?.layers ?? []),
     ],
   },
 });
-const BEFORE = esriIds[0]; // our layers go under Esri's labels
+const FONT = ["Open Sans Semibold"]; // the only font the glyph server above is used for
 map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), "top-left");
 map.addControl(new maplibregl.ScaleControl(), "bottom-left");
 await new Promise((r) => map.on("load", r));
@@ -79,12 +63,12 @@ $(".maplibregl-ctrl-attrib")?.classList.remove("maplibregl-compact-show"); // co
 map.setTerrain({ source: "dem", exaggeration: 1.2 });
 
 // Flood-arrival raster, split into 500 px chunks (only those with flooded pixels). Each repaint re-uploads just
-// the chunks whose colours change, i.e. near the front, instead of the whole 3264x2067 canvas.
+// the chunks whose colours change, i.e. near the front, instead of the whole canvas.
 const img = new Image(); img.src = URL.createObjectURL(await fetch("data/arrival.png", { cache: "no-cache" }).then((r) => r.blob())); await img.decode();
 const full = document.createElement("canvas"); full.width = img.width; full.height = img.height;
 const fctx = full.getContext("2d", { willReadFrequently: true }); fctx.drawImage(img, 0, 0);
 const src = fctx.getImageData(0, 0, full.width, full.height).data;
-const cv = { width: full.width, height: full.height };
+const cv = full;
 const mercY = (lat) => Math.log(Math.tan(Math.PI / 4 + (lat * Math.PI) / 360));
 const latOfMercY = (y) => (360 / Math.PI) * Math.atan(Math.exp(y)) - 90;
 const [cTL, , cBR] = meta.arrival.corners;
@@ -145,14 +129,13 @@ map.addSource("anchors", { type: "geojson", data: { type: "FeatureCollection", f
 const DMG = ["match", ["get", "d"], "Destroyed", "#c8432b", "Damaged", "#e8873a", "Possibly damaged", "#f1c24b", "#9aa7b0"];
 const LAYERS = [
   { group: "Base" },
-  { id: "sat", name: "Satellite basemap", note: KEY ? "Esri World Imagery (pre-event)" : "EOxCloudless 2025 Sentinel-2 mosaic", on: true },
+  { id: "sat", name: "Satellite basemap", note: "EOxCloudless 2025 Sentinel-2 mosaic (pre-event)", on: true },
   { id: "hill", name: "Hillshade", on: true },
   ...(s2 ? [
     { id: "s2pre", name: "Sentinel-2 before", note: `Cloud-masked composite, ${span(s2.pre.dates)} · ${Math.round(s2.pre.coverage * 100)}% of corridor`, sw: "#5a7d4a", on: true,
       add: { type: "raster", source: "s2pre", paint: { "raster-fade-duration": 0 } } },
     { id: "s2post", name: "Sentinel-2 after", note: `Cloud-masked composite, ${span(s2.post.dates)} · ${Math.round(s2.post.coverage * 100)}% of corridor`, sw: "#9a7b55", on: true,
       add: { type: "raster", source: "s2post", paint: { "raster-opacity": 0, "raster-fade-duration": 0 } } }] : []),
-  ...(esri ? [{ id: "esri-labels", name: "Place labels", note: "Esri imagery labels (vector)", on: true }] : []),
   { id: "terrain", name: "Terrain (3D)", note: "Mapterhorn (Copernicus GLO-30), 1.2× exaggeration", on: true },
   { group: "Reconstruction" },
   { id: "river", name: "Flow path", note: "OSM rivers, collapse → Devghat; solid = reached", sw: "#36c5f0", on: true,
@@ -205,7 +188,7 @@ const LAYERS = [
   { id: "buildings", name: "Building damage", note: "Destroyed · Damaged · Possibly · None visible", sw: "#c8432b", on: true,
     add: { type: "circle", source: "buildings", minzoom: 11, paint: { "circle-radius": ["interpolate", ["linear"], ["zoom"], 11, 1.5, 16, 5], "circle-color": DMG, "circle-stroke-width": 0.5, "circle-stroke-color": "#000" } } },
 ];
-// Views: each shows only the overlays its question needs. Base layers (imagery, hillshade, terrain, labels) stay as set.
+// Views: each shows only the overlays its question needs. Base layers (imagery, hillshade, terrain) stay as set.
 const OVERLAYS = LAYERS.filter((L) => L.add && !L.id.startsWith("s2")).map((L) => L.id);
 const VIEWS = {
   story: ["river", "reached", "waypoints", "waypoint-labels", "arrival", "gauges", "detachment", "connector", "lakes", "sites"],
@@ -214,9 +197,9 @@ const VIEWS = {
   all: OVERLAYS,
 };
 for (const L of LAYERS) if (OVERLAYS.includes(L.id)) L.on = VIEWS.story.includes(L.id);
-const idsOf = (id) => (id === "arrival" ? chunkIds : id === "esri-labels" ? esriIds : [id]); // panel entries that map to several map layers
+const idsOf = (id) => (id === "arrival" ? chunkIds : [id]); // the arrival entry maps to one layer per chunk
 for (const L of LAYERS) if (L.add) for (const id of idsOf(L.id))
-  map.addLayer({ id, ...L.add, ...(L.id === "arrival" ? { source: id } : {}), layout: { ...(L.add.layout || {}), visibility: L.on ? "visible" : "none" } }, BEFORE);
+  map.addLayer({ id, ...L.add, ...(L.id === "arrival" ? { source: id } : {}), layout: { ...(L.add.layout || {}), visibility: L.on ? "visible" : "none" } });
 
 function setVis(id, on) {
   if (id === "terrain") return map.setTerrain(on ? { source: "dem", exaggeration: 1.2 } : null);
@@ -224,10 +207,11 @@ function setVis(id, on) {
 }
 const OPROP = { raster: "raster-opacity", fill: "fill-opacity", line: "line-opacity", circle: "circle-opacity", symbol: "text-opacity" };
 const opOf = (L) => L.add && L.id !== "s2post" && OPROP[L.add.type]; // s2post opacity belongs to the before/after blend
+const opPct = (L) => Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1));
 $("#layers").innerHTML = LAYERS.map((L) => L.group ? `<div class="layer"><h5>${L.group}</h5></div>` :
-  `<label class="layer"><input type="checkbox" data-id="${L.id}" ${L.on ? "checked" : ""}><span>${L.sw ? `<i class="sw" style="background:${L.sw}"></i>` : ""}${L.name}${L.est ? '<span class="est">EST.</span>' : ""}${L.note ? `<small>${L.note}</small>` : ""}${opOf(L) ? `<span class="op"><input type="range" min="0" max="100" value="${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}" data-op="${L.id}" aria-label="${L.name} opacity"><output>${Math.round(100 * (map.getPaintProperty(idsOf(L.id)[0], opOf(L)) ?? 1))}%</output></span>` : ""}</span></label>`).join("")
+  `<label class="layer"><input type="checkbox" data-id="${L.id}" ${L.on ? "checked" : ""}><span>${L.sw ? `<i class="sw" style="background:${L.sw}"></i>` : ""}${L.name}${L.est ? '<span class="est">EST.</span>' : ""}${L.note ? `<small>${L.note}</small>` : ""}${opOf(L) ? `<span class="op"><input type="range" min="0" max="100" value="${opPct(L)}" data-op="${L.id}" aria-label="${L.name} opacity"><output>${opPct(L)}%</output></span>` : ""}</span></label>`).join("")
   + `<p class="note">This retrospective reconstruction combines satellite-interpreted impacts with reported observations. The moving marker and the extent reveal are interpolated between the midpoints of evidence windows (gauge onsets and telemetry losses from the DHM record, the USGS origin time, the Gyirong Port camera time); reports such as threshold crossings are used only as checks. They do not represent measured water depth, local flow velocity or a validated hydraulic simulation. Distances start at the OSM route origin, ~0.9 km from the mapped source; the source-to-channel runout (dashed red) is not timed.</p>`;
-document.querySelector(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
+$(".tabs").onclick = (e) => { const k = e.target.dataset.tab; if (!k) return;
   document.querySelectorAll(".tabs button").forEach((b) => { b.classList.toggle("on", b === e.target); b.setAttribute("aria-pressed", b === e.target); });
   document.querySelectorAll("#side .tab").forEach((s) => s.classList.toggle("on", s.id === k)); };
 $("#layers").addEventListener("change", (e) => { const id = e.target.dataset.id; if (!id) return; setVis(id, e.target.checked); if (id === "terrain") showDim(e.target.checked); });
@@ -240,7 +224,7 @@ if (s2) {
   box.innerHTML = `<b>Corridor imagery</b><div class="fade-row"><span>Before<small>${span(s2.pre.dates)}</small></span>
     <input type="range" min="0" max="100" value="0" aria-label="Blend before and after Sentinel-2 imagery"><span>After<small>${span(s2.post.dates)}</small></span></div>
     <small class="note">Cloud-masked median composites over the date windows shown, for orientation only. Gaps in "after" show the 2025 basemap, which is pre-event.</small>`;
-  document.querySelector("#map").appendChild(box);
+  $("#map").appendChild(box);
   box.querySelector("input").oninput = (e) => { const v = e.target.value / 100;
     map.setPaintProperty("s2post", "raster-opacity", v); map.setPaintProperty("s2pre", "raster-opacity", 1 - v); }; // so post-event gaps never show the "before" composite
 }
@@ -253,12 +237,14 @@ map.on("click", "sites", (e) => openSite(e.features[0].properties.id));
 for (const id of ["buildings", "anchors", "gauges", "lakes", "sites"]) { map.on("mouseenter", id, () => (map.getCanvas().style.cursor = "pointer")); map.on("mouseleave", id, () => (map.getCanvas().style.cursor = "")); }
 
 // ---------- time model ----------
-function at(m) { // interpolate river position for minute m
-  let i = river.findIndex((r) => r[3] > m);
-  if (i <= 0) return i === 0 ? river[0] : river[river.length - 1];
-  const a = river[i - 1], b = river[i], f = (m - a[3]) / (b[3] - a[3] || 1);
+function along(col, x) { // river point interpolated where column `col` (2 = chainage m, 3 = minute) equals x
+  const i = river.findIndex((r) => r[col] > x);
+  if (i <= 0) return i === 0 ? river[0] : river.at(-1);
+  const a = river[i - 1], b = river[i], f = (x - a[col]) / (b[col] - a[col] || 1);
   return a.map((v, k) => v + (b[k] - v) * f);
 }
+function at(m) { return along(3, m); }
+function atChain(c) { return along(2, c); }
 function pt(r) { return { type: "Feature", geometry: { type: "Point", coordinates: [r[0], r[1]] } }; }
 function line(c) { return { type: "Feature", geometry: { type: "LineString", coordinates: c } }; }
 const nearestIdx = (lon, lat) => { let bi = 0, bd = Infinity; const k = Math.cos((lat * Math.PI) / 180);
@@ -292,12 +278,6 @@ const srcShort = (k) => ev.sources[k].label.split(/[,(:]/)[0].trim(); // "CHWRR 
 const srcLink = (k) => `<a href="${ev.sources[k].url}" target="_blank" rel="noopener">${srcShort(k)}</a>`;
 
 let follow = !RM, cam = null; // cam: eased camera state {c:[lon,lat], b:bearing, ts}
-function atChain(c) { // river point `c` metres from the source
-  let i = river.findIndex((r) => r[2] > c);
-  if (i <= 0) return i === 0 ? river[0] : river.at(-1);
-  const a = river[i - 1], b = river[i], f = (c - a[2]) / (b[2] - a[2] || 1);
-  return a.map((v, k) => v + (b[k] - v) * f);
-}
 function bearingAt(m) { // mean downstream direction over the next 1-5 km: a single short look-ahead swung on tight bends
   const a = at(m), k = Math.cos((a[1] * Math.PI) / 180);
   let x = 0, y = 0;
@@ -385,7 +365,7 @@ $("#reporting").innerHTML = `<p class="note">${rep.note}</p><div id="rep-now" ar
   <details class="card"><summary><b>Later coverage</b> <span class="muted">after the timeline ends</span></summary>${reports.filter((r) => r.m > T_END).map(repCard).join("")}</details>`;
 let repShown = -1;
 function reporting(m) { // redraw only when the set of public reports changes
-  const now = reports.filter((r) => r.m <= m && r.m <= T_END);
+  const now = reports.filter((r) => r.m <= m);
   if (now.length === repShown) return; repShown = now.length;
   $("#rep-now").innerHTML = now.length ? now.toReversed().map(repCard).join("") : `<p class="card note">No verified report available by ${fmt(m)} NPT. The first archived report is from ${repWhen(reports[0])}.</p>`;
 }
@@ -462,8 +442,8 @@ applyView("story");
 function pinEvent(e) { // pinned where it happened; non-spatial events (alerts, forecasts) get no map pin
   evEl.hidden = !e.at;
   if (!e.at) return;
-  evEl.dataset.kind = e.kind ?? "alert";
-  evEl.innerHTML = `<time>${e.t ?? e.d}</time><span>${e.title}</span>`;
+  evEl.dataset.kind = e.kind;
+  evEl.innerHTML = `<time>${e.t}</time><span>${e.title}</span>`;
   evMarker.setLngLat(e.at);
 }
 
@@ -529,9 +509,7 @@ const evRow = (e, m, kind, when) => `<li ${m === null ? 'class="later"' : `data-
 $("#ev").innerHTML = events.map((e) => evRow(e, e.m, e.kind, e.t)).join("") + ev.after.map((e) => evRow(e, null, "alert", e.d)).join(""); // later dates: listed, not seekable
 $("#ev").onkeydown = (e) => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("li")) { e.preventDefault(); e.target.click(); } };
 $("#ev").onclick = (e) => { const li = e.target.closest("li[data-m]"); if (!li) return;
-  toggle(false); const k = [...$("#ev").children].indexOf(li);
-  if (k < events.length) pinEvent(events[k]);
-  setTime(Math.min(+li.dataset.m, T_END), true); };
+  toggle(false); pinEvent(events[[...$("#ev").children].indexOf(li)]); setTime(+li.dataset.m, true); };
 
 // ---------- charts (plain SVG) ----------
 function chart(svg, { xs, ys, xmax, ymax, fill, dots = [], bars = [], lines = [], marks = [], cursor, xfmt, yfmt }) {
@@ -554,28 +532,27 @@ function chart(svg, { xs, ys, xmax, ymax, fill, dots = [], bars = [], lines = []
 }
 const step = Math.ceil(river.length / 200), rs = river.filter((_, i) => i % step === 0);
 const kmMax = river.at(-1)[2] / 1000, elevMax = Math.ceil(Math.max(...river.map((r) => r[4])) / 500) * 500;
-const tf = (m) => fmt(m), kf = (v) => `${Math.round(v)} km`;
+const kf = (v) => `${Math.round(v)} km`;
 function drawCharts(r) {
   const km = r[2] / 1000;
   chart($("#c-front"), { xs: rs.map((x) => x[3]), ys: rs.map((x) => x[2] / 1000), xmax: T_END, ymax: Math.ceil(kmMax / 50) * 50,
     lines: [5, 6].map((k) => ({ xs: rs.map((x) => x[k]), ys: rs.map((x) => x[2] / 1000) })), // earliest / latest scenario
     bars: meta.anchors.map((a) => [a.lo, a.hi, a.chain / 1000]), marks: meta.checks.map((c) => [c.min, c.chain / 1000]),
-    cursor: [t, km], xfmt: tf, yfmt: kf });
+    cursor: [t, km], xfmt: fmt, yfmt: kf });
   chart($("#c-profile"), { xs: rs.map((x) => x[2] / 1000), ys: rs.map((x) => x[4]), xmax: kmMax, ymax: elevMax, fill: css("--mud"),
     dots: meta.anchors.map((a) => [a.chain / 1000, at(a.min)[4]]), cursor: [km, r[4]], xfmt: kf, yfmt: (v) => `${(v / 1000).toFixed(1)}k m` });
   hydrograph($("#c-area"));
 }
 // Observed stage at each gauge, as rise above its own pre-event level (station datums are not comparable)
 const HCOL = { Rasuwagadhi: "#c8432b", Syabrubesi: "#e8873a", Betrawati: "#b07a10", Galchhi: "#2f8f5b", "Kali Khola": "#1c7fb8", Devghat: "#6d3fb3" };
-const minOf = (hh) => toMin(hh);
 function hydrograph(svg) {
   const W = svg.clientWidth || 300, H = svg.clientHeight || 120, L = 30, B = 16, top = 10;
-  const X0 = minOf("06:00"), X1 = minOf("20:00"), X = (m) => L + ((m - X0) / (X1 - X0)) * (W - L - 6);
+  const X0 = toMin("06:00"), X1 = toMin("20:00"), X = (m) => L + ((m - X0) / (X1 - X0)) * (W - L - 6);
   const Y = (y) => H - B - ((y + 1) / (top + 1)) * (H - B - 6);
   const grid = [0, 5, 10].map((v) => `<text x="${L - 4}" y="${Y(v) + 3}" text-anchor="end">${v} m</text><line x1="${L}" x2="${W - 6}" y1="${Y(v)}" y2="${Y(v)}" stroke="${css("--line")}"/>`).join("")
-    + ["06:00", "12:00", "18:00"].map((h) => `<text x="${X(minOf(h))}" y="${H - 3}" text-anchor="middle">${h}</text>`).join("");
+    + ["06:00", "12:00", "18:00"].map((h) => `<text x="${X(toMin(h))}" y="${H - 3}" text-anchor="middle">${h}</text>`).join("");
   const series = gauges.stations.map((s) => {
-    const pts = s.series.map(([hh, v]) => [minOf(hh), v - s.base_m]);
+    const pts = s.series.map(([hh, v]) => [toMin(hh), v - s.base_m]);
     const d = pts.map(([m, y], i) => `${i ? "L" : "M"}${X(m).toFixed(1)},${Y(Math.min(y, top)).toFixed(1)}`).join("");
     const end = pts.at(-1), lost = s.destroyed ? `<text x="${X(end[0]) + 2}" y="${Y(end[1]) - 3}" fill="${HCOL[s.name]}" font-size="11">✕</text>` : "";
     return `<path d="${d}" fill="none" stroke="${HCOL[s.name]}" stroke-width="1.4"><title>${s.name}</title></path>${lost}`;
