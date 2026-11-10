@@ -22,7 +22,7 @@ At about 08:37 Nepal time on 26 August 2026, roughly 100 million m³ of rock and
 
 ```mermaid
 flowchart LR
-  A["<b>Rock–ice avalanche</b><br/>~5,150–5,200 m<br/>08:37 NPT"] --> B["<b>Debris flow</b><br/>forms by ~4,000 m<br/>Lende Khola gorge"]
+  A["<b>Rock–ice avalanche</b><br/>~5,150–5,200 m<br/>08:37 NPT signal"] --> B["<b>Debris flow</b><br/>forms by ~4,000 m<br/>Lende Khola gorge"]
   B --> C["<b>Gyirong Port</b><br/>China–Nepal border<br/>08:44 NPT, ~22 km"]
   C --> D["<b>Water-laden flood</b><br/>Bhote Koshi → Trishuli<br/>gauges stop transmitting"]
   D --> E["<b>Devghat</b><br/>rise begins 14:30–14:40<br/>~200 km downstream"]
@@ -30,11 +30,13 @@ flowchart LR
 
 The falling mass turned into a debris flow that scoured the narrow Lende Khola gorge and reached the border crossing at Gyirong Port about seven minutes later, after roughly 22 km and 3,400 m of descent (Guo et al., 2026). Below Syabrubesi it began dropping its largest rock and continued as a more water-laden flood down the Bhote Koshi and Trishuli (Clarke et al., 2026). River gauges stopped transmitting one after another, so the timing upstream is bracketed rather than measured (Acharya and Paudel, 2026). The rising wave reached the Devghat gauge between 14:30 and 14:40. Xu (2026) attributes this first wave to the debris flow itself, possibly with a quick breach of debris dumped across the river. The barrier lakes formed during the cascade, were mapped on 28 August and only began overflowing that afternoon.
 
+By 7 November 2026, 1,459 people were reported dead and 5,285 were still missing in Nepal (The Guardian, 7 November 2026). The figures are provisional.
+
 ## What the map does
 
 <img src="docs/media/app.jpg" alt="The full app: 3D map with the flood front near Betrawati, an evidence panel on the right, a key-events list and three charts along the bottom">
 
-- **Follows the front** along a 202 km river route in 3D, revealing the satellite-mapped flood extent (UNITAR-UNOSAT, 2026a) by estimated arrival time.
+- **Follows the front** along a 203 km river route in 3D, revealing the satellite-mapped flood extent (UNITAR-UNOSAT, 2026a) by estimated arrival time.
 - **Times every step from evidence:** a seismic origin, a border-port camera, and gauge onsets and telemetry losses. The map interpolates between them and shows an earliest–latest envelope. Reported times that disagree with the gauges are shown as conflicts, not hidden.
 - **Separates what was observed from what is estimated**: mapped landslides and building damage (Copernicus EMS, 2026) are never given a time.
 - **Steps through 17 key events**, each with a sourced caption, and links them to before/after imagery and published simulations.
@@ -44,11 +46,11 @@ The falling mass turned into a debris flow that scoured the narrow Lende Khola g
 
 <img src="docs/media/charts.gif" alt="Three charts updating as the flood front advances: estimated progression with evidence windows, the channel elevation profile, and gauge hydrographs from the DHM ten-minute record">
 
-Left: estimated progression against the evidence windows. Centre: channel elevation profile from the Copernicus GLO-30 DEM (conditioned for display, not a surveyed bed). Right: river stage at six gauges from the Department of Hydrology and Meteorology (DHM) ten-minute record (Acharya and Paudel, 2026).
+Left: estimated progression against the evidence windows. Centre: channel elevation profile from the Copernicus GLO-30 DEM (conditioned for display, not a surveyed bed). Right: river stage at six gauges from the Department of Hydrology and Meteorology (DHM) ten-minute record (Acharya and Paudel, 2026). A seventh gauge, Malekhu, comes from the BIPAD portal (NDRRMA, 2026c) and is used for timing only.
 
 ## Before and after
 
-Open satellite imagery of four sites along the route, resampled to a common grid so they line up. In the app, each panel also says what the images show and, separately, what the cited sources report happened there.
+Open satellite imagery of four of the app's six comparisons (the app adds Betrawati and an ESA pair taken during the flood), resampled to a common grid so they line up. In the app, each panel also says what the images show and, separately, what the cited sources report happened there.
 
 <table>
 <tr>
@@ -82,7 +84,7 @@ Other researchers have modelled the cascade, and the app shows their animations 
 |---|---|---|
 | Flood extent, affected buildings, barrier lakes, detachment zone | Observed (satellite interpretation, 26–28 Aug) | UNITAR-UNOSAT (2026a, 2026b) |
 | Mapped landslides; building and road damage grading | Observed (photo-interpreted, four mapping areas) | Copernicus EMS (2026) |
-| River stage at seven gauges | Observed (DHM ten-minute record) | Acharya and Paudel (2026); NDRRMA (2026c) |
+| River stage at seven gauges (six from the Zenodo archive, Malekhu from BIPAD) | Observed (DHM ten-minute record) | Acharya and Paudel (2026); NDRRMA (2026c) |
 | Seismic signal time (the time reference, not the measured start of the failure) | Observed (seismic) | USGS (2026a) |
 | Border-port arrival | Reported (camera, 10:59 Beijing = 08:44 NPT; clock not independently verified) | Guo et al. (2026) |
 | Arrival time along the rest of the route | **Estimated** between evidence windows | this project, see [METHODS.md](METHODS.md) |
@@ -90,6 +92,13 @@ Other researchers have modelled the cascade, and the app shows their animations 
 | Source size, volume, precursors, weather | Reported, with ranges where studies differ | see references |
 
 The app shows aggregate figures only and holds no names or personal details of victims.
+
+### What this is not
+
+- **Not a hydraulic or runout model.** Nothing here simulates flow, depth or velocity.
+- **Not a measured front.** Between evidence points the front position is interpolated.
+- **Not a per-pixel observation of arrival.** Each mapped pixel takes the time of its nearest river point.
+- **Not for emergency use.**
 
 ## Built with
 
