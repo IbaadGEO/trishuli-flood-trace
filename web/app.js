@@ -1,4 +1,5 @@
 // Trishuli Flood Trace: static reconstruction of the 26 Aug 2026 debris flow.
+// © 2026 Ibaad Sidik. Code licensed under MIT; third-party material retains its source terms.
 import * as maplibregl from "https://unpkg.com/maplibre-gl@6.17.0/dist/maplibre-gl.mjs"; // v6 is ESM-only
 const T0 = 8 * 60 + 37; // 08:37 NPT, minutes of day
 const $ = (s) => document.querySelector(s);

@@ -1,3 +1,4 @@
+# © 2026 Ibaad Sidik. Code licensed under MIT; see LICENSE.
 """Build static data for the Trishuli flood viewer.
 
 Inputs (cached under raw/): OSM rivers (Overpass), Mapterhorn terrain tiles (Copernicus GLO-30 over Nepal),
